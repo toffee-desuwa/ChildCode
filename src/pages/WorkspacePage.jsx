@@ -314,7 +314,11 @@ const CompareCard = memo(function CompareCard({ label, snapshot, changedFields }
           const block = snapshot.json.blocks[type]
           const changed = changedFields.includes(type)
           return (
-            <li key={type} className={changed ? 'block-changed' : ''}>
+            <li
+              key={type}
+              className={changed ? 'is-changed' : ''}
+              style={changed ? { background: '#fff3e0', border: '2px solid #ff9800', fontWeight: 'bold' } : undefined}
+            >
               <span className="block-type">{CATEGORY_LABELS[type]}</span>
               <span className="block-value">{block?.label ?? '—'}</span>
             </li>

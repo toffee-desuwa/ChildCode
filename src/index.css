@@ -381,10 +381,10 @@ button.secondary {
   font-size: 14px;
 }
 
-.compare-blocks li.block-changed {
-  background: #fff3e0;
-  border: 2px solid #ff9800;
-  font-weight: bold;
+.compare-blocks li.is-changed {
+  background: #fff3e0 !important;
+  border: 2px solid #ff9800 !important;
+  font-weight: bold !important;
 }
 
 .block-type {
