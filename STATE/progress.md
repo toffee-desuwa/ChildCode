@@ -2,19 +2,19 @@
 
 ## Current Status
 
-**阶段：Phase 4 完成，等待 review**
+**阶段：Phase 5 完成，等待 review**
 
-图片生成链路已打通：JSON 真相层 → prompt 派生 → provider adapter → 图片展示。
+对比闭环已实现：改块 → 再生成 → 两图并排 → 差异高亮。
 
-## Just Completed — Phase 4
+## Just Completed — Phase 5
 
-- `src/generation/derivePrompt.js` — JSON → prompt 派生（固定模板：`{风格}风格，{对象}在{场景}中{动作}`）
-- `src/generation/provider.js` — 统一 `generateImage(prompt, config)` 接口 + OpenAI DALL-E 3 adapter
-- 工作区新增"生成图片"按钮，四类齐全 + 已配置时可用
-- 图 A 预览区展示生成结果
-- 加载中 / 成功 / 失败状态处理
-- 未配置 API key 时按钮禁用 + 提示
-- 错误横幅可关闭
+- `src/generation/diffBlocks.js` — 对比两个 JSON 快照，返回 `{ changedFields, count }`
+- WorkspacePage 重构：snapshotA / snapshotB 两槽模式（不做通用历史）
+- 第一次生成 → snapshotA；修改积木后再次生成 → snapshotB
+- 对比区：两张图并排 + 四类积木值 + 变化字段橙色高亮
+- 0 块修改：警告提示；>1 块修改：温和提示（不阻止生成）
+- "开始新一轮对比"按钮：B 升为 A，清空 B，可继续探索
+- 生成后按钮文字变为"再次生成"，引导文案"试试只改一个块"
 
 **验证命令：**
 ```bash
@@ -25,18 +25,21 @@ npm run dev     # 启动后手动验证
 
 **手动验证步骤：**
 1. `npm run dev` → 进入工作区
-2. 未配置 API key 时 → "生成图片"按钮禁用，显示提示
-3. 配置有效的 OpenAI API key + 额度
-4. 回到工作区 → 拖入四类积木
-5. 点击"生成图片" → 按钮变"生成中…" → 图 A 区显示生成的图片
-6. 若 API key 无效或网络错误 → 显示红色错误横幅
-7. JSON 预览区仍然正常工作
+2. 配置有效 API key + 额度
+3. 拖入四类积木 → 点击"生成图片" → 图 A 显示
+4. 按钮变为"再次生成"，出现提示"试试只改一个块"
+5. 不改任何积木 → 提示"你没有修改积木哦"
+6. 替换一个积木 → 点击"再次生成" → 图 B 显示
+7. 对比区出现：两张图并排 + 四类积木值 + 被替换的块橙色高亮
+8. 改多个积木再生成 → 对比区提示"你改了 N 个块哦。试试只改 1 个"
+9. 点击"开始新一轮对比" → B 升为 A，可继续修改
 
 ## Previously Completed
 
 - Phase 1：项目脚手架与基础 UI 骨架
 - Phase 2：Blockly 积木接入与 JSON 导出（含重复块校验补丁）
 - Phase 3：家长最小配置与额度控制
+- Phase 4：图片生成对接（JSON → prompt → provider adapter → 图片展示）
 
 ## Confirmed Decisions
 
@@ -49,13 +52,13 @@ npm run dev     # 启动后手动验证
 - 前端技术栈：React + Vite
 - 存储方案：localStorage
 - 架构：纯前端，无后端
+- Phase 5 对比模式：只保留最近两个快照（snapshotA / snapshotB），不做通用历史
 
 ## Not Started Yet
 
-- Phase 5：对比闭环
 - Phase 6：Edge States 与体验打磨
 - 真正的次数消耗与扣减
 
 ## Next Recommended Step
 
-Phase 5：实现改块 → 再生成 → 两图并排对比闭环。
+Phase 6：Edge States 与体验打磨。
