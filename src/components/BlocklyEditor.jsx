@@ -9,9 +9,18 @@ registerBlocks()
 export default function BlocklyEditor({ onJsonChange }) {
   const containerRef = useRef(null)
   const workspaceRef = useRef(null)
+  // Store callback in ref so Blockly listener always calls latest version
+  const onJsonChangeRef = useRef(onJsonChange)
+
+  // Keep ref in sync with prop, via effect (lint-safe)
+  useEffect(() => {
+    onJsonChangeRef.current = onJsonChange
+  }, [onJsonChange])
 
   useEffect(() => {
-    if (!containerRef.current || workspaceRef.current) return
+    if (!containerRef.current) return
+    // If workspace already exists in this container, skip
+    if (workspaceRef.current) return
 
     const workspace = Blockly.inject(containerRef.current, {
       toolbox,
@@ -26,20 +35,24 @@ export default function BlocklyEditor({ onJsonChange }) {
 
     workspaceRef.current = workspace
 
-    const handleChange = () => {
+    const handleChange = (event) => {
+      // Skip UI-only events (click, select, scroll, toolbox open, etc.)
+      // These don't change block structure and cause unnecessary re-renders
+      if (event && event.isUiEvent) return
+
       const json = exportBlocksJson(workspace)
-      onJsonChange(json)
+      onJsonChangeRef.current(json)
     }
 
     workspace.addChangeListener(handleChange)
-    // 初始导出一次
-    handleChange()
+    // 初始导出一次 (pass null event to bypass UI check)
+    handleChange(null)
 
     return () => {
       workspace.dispose()
       workspaceRef.current = null
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [])
 
   return <div ref={containerRef} className="blockly-container" />
 }

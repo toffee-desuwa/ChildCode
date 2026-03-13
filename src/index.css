@@ -89,6 +89,32 @@ button.secondary {
   background: #f5f5f5;
 }
 
+/* --- TEMPORARY DEBUG PANEL --- */
+.debug-panel {
+  background: #fffbe6;
+  border: 2px solid #f59e0b;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-bottom: 16px;
+  font-size: 13px;
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+.debug-panel h4 {
+  color: #b45309;
+  margin-bottom: 6px;
+}
+
+.debug-panel ul {
+  list-style: none;
+  columns: 2;
+}
+
+.debug-panel li {
+  margin-bottom: 2px;
+}
+/* --- END TEMPORARY DEBUG PANEL --- */
+
 .placeholder-box.tall {
   min-height: 240px;
   display: flex;

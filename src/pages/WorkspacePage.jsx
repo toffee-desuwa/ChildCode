@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BlocklyEditor from '../components/BlocklyEditor'
 import { isComplete, hasDuplicates, getDuplicateMessage } from '../blocks/exportJson'
@@ -32,6 +32,17 @@ export default function WorkspacePage() {
   // Ref mirrors snapshotA to avoid closure staleness in async handleGenerate
   const snapshotARef = useRef(null)
 
+  // --- TEMPORARY DEBUG: detect component mount/unmount ---
+  const mountCountRef = useRef(0)
+  useEffect(() => {
+    mountCountRef.current++
+    console.log('[DEBUG] WorkspacePage MOUNTED, count:', mountCountRef.current)
+    return () => {
+      console.log('[DEBUG] WorkspacePage UNMOUNTED')
+    }
+  }, [])
+  // --- END TEMPORARY DEBUG ---
+
   const configStatus = getConfigStatus()
   const complete = currentJson && isComplete(currentJson)
   const duplicated = currentJson && hasDuplicates(currentJson)
@@ -42,17 +53,33 @@ export default function WorkspacePage() {
   const canGenerate = complete && !duplicated && configStatus === 'configured' && !generating
 
   const handleGenerate = async () => {
-    if (!canGenerate) return
+    console.log('[DEBUG] handleGenerate called', {
+      canGenerate,
+      refA: snapshotARef.current !== null,
+      hasA,
+      hasB,
+      complete,
+      duplicated,
+      configStatus,
+      generating,
+    })
+
+    if (!canGenerate) {
+      console.log('[DEBUG] canGenerate is false, returning early')
+      return
+    }
 
     const currentA = snapshotARef.current
     setZeroChangeWarn(false)
 
     // Requirement C: if A exists and 0 blocks changed, block generation entirely
     if (currentA !== null) {
-      const { count } = diffBlocks(currentA.json, currentJson)
-      if (count === 0) {
+      const diff = diffBlocks(currentA.json, currentJson)
+      console.log('[DEBUG] diff check:', diff)
+      if (diff.count === 0) {
+        console.log('[DEBUG] 0-change, blocking generation')
         setZeroChangeWarn(true)
-        return // Do NOT call API, do NOT touch snapshots
+        return
       }
     }
 
@@ -61,35 +88,40 @@ export default function WorkspacePage() {
 
     try {
       const prompt = derivePrompt(currentJson)
+      console.log('[DEBUG] derived prompt:', prompt)
       if (!prompt) {
         setError('积木组合不完整，无法生成')
         return
       }
 
       const config = loadConfig()
+      console.log('[DEBUG] calling generateImage...')
       const result = await generateImage(prompt, config)
+      console.log('[DEBUG] generateImage returned:', result.url ? 'has URL' : 'NO URL')
+
       const newSnapshot = {
         json: JSON.parse(JSON.stringify(currentJson)),
         imageUrl: result.url,
       }
 
-      // Use ref (always current) to decide slot, not closure variable
+      // Use ref (always current) to decide slot
       if (snapshotARef.current === null) {
-        // First generation → fill slot A
+        console.log('[DEBUG] filling slot A')
         snapshotARef.current = newSnapshot
         setSnapshotA(newSnapshot)
       } else {
-        // Second generation → fill slot B (never overwrite A)
+        console.log('[DEBUG] filling slot B')
         setSnapshotB(newSnapshot)
       }
     } catch (err) {
+      console.error('[DEBUG] generation error:', err)
       setError(err.message || '图片生成遇到了一点问题，再试一次？')
     } finally {
       setGenerating(false)
     }
   }
 
-  // Comparison: purely derived from stored snapshots, not from current Blockly state
+  // Comparison: purely derived from stored snapshots
   const comparison = snapshotA && snapshotB ? diffBlocks(snapshotA.json, snapshotB.json) : null
 
   // "Start new round" — promote B to A, clear B
@@ -108,6 +140,25 @@ export default function WorkspacePage() {
           返回首页
         </button>
       </header>
+
+      {/* --- TEMPORARY DEBUG PANEL --- */}
+      <section className="debug-panel">
+        <h4>DEBUG 状态面板（临时）</h4>
+        <ul>
+          <li>snapshotA: <strong>{hasA ? 'SET' : 'NULL'}</strong></li>
+          <li>snapshotB: <strong>{hasB ? 'SET' : 'NULL'}</strong></li>
+          <li>refA: <strong>{snapshotARef.current !== null ? 'SET' : 'NULL'}</strong></li>
+          <li>canGenerate: <strong>{String(canGenerate)}</strong></li>
+          <li>complete: <strong>{String(!!complete)}</strong></li>
+          <li>duplicated: <strong>{String(!!duplicated)}</strong></li>
+          <li>configStatus: <strong>{configStatus}</strong></li>
+          <li>generating: <strong>{String(generating)}</strong></li>
+          <li>zeroChangeWarn: <strong>{String(zeroChangeWarn)}</strong></li>
+          <li>buttonMode: <strong>{generating ? 'GENERATING' : hasA && !hasB ? 'REGENERATE' : 'FIRST_GEN'}</strong></li>
+          <li>error: <strong>{error || 'none'}</strong></li>
+        </ul>
+      </section>
+      {/* --- END TEMPORARY DEBUG PANEL --- */}
 
       <div className="workspace-layout">
         <section className="blocks-area">
