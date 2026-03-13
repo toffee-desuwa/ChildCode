@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useMemo, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BlocklyEditor from '../components/BlocklyEditor'
 import { isComplete, hasDuplicates, getDuplicateMessage } from '../blocks/exportJson'
@@ -121,8 +121,15 @@ export default function WorkspacePage() {
     }
   }
 
-  // Comparison: purely derived from stored snapshots
-  const comparison = snapshotA && snapshotB ? diffBlocks(snapshotA.json, snapshotB.json) : null
+  // Memoize comparison: only recompute when snapshot references change.
+  // This prevents any unrelated re-render (e.g. from Blockly events
+  // updating currentJson) from recreating comparison/changedFields.
+  const comparison = useMemo(() => {
+    if (!snapshotA || !snapshotB) return null
+    const result = diffBlocks(snapshotA.json, snapshotB.json)
+    console.log('[DEBUG] comparison recomputed:', result)
+    return result
+  }, [snapshotA, snapshotB])
 
   // "Start new round" — promote B to A, clear B
   const handleNewRound = () => {
@@ -155,6 +162,7 @@ export default function WorkspacePage() {
           <li>generating: <strong>{String(generating)}</strong></li>
           <li>zeroChangeWarn: <strong>{String(zeroChangeWarn)}</strong></li>
           <li>buttonMode: <strong>{generating ? 'GENERATING' : hasA && !hasB ? 'REGENERATE' : 'FIRST_GEN'}</strong></li>
+          <li>comparison: <strong>{comparison ? `${comparison.count} changed` : 'NULL'}</strong></li>
           <li>error: <strong>{error || 'none'}</strong></li>
         </ul>
       </section>
@@ -290,10 +298,13 @@ export default function WorkspacePage() {
   )
 }
 
-/** Compare card: shows image + 4 block values, highlights changed fields.
- *  Highlight is purely derived from diffBlocks(snapshotA, snapshotB),
- *  not from current Blockly selection/focus state. */
-function CompareCard({ label, snapshot, changedFields }) {
+/**
+ * Compare card: shows image + 4 block values, highlights changed fields.
+ * Memoized — only re-renders when snapshot or changedFields reference changes.
+ * Highlight is purely derived from stored snapshot data.
+ */
+const CompareCard = memo(function CompareCard({ label, snapshot, changedFields }) {
+  console.log('[DEBUG] CompareCard render:', label, 'changedFields:', changedFields)
   return (
     <div className="compare-card">
       <h4>{label}</h4>
@@ -312,4 +323,4 @@ function CompareCard({ label, snapshot, changedFields }) {
       </ul>
     </div>
   )
-}
+})

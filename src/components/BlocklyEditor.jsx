@@ -36,6 +36,12 @@ export default function BlocklyEditor({ onJsonChange }) {
     workspaceRef.current = workspace
 
     const handleChange = (event) => {
+      // --- TEMPORARY DEBUG: log every event ---
+      if (event) {
+        console.log('[DEBUG] Blockly event:', event.type, 'isUiEvent:', event.isUiEvent)
+      }
+      // --- END TEMPORARY DEBUG ---
+
       // Skip UI-only events (click, select, scroll, toolbox open, etc.)
       // These don't change block structure and cause unnecessary re-renders
       if (event && event.isUiEvent) return
