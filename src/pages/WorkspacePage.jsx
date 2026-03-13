@@ -5,6 +5,8 @@ import { isComplete, hasDuplicates, getDuplicateMessage } from '../blocks/export
 import { getConfigStatus, loadConfig } from '../config/storage'
 import { derivePrompt } from '../generation/derivePrompt'
 import { generateImage } from '../generation/provider'
+import { diffBlocks } from '../generation/diffBlocks'
+import { BLOCK_CATEGORIES } from '../blocks/whitelist'
 
 const CONFIG_STATUS_TEXT = {
   not_configured: '未配置 — 请让爸爸妈妈先完成设置',
@@ -12,10 +14,18 @@ const CONFIG_STATUS_TEXT = {
   invalid: '配置无效 — 请让爸爸妈妈检查设置',
 }
 
+const CATEGORY_LABELS = {
+  subject: '对象',
+  action: '动作',
+  scene: '场景',
+  style: '风格',
+}
+
 export default function WorkspacePage() {
   const navigate = useNavigate()
   const [currentJson, setCurrentJson] = useState(null)
-  const [imageA, setImageA] = useState(null)
+  const [snapshotA, setSnapshotA] = useState(null) // { json, imageUrl }
+  const [snapshotB, setSnapshotB] = useState(null) // { json, imageUrl }
   const [generating, setGenerating] = useState(false)
   const [error, setError] = useState(null)
 
@@ -24,10 +34,23 @@ export default function WorkspacePage() {
   const duplicated = currentJson && hasDuplicates(currentJson)
   const duplicateMsg = currentJson && getDuplicateMessage(currentJson)
 
+  const hasImageA = snapshotA !== null
   const canGenerate = complete && !duplicated && configStatus === 'configured' && !generating
+
+  // Diff warning: only relevant when generating image B (snapshotA exists)
+  let diffWarning = null
+  if (hasImageA && complete && !duplicated) {
+    const { count } = diffBlocks(snapshotA.json, currentJson)
+    if (count === 0) {
+      diffWarning = '你没有修改积木哦，改一个块试试？'
+    }
+  }
 
   const handleGenerate = async () => {
     if (!canGenerate) return
+
+    // If snapshotA exists and 0 blocks changed, warn but don't block
+    // (warning is shown in UI; user can still click)
 
     setGenerating(true)
     setError(null)
@@ -41,12 +64,33 @@ export default function WorkspacePage() {
 
       const config = loadConfig()
       const result = await generateImage(prompt, config)
-      setImageA(result.url)
+      const newSnapshot = {
+        json: JSON.parse(JSON.stringify(currentJson)),
+        imageUrl: result.url,
+      }
+
+      if (!hasImageA) {
+        // First generation → snapshot A
+        setSnapshotA(newSnapshot)
+      } else {
+        // Second+ generation → old A becomes nothing, old B becomes nothing
+        // Previous snapshotA stays, new result becomes snapshotB
+        setSnapshotB(newSnapshot)
+      }
     } catch (err) {
       setError(err.message || '图片生成遇到了一点问题，再试一次？')
     } finally {
       setGenerating(false)
     }
+  }
+
+  // Compute diff for comparison area
+  const comparison = snapshotA && snapshotB ? diffBlocks(snapshotA.json, snapshotB.json) : null
+
+  // "Start new round" — promote B to A, clear B
+  const handleNewRound = () => {
+    setSnapshotA(snapshotB)
+    setSnapshotB(null)
   }
 
   return (
@@ -62,13 +106,27 @@ export default function WorkspacePage() {
         <section className="blocks-area">
           <h3>积木搭建区</h3>
           <BlocklyEditor onJsonChange={setCurrentJson} />
+
+          {hasImageA && !snapshotB && (
+            <p className="phase-hint">试试只改一个块，看看会有什么不同？</p>
+          )}
+
+          {diffWarning && !snapshotB && (
+            <p className="status-hint">{diffWarning}</p>
+          )}
+
           <button
             onClick={handleGenerate}
             disabled={!canGenerate}
             className="generate-btn"
           >
-            {generating ? '生成中…' : '生成图片'}
+            {generating
+              ? '生成中…'
+              : hasImageA && !snapshotB
+                ? '再次生成'
+                : '生成图片'}
           </button>
+
           {configStatus !== 'configured' && (
             <p className="status-hint">请先完成家长设置才能生成</p>
           )}
@@ -77,8 +135,8 @@ export default function WorkspacePage() {
         <section className="preview-area">
           <div className="image-slot">
             <h3>第一张图</h3>
-            {imageA ? (
-              <img src={imageA} alt="生成的图片" className="generated-image" />
+            {snapshotA ? (
+              <img src={snapshotA.imageUrl} alt="第一张图" className="generated-image" />
             ) : (
               <div className="placeholder-box image-placeholder">
                 <p>{generating ? '正在生成…' : '图片预览 A（占位）'}</p>
@@ -88,9 +146,13 @@ export default function WorkspacePage() {
 
           <div className="image-slot">
             <h3>第二张图</h3>
-            <div className="placeholder-box image-placeholder">
-              <p>图片预览 B（占位）</p>
-            </div>
+            {snapshotB ? (
+              <img src={snapshotB.imageUrl} alt="第二张图" className="generated-image" />
+            ) : (
+              <div className="placeholder-box image-placeholder">
+                <p>{hasImageA && generating ? '正在生成…' : '图片预览 B（占位）'}</p>
+              </div>
+            )}
           </div>
         </section>
       </div>
@@ -99,6 +161,41 @@ export default function WorkspacePage() {
         <section className="error-banner">
           <p>{error}</p>
           <button onClick={() => setError(null)} className="secondary">关闭</button>
+        </section>
+      )}
+
+      {/* Comparison area — only shown when both snapshots exist */}
+      {comparison && (
+        <section className="compare-area">
+          <h3>对比区</h3>
+
+          {comparison.count === 0 && (
+            <p className="compare-warn">两次生成的积木完全一样，没有修改任何块。</p>
+          )}
+          {comparison.count > 1 && (
+            <p className="compare-hint">
+              你改了 {comparison.count} 个块哦。试试只改 1 个，更容易看出区别！
+            </p>
+          )}
+
+          <div className="compare-grid">
+            <CompareCard label="第一张图" snapshot={snapshotA} changedFields={comparison.changedFields} />
+            <CompareCard label="第二张图" snapshot={snapshotB} changedFields={comparison.changedFields} />
+          </div>
+
+          <button onClick={handleNewRound} className="secondary new-round-btn">
+            开始新一轮对比
+          </button>
+        </section>
+      )}
+
+      {/* Placeholder when no comparison yet */}
+      {!comparison && (
+        <section className="compare-area">
+          <h3>对比区</h3>
+          <div className="placeholder-box">
+            <p>生成两张图后，这里会展示对比</p>
+          </div>
         </section>
       )}
 
@@ -124,13 +221,6 @@ export default function WorkspacePage() {
         )}
       </section>
 
-      <section className="compare-area">
-        <h3>对比区</h3>
-        <div className="placeholder-box">
-          <p>两张图对比展示（占位）</p>
-        </div>
-      </section>
-
       <section className="status-area">
         <div className={`config-status config-${configStatus}`}>
           <span>家长配置：{CONFIG_STATUS_TEXT[configStatus]}</span>
@@ -141,6 +231,28 @@ export default function WorkspacePage() {
           )}
         </div>
       </section>
+    </div>
+  )
+}
+
+/** Compare card: shows image + 4 block values, highlights changed fields */
+function CompareCard({ label, snapshot, changedFields }) {
+  return (
+    <div className="compare-card">
+      <h4>{label}</h4>
+      <img src={snapshot.imageUrl} alt={label} className="compare-image" />
+      <ul className="compare-blocks">
+        {['subject', 'action', 'scene', 'style'].map((type) => {
+          const block = snapshot.json.blocks[type]
+          const changed = changedFields.includes(type)
+          return (
+            <li key={type} className={changed ? 'block-changed' : ''}>
+              <span className="block-type">{CATEGORY_LABELS[type]}</span>
+              <span className="block-value">{block?.label ?? '—'}</span>
+            </li>
+          )
+        })}
+      </ul>
     </div>
   )
 }
