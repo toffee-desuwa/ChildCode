@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BlocklyEditor from '../components/BlocklyEditor'
 import { isComplete, hasDuplicates, getDuplicateMessage } from '../blocks/exportJson'
@@ -6,7 +6,6 @@ import { getConfigStatus, loadConfig } from '../config/storage'
 import { derivePrompt } from '../generation/derivePrompt'
 import { generateImage } from '../generation/provider'
 import { diffBlocks } from '../generation/diffBlocks'
-import { BLOCK_CATEGORIES } from '../blocks/whitelist'
 
 const CONFIG_STATUS_TEXT = {
   not_configured: '未配置 — 请让爸爸妈妈先完成设置',
@@ -28,29 +27,34 @@ export default function WorkspacePage() {
   const [snapshotB, setSnapshotB] = useState(null) // { json, imageUrl }
   const [generating, setGenerating] = useState(false)
   const [error, setError] = useState(null)
+  const [zeroChangeWarn, setZeroChangeWarn] = useState(false)
+
+  // Ref mirrors snapshotA to avoid closure staleness in async handleGenerate
+  const snapshotARef = useRef(null)
 
   const configStatus = getConfigStatus()
   const complete = currentJson && isComplete(currentJson)
   const duplicated = currentJson && hasDuplicates(currentJson)
   const duplicateMsg = currentJson && getDuplicateMessage(currentJson)
 
-  const hasImageA = snapshotA !== null
+  const hasA = snapshotA !== null
+  const hasB = snapshotB !== null
   const canGenerate = complete && !duplicated && configStatus === 'configured' && !generating
-
-  // Diff warning: only relevant when generating image B (snapshotA exists)
-  let diffWarning = null
-  if (hasImageA && complete && !duplicated) {
-    const { count } = diffBlocks(snapshotA.json, currentJson)
-    if (count === 0) {
-      diffWarning = '你没有修改积木哦，改一个块试试？'
-    }
-  }
 
   const handleGenerate = async () => {
     if (!canGenerate) return
 
-    // If snapshotA exists and 0 blocks changed, warn but don't block
-    // (warning is shown in UI; user can still click)
+    const currentA = snapshotARef.current
+    setZeroChangeWarn(false)
+
+    // Requirement C: if A exists and 0 blocks changed, block generation entirely
+    if (currentA !== null) {
+      const { count } = diffBlocks(currentA.json, currentJson)
+      if (count === 0) {
+        setZeroChangeWarn(true)
+        return // Do NOT call API, do NOT touch snapshots
+      }
+    }
 
     setGenerating(true)
     setError(null)
@@ -69,12 +73,13 @@ export default function WorkspacePage() {
         imageUrl: result.url,
       }
 
-      if (!hasImageA) {
-        // First generation → snapshot A
+      // Use ref (always current) to decide slot, not closure variable
+      if (snapshotARef.current === null) {
+        // First generation → fill slot A
+        snapshotARef.current = newSnapshot
         setSnapshotA(newSnapshot)
       } else {
-        // Second+ generation → old A becomes nothing, old B becomes nothing
-        // Previous snapshotA stays, new result becomes snapshotB
+        // Second generation → fill slot B (never overwrite A)
         setSnapshotB(newSnapshot)
       }
     } catch (err) {
@@ -84,13 +89,15 @@ export default function WorkspacePage() {
     }
   }
 
-  // Compute diff for comparison area
+  // Comparison: purely derived from stored snapshots, not from current Blockly state
   const comparison = snapshotA && snapshotB ? diffBlocks(snapshotA.json, snapshotB.json) : null
 
   // "Start new round" — promote B to A, clear B
   const handleNewRound = () => {
+    snapshotARef.current = snapshotB
     setSnapshotA(snapshotB)
     setSnapshotB(null)
+    setZeroChangeWarn(false)
   }
 
   return (
@@ -107,12 +114,12 @@ export default function WorkspacePage() {
           <h3>积木搭建区</h3>
           <BlocklyEditor onJsonChange={setCurrentJson} />
 
-          {hasImageA && !snapshotB && (
+          {hasA && !hasB && (
             <p className="phase-hint">试试只改一个块，看看会有什么不同？</p>
           )}
 
-          {diffWarning && !snapshotB && (
-            <p className="status-hint">{diffWarning}</p>
+          {zeroChangeWarn && (
+            <p className="status-hint">你没有修改积木哦，改一个块试试？</p>
           )}
 
           <button
@@ -122,7 +129,7 @@ export default function WorkspacePage() {
           >
             {generating
               ? '生成中…'
-              : hasImageA && !snapshotB
+              : hasA && !hasB
                 ? '再次生成'
                 : '生成图片'}
           </button>
@@ -150,7 +157,7 @@ export default function WorkspacePage() {
               <img src={snapshotB.imageUrl} alt="第二张图" className="generated-image" />
             ) : (
               <div className="placeholder-box image-placeholder">
-                <p>{hasImageA && generating ? '正在生成…' : '图片预览 B（占位）'}</p>
+                <p>{hasA && generating ? '正在生成…' : '图片预览 B（占位）'}</p>
               </div>
             )}
           </div>
@@ -164,14 +171,11 @@ export default function WorkspacePage() {
         </section>
       )}
 
-      {/* Comparison area — only shown when both snapshots exist */}
+      {/* Comparison area — only when both snapshots exist */}
       {comparison && (
         <section className="compare-area">
           <h3>对比区</h3>
 
-          {comparison.count === 0 && (
-            <p className="compare-warn">两次生成的积木完全一样，没有修改任何块。</p>
-          )}
           {comparison.count > 1 && (
             <p className="compare-hint">
               你改了 {comparison.count} 个块哦。试试只改 1 个，更容易看出区别！
@@ -235,7 +239,9 @@ export default function WorkspacePage() {
   )
 }
 
-/** Compare card: shows image + 4 block values, highlights changed fields */
+/** Compare card: shows image + 4 block values, highlights changed fields.
+ *  Highlight is purely derived from diffBlocks(snapshotA, snapshotB),
+ *  not from current Blockly selection/focus state. */
 function CompareCard({ label, snapshot, changedFields }) {
   return (
     <div className="compare-card">
