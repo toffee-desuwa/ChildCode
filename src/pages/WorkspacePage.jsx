@@ -89,7 +89,10 @@ export default function WorkspacePage() {
         setSnapshotB(newSnapshot)
       }
     } catch (err) {
-      setError(err.message || '图片生成遇到了一点问题，再试一次吧')
+      if (import.meta.env.DEV) {
+        console.error('Generation error:', err)
+      }
+      setError('这次创作没有成功，请稍后再试一次。若一直失败，请让家长检查设置。')
       setGenerationFailed(true)
     } finally {
       setGenerating(false)
