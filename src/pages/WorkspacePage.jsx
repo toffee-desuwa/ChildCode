@@ -1,8 +1,8 @@
-import { useState, useRef, useEffect, useMemo, memo } from 'react'
+import { useState, useRef, useMemo, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BlocklyEditor from '../components/BlocklyEditor'
 import { isComplete, hasDuplicates, getDuplicateMessage } from '../blocks/exportJson'
-import { getConfigStatus, loadConfig } from '../config/storage'
+import { getConfigStatus, loadConfig, isQuotaExhausted, incrementUsage } from '../config/storage'
 import { derivePrompt } from '../generation/derivePrompt'
 import { generateImage } from '../generation/provider'
 import { diffBlocks } from '../generation/diffBlocks'
@@ -27,21 +27,12 @@ export default function WorkspacePage() {
   const [snapshotB, setSnapshotB] = useState(null) // { json, imageUrl }
   const [generating, setGenerating] = useState(false)
   const [error, setError] = useState(null)
+  const [generationFailed, setGenerationFailed] = useState(false)
   const [zeroChangeWarn, setZeroChangeWarn] = useState(false)
+  const [quotaExhausted, setQuotaExhausted] = useState(() => isQuotaExhausted())
 
   // Ref mirrors snapshotA to avoid closure staleness in async handleGenerate
   const snapshotARef = useRef(null)
-
-  // --- TEMPORARY DEBUG: detect component mount/unmount ---
-  const mountCountRef = useRef(0)
-  useEffect(() => {
-    mountCountRef.current++
-    console.log('[DEBUG] WorkspacePage MOUNTED, count:', mountCountRef.current)
-    return () => {
-      console.log('[DEBUG] WorkspacePage UNMOUNTED')
-    }
-  }, [])
-  // --- END TEMPORARY DEBUG ---
 
   const configStatus = getConfigStatus()
   const complete = currentJson && isComplete(currentJson)
@@ -50,34 +41,18 @@ export default function WorkspacePage() {
 
   const hasA = snapshotA !== null
   const hasB = snapshotB !== null
-  const canGenerate = complete && !duplicated && configStatus === 'configured' && !generating
+  const canGenerate = complete && !duplicated && configStatus === 'configured' && !generating && !quotaExhausted
 
   const handleGenerate = async () => {
-    console.log('[DEBUG] handleGenerate called', {
-      canGenerate,
-      refA: snapshotARef.current !== null,
-      hasA,
-      hasB,
-      complete,
-      duplicated,
-      configStatus,
-      generating,
-    })
-
-    if (!canGenerate) {
-      console.log('[DEBUG] canGenerate is false, returning early')
-      return
-    }
+    if (!canGenerate) return
 
     const currentA = snapshotARef.current
     setZeroChangeWarn(false)
 
-    // Requirement C: if A exists and 0 blocks changed, block generation entirely
+    // If A exists and 0 blocks changed, block generation
     if (currentA !== null) {
       const diff = diffBlocks(currentA.json, currentJson)
-      console.log('[DEBUG] diff check:', diff)
       if (diff.count === 0) {
-        console.log('[DEBUG] 0-change, blocking generation')
         setZeroChangeWarn(true)
         return
       }
@@ -85,37 +60,37 @@ export default function WorkspacePage() {
 
     setGenerating(true)
     setError(null)
+    setGenerationFailed(false)
 
     try {
       const prompt = derivePrompt(currentJson)
-      console.log('[DEBUG] derived prompt:', prompt)
       if (!prompt) {
         setError('积木组合不完整，无法生成')
         return
       }
 
       const config = loadConfig()
-      console.log('[DEBUG] calling generateImage...')
       const result = await generateImage(prompt, config)
-      console.log('[DEBUG] generateImage returned:', result.url ? 'has URL' : 'NO URL')
 
       const newSnapshot = {
         json: JSON.parse(JSON.stringify(currentJson)),
         imageUrl: result.url,
       }
 
+      // Count usage after successful generation
+      incrementUsage()
+      setQuotaExhausted(isQuotaExhausted())
+
       // Use ref (always current) to decide slot
       if (snapshotARef.current === null) {
-        console.log('[DEBUG] filling slot A')
         snapshotARef.current = newSnapshot
         setSnapshotA(newSnapshot)
       } else {
-        console.log('[DEBUG] filling slot B')
         setSnapshotB(newSnapshot)
       }
     } catch (err) {
-      console.error('[DEBUG] generation error:', err)
-      setError(err.message || '图片生成遇到了一点问题，再试一次？')
+      setError(err.message || '图片生成遇到了一点问题，再试一次吧')
+      setGenerationFailed(true)
     } finally {
       setGenerating(false)
     }
@@ -126,9 +101,7 @@ export default function WorkspacePage() {
   // updating currentJson) from recreating comparison/changedFields.
   const comparison = useMemo(() => {
     if (!snapshotA || !snapshotB) return null
-    const result = diffBlocks(snapshotA.json, snapshotB.json)
-    console.log('[DEBUG] comparison recomputed:', result)
-    return result
+    return diffBlocks(snapshotA.json, snapshotB.json)
   }, [snapshotA, snapshotB])
 
   // "Start new round" — promote B to A, clear B
@@ -147,26 +120,6 @@ export default function WorkspacePage() {
           返回首页
         </button>
       </header>
-
-      {/* --- TEMPORARY DEBUG PANEL --- */}
-      <section className="debug-panel">
-        <h4>DEBUG 状态面板（临时）</h4>
-        <ul>
-          <li>snapshotA: <strong>{hasA ? 'SET' : 'NULL'}</strong></li>
-          <li>snapshotB: <strong>{hasB ? 'SET' : 'NULL'}</strong></li>
-          <li>refA: <strong>{snapshotARef.current !== null ? 'SET' : 'NULL'}</strong></li>
-          <li>canGenerate: <strong>{String(canGenerate)}</strong></li>
-          <li>complete: <strong>{String(!!complete)}</strong></li>
-          <li>duplicated: <strong>{String(!!duplicated)}</strong></li>
-          <li>configStatus: <strong>{configStatus}</strong></li>
-          <li>generating: <strong>{String(generating)}</strong></li>
-          <li>zeroChangeWarn: <strong>{String(zeroChangeWarn)}</strong></li>
-          <li>buttonMode: <strong>{generating ? 'GENERATING' : hasA && !hasB ? 'REGENERATE' : 'FIRST_GEN'}</strong></li>
-          <li>comparison: <strong>{comparison ? `${comparison.count} changed` : 'NULL'}</strong></li>
-          <li>error: <strong>{error || 'none'}</strong></li>
-        </ul>
-      </section>
-      {/* --- END TEMPORARY DEBUG PANEL --- */}
 
       <div className="workspace-layout">
         <section className="blocks-area">
@@ -187,11 +140,15 @@ export default function WorkspacePage() {
             className="generate-btn"
           >
             {generating
-              ? '生成中…'
+              ? '正在创作中…'
               : hasA && !hasB
                 ? '再次生成'
                 : '生成图片'}
           </button>
+
+          {quotaExhausted && (
+            <p className="status-hint">创作次数已用完，请让爸爸妈妈查看设置</p>
+          )}
 
           {configStatus !== 'configured' && (
             <p className="status-hint">请先完成家长设置才能生成</p>
@@ -205,7 +162,7 @@ export default function WorkspacePage() {
               <img src={snapshotA.imageUrl} alt="第一张图" className="generated-image" />
             ) : (
               <div className="placeholder-box image-placeholder">
-                <p>{generating ? '正在生成…' : '图片预览 A（占位）'}</p>
+                <p>{generating ? '正在生成，请稍等…' : '拖好积木后，点击生成看看效果吧'}</p>
               </div>
             )}
           </div>
@@ -216,7 +173,7 @@ export default function WorkspacePage() {
               <img src={snapshotB.imageUrl} alt="第二张图" className="generated-image" />
             ) : (
               <div className="placeholder-box image-placeholder">
-                <p>{hasA && generating ? '正在生成…' : '图片预览 B（占位）'}</p>
+                <p>{hasA && generating ? '正在生成，请稍等…' : '改一个积木后，再生成一张来对比'}</p>
               </div>
             )}
           </div>
@@ -226,7 +183,12 @@ export default function WorkspacePage() {
       {error && (
         <section className="error-banner">
           <p>{error}</p>
-          <button onClick={() => setError(null)} className="secondary">关闭</button>
+          <div className="error-actions">
+            {generationFailed && (
+              <button onClick={() => { setError(null); setGenerationFailed(false); handleGenerate() }}>重试</button>
+            )}
+            <button onClick={() => { setError(null); setGenerationFailed(false) }} className="secondary">关闭</button>
+          </div>
         </section>
       )}
 
@@ -257,32 +219,27 @@ export default function WorkspacePage() {
         <section className="compare-area">
           <h3>对比区</h3>
           <div className="placeholder-box">
-            <p>生成两张图后，这里会展示对比</p>
+            <p>生成两张图之后，就可以在这里对比啦</p>
           </div>
         </section>
       )}
 
-      <section className="json-preview">
-        <h3>JSON 真相层 <span className="dev-badge">开发调试</span></h3>
-        {duplicated ? (
-          <>
-            <pre className="json-output json-invalid">积木组合无效（存在重复类别）</pre>
-            <p className="status-error">{duplicateMsg}</p>
-          </>
-        ) : (
-          <>
+      {/* JSON 真相层 — dev-only, hidden from children */}
+      {import.meta.env.DEV && (
+        <section className="json-preview">
+          <h3>JSON 真相层 <span className="dev-badge">开发调试</span></h3>
+          {duplicated ? (
+            <>
+              <pre className="json-output json-invalid">积木组合无效（存在重复类别）</pre>
+              <p className="status-error">{duplicateMsg}</p>
+            </>
+          ) : (
             <pre className="json-output">
               {currentJson ? JSON.stringify(currentJson, null, 2) : '尚未选择积木'}
             </pre>
-            {currentJson && !complete && (
-              <p className="status-hint">还差积木哦，把四类都拖过来吧！</p>
-            )}
-            {complete && (
-              <p className="status-ready">四类积木已齐全</p>
-            )}
-          </>
-        )}
-      </section>
+          )}
+        </section>
+      )}
 
       <section className="status-area">
         <div className={`config-status config-${configStatus}`}>
@@ -304,7 +261,6 @@ export default function WorkspacePage() {
  * Highlight is purely derived from stored snapshot data.
  */
 const CompareCard = memo(function CompareCard({ label, snapshot, changedFields }) {
-  console.log('[DEBUG] CompareCard render:', label, 'changedFields:', changedFields)
   return (
     <div className="compare-card">
       <h4>{label}</h4>
@@ -317,7 +273,6 @@ const CompareCard = memo(function CompareCard({ label, snapshot, changedFields }
             <li
               key={type}
               className={changed ? 'is-changed' : ''}
-              style={changed ? { background: '#fff3e0', border: '2px solid #ff9800', fontWeight: 'bold' } : undefined}
             >
               <span className="block-type">{CATEGORY_LABELS[type]}</span>
               <span className="block-value">{block?.label ?? '—'}</span>

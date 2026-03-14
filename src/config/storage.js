@@ -1,4 +1,5 @@
 const STORAGE_KEY = 'childcode_config'
+const USAGE_COUNT_KEY = 'childcode_usage_count'
 
 /**
  * 从 localStorage 读取配置
@@ -55,4 +56,38 @@ export function getConfigStatus() {
   if (!config) return 'not_configured'
   const { valid } = validateConfig(config)
   return valid ? 'configured' : 'invalid'
+}
+
+/**
+ * 获取已使用次数
+ */
+export function getUsageCount() {
+  const raw = localStorage.getItem(USAGE_COUNT_KEY)
+  const n = Number(raw)
+  return Number.isFinite(n) && n >= 0 ? n : 0
+}
+
+/**
+ * 已使用次数 +1
+ */
+export function incrementUsage() {
+  const count = getUsageCount() + 1
+  localStorage.setItem(USAGE_COUNT_KEY, String(count))
+  return count
+}
+
+/**
+ * 检查额度是否已用完
+ */
+export function isQuotaExhausted() {
+  const config = loadConfig()
+  if (!config) return false
+  return getUsageCount() >= config.usageLimit
+}
+
+/**
+ * 重置已使用次数（家长操作）
+ */
+export function resetUsageCount() {
+  localStorage.setItem(USAGE_COUNT_KEY, '0')
 }

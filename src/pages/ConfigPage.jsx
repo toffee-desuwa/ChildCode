@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { loadConfig, saveConfig, validateConfig } from '../config/storage'
+import { loadConfig, saveConfig, validateConfig, getUsageCount, resetUsageCount } from '../config/storage'
 
 function getInitialConfig() {
   const config = loadConfig()
@@ -17,6 +17,7 @@ export default function ConfigPage() {
   const [usageLimit, setUsageLimit] = useState(initial.usageLimit)
   const [errors, setErrors] = useState({})
   const [saveMsg, setSaveMsg] = useState(null)
+  const [usageCount, setUsageCount] = useState(() => getUsageCount())
 
   const handleSave = () => {
     const { valid, errors: fieldErrors } = validateConfig({ apiKey, usageLimit })
@@ -65,6 +66,17 @@ export default function ConfigPage() {
         </div>
 
         {saveMsg && <p className="save-success">{saveMsg}</p>}
+
+        <div className="usage-info">
+          <p>已使用次数：{usageCount}{usageLimit ? ` / ${usageLimit}` : ''}</p>
+          <button
+            type="button"
+            onClick={() => { resetUsageCount(); setUsageCount(0) }}
+            className="secondary"
+          >
+            重置已使用次数
+          </button>
+        </div>
       </div>
     </div>
   )
