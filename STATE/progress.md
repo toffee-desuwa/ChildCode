@@ -2,9 +2,9 @@
 
 ## Current Status
 
-**阶段：Phase 6 完成，等待 review**
+**阶段：Phase 7 Step 1 完成，等待 review**
 
-Edge states、debug 清理、UX 打磨全部完成。
+Phase 6 全部完成。Phase 7 Step 1 已录入验收证据文档。
 
 ## Just Completed — Phase 6: Edge States 与体验打磨
 
@@ -73,6 +73,11 @@ npm run dev     # 启动后手动验证
 - Phase 5 对比模式：只保留最近两个快照（snapshotA / snapshotB），不做通用历史
 - Phase 6 额度：最小 MVP 计数（localStorage），非真实扣费系统
 
+## Key Documents
+
+- 验收证据：`STATE/acceptance-evidence.md`
+- 验收标准：`docs/GOAL_AND_ACCEPTANCE.md`
+
 ## Next Recommended Step
 
-全量验收：逐项检查 `docs/GOAL_AND_ACCEPTANCE.md` 中 A1–A5 所有验收条目。
+Phase 7 后续：README 更新、demo 资产打包（待讨论）。
