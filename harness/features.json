@@ -1,0 +1,149 @@
+{
+  "project": "ChildCode",
+  "version": "2.0",
+  "description": "从终局倒推的完整 feature list — 不是 MVP，是产品终局",
+  "notes": "status: backlog | in-progress | done | reuse-existing",
+
+  "features": [
+    {
+      "id": "F01",
+      "name": "project-scaffold",
+      "description": "项目脚手架：React 19 + Vite 8 + Blockly 12 + 路由 + 基础目录结构",
+      "status": "reuse-existing",
+      "notes": "现有 package.json / vite.config.js / App.jsx 可直接复用"
+    },
+    {
+      "id": "F02",
+      "name": "whitelist-block-system",
+      "description": "白名单积木系统：四类积木定义（对象/动作/场景/风格）+ Blockly 编辑器集成 + JSON 导出",
+      "status": "reuse-existing",
+      "notes": "现有 blocks/whitelist.js + definitions.js + exportJson.js + BlocklyEditor.jsx 可复用，但需审查质量"
+    },
+    {
+      "id": "F03",
+      "name": "json-truth-layer",
+      "description": "JSON 真相层：积木选择 → 结构化 JSON，所有下游逻辑基于此 JSON，不基于 prompt",
+      "status": "reuse-existing",
+      "notes": "现有 exportJson.js + derivePrompt.js 架构正确，prompt 是派生层"
+    },
+    {
+      "id": "F04",
+      "name": "provider-adapter",
+      "description": "图片生成 provider adapter：统一 generateImage 接口，支持 mock/OpenAI/未来扩展",
+      "status": "reuse-existing",
+      "notes": "现有 provider.js 结构 OK，后续可能加更多 provider"
+    },
+    {
+      "id": "F05",
+      "name": "first-image-flow",
+      "description": "第一张图生成流程：拖积木 → 点生成 → 展示结果 A",
+      "status": "reuse-existing",
+      "notes": "WorkspacePage.jsx 已实现，但 288 行偏臃肿，后续可能拆分"
+    },
+    {
+      "id": "F06",
+      "name": "comparison-loop",
+      "description": "对比闭环：改一个块 → 生成图 B → A/B 并排 → 高亮变化字段",
+      "status": "reuse-existing",
+      "notes": "diffBlocks.js + WorkspacePage 快照逻辑已实现"
+    },
+    {
+      "id": "F07",
+      "name": "parent-config",
+      "description": "家长配置入口：API key 设置、额度控制、安全边界",
+      "status": "reuse-existing",
+      "notes": "ConfigPage.jsx + storage.js 已实现基础版"
+    },
+    {
+      "id": "F08",
+      "name": "guided-exploration",
+      "description": "引导式探索：不是让孩子无限刷图，而是系统引导'试试只改一个块'",
+      "status": "backlog",
+      "notes": "终局核心体验，当前只有简单提示，需要设计完整引导流"
+    },
+    {
+      "id": "F09",
+      "name": "change-insight-display",
+      "description": "变化洞察展示：明确告诉孩子'你改了哪个块，变化主要来自哪里'",
+      "status": "backlog",
+      "notes": "当前只高亮字段名，需要更直观的因果展示"
+    },
+    {
+      "id": "F10",
+      "name": "expression-history",
+      "description": "表达历史：孩子可以回看之前的创作，看到自己表达能力的变化轨迹",
+      "status": "backlog",
+      "notes": "当前只保留最近两个快照，终局需要完整历史"
+    },
+    {
+      "id": "F11",
+      "name": "block-expansion-system",
+      "description": "积木扩展系统：支持更多积木（情绪、天气、时间等），按年龄/能力解锁",
+      "status": "backlog",
+      "notes": "终局里年龄分层的基础设施，8-12 只用四类，12+ 逐步解锁"
+    },
+    {
+      "id": "F12",
+      "name": "reusable-templates",
+      "description": "可复用模板（Skill 萌芽）：孩子可以保存常用积木组合为'我的模板'",
+      "status": "backlog",
+      "notes": "终局第二层能力阶梯：从单次表达到可复用结构"
+    },
+    {
+      "id": "F13",
+      "name": "multi-step-creation",
+      "description": "多步创作：从单图到连续图/故事板，表达复杂度渐进提升",
+      "status": "backlog",
+      "notes": "终局载体延展，图片只是入口"
+    },
+    {
+      "id": "F14",
+      "name": "control-feeling-ux",
+      "description": "控制感体验：让孩子感受到'我知道自己改了什么，我看到结果为什么变'",
+      "status": "backlog",
+      "notes": "终局最关键体验差异点，不是爽感是控制感"
+    },
+    {
+      "id": "F15",
+      "name": "age-progressive-ui",
+      "description": "年龄渐进 UI：8-12 极简积木 → 12-16 结构表达 → 14+ harness 入口",
+      "status": "backlog",
+      "notes": "终局产品线的 UI 层体现"
+    },
+    {
+      "id": "F16",
+      "name": "parent-dashboard",
+      "description": "家长面板增强：查看孩子表达成长轨迹、使用统计、安全日志",
+      "status": "backlog",
+      "notes": "家长不只是配置者，还能看到孩子成长"
+    },
+    {
+      "id": "F17",
+      "name": "viral-sharing",
+      "description": "病毒传播机制：孩子的创作可以分享，看到的人想自己也试试",
+      "status": "backlog",
+      "notes": "Mirofish 式增长的关键，需要精心设计分享体验"
+    },
+    {
+      "id": "F18",
+      "name": "onboarding-magic-moment",
+      "description": "首次体验魔法时刻：30 秒内让孩子拖出第一张图，立刻感受到'我能控制 AI'",
+      "status": "backlog",
+      "notes": "留存的关键，第一印象决定一切"
+    },
+    {
+      "id": "F19",
+      "name": "multi-provider-support",
+      "description": "多 provider 支持：不绑死 DALL-E，支持国内可用的图片生成 API",
+      "status": "backlog",
+      "notes": "国内用户可能无法访问 OpenAI，需要备选"
+    },
+    {
+      "id": "F20",
+      "name": "monetization-foundation",
+      "description": "商业化基础：主题包/创作包付费、Pro 功能解锁",
+      "status": "backlog",
+      "notes": "先把基础设施搭好，不急着上线收费"
+    }
+  ]
+}

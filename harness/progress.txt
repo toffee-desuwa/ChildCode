@@ -1,0 +1,24 @@
+# ChildCode — Harness Progress Log
+# 跨 session 累积记忆，每轮 Ralph 结尾追加
+# ============================================================
+
+## Session 0 — Harness 初始化 (2026-03-18)
+
+- 从终局倒推拆出 20 个 feature (F01-F20)
+- 盘点现有代码：F01-F07 标记为 reuse-existing（~840 行业务代码）
+- 搭建 harness 目录结构：.ralph/ + harness/
+- 现有代码能 build，核心闭环已验证过
+
+### 现有代码资产评估：
+- blocks/whitelist.js (55L) — 可复用，积木定义清晰
+- blocks/definitions.js (43L) — 可复用，Blockly 注册逻辑
+- blocks/exportJson.js (76L) — 可复用，JSON 导出
+- components/BlocklyEditor.jsx (57L) — 可复用，但较简单
+- generation/derivePrompt.js (21L) — 可复用，JSON→prompt 派生
+- generation/diffBlocks.js (15L) — 可复用，对比逻辑
+- generation/provider.js (90L) — 可复用，mock+OpenAI adapter
+- config/storage.js (93L) — 可复用，localStorage 封装
+- pages/WorkspacePage.jsx (288L) — 需重构，过于臃肿
+- pages/ConfigPage.jsx (83L) — 可复用
+- pages/WelcomePage.jsx (18L) — 太简单，可能重写
+- index.css (393L) — 需重新设计
