@@ -79,8 +79,8 @@
       "id": "F11",
       "name": "block-expansion-system",
       "description": "积木扩展系统：支持更多积木（情绪、天气、时间等），按年龄/能力解锁",
-      "status": "backlog",
-      "notes": "终局里年龄分层的基础设施，8-12 只用四类，12+ 逐步解锁"
+      "status": "done",
+      "notes": "3 tier 体系：tier1 基础四类, tier2 +情绪/天气, tier3 +时间。家长在设置页选年龄段"
     },
     {
       "id": "F12",
