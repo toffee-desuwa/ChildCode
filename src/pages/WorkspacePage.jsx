@@ -6,8 +6,9 @@ import { getConfigStatus, loadConfig, isQuotaExhausted, incrementUsage } from '.
 import { derivePrompt } from '../generation/derivePrompt'
 import { generateImage } from '../generation/provider'
 import { diffBlocks } from '../generation/diffBlocks'
-import { getGuidance, getComparisonFeedback } from '../guidance/phaseGuide'
+import { getGuidance } from '../guidance/phaseGuide'
 import GuidanceHint from '../components/GuidanceHint'
+import ChangeInsight from '../components/ChangeInsight'
 import { CATEGORY_LABELS } from '../blocks/whitelist'
 
 const CONFIG_STATUS_TEXT = {
@@ -110,7 +111,6 @@ export default function WorkspacePage() {
     return diffBlocks(snapshotA.json, snapshotB.json)
   }, [snapshotA, snapshotB])
 
-  const comparisonPositive = comparison ? getComparisonFeedback(comparison) : null
 
   // "Start new round" — promote B to A, clear B
   const handleNewRound = () => {
@@ -203,9 +203,7 @@ export default function WorkspacePage() {
         <section className="compare-area">
           <h3>对比区</h3>
 
-          {comparisonPositive && (
-            <p className="compare-positive">{comparisonPositive}</p>
-          )}
+          <ChangeInsight details={comparison.details} />
 
           {comparison.count > 1 && (
             <p className="compare-hint">
