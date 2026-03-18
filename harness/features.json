@@ -86,8 +86,8 @@
       "id": "F12",
       "name": "reusable-templates",
       "description": "可复用模板（Skill 萌芽）：孩子可以保存常用积木组合为'我的模板'",
-      "status": "backlog",
-      "notes": "终局第二层能力阶梯：从单次表达到可复用结构"
+      "status": "done",
+      "notes": "localStorage 存储最多20个模板，/templates 页面管理，workspace 可保存/加载"
     },
     {
       "id": "F13",
