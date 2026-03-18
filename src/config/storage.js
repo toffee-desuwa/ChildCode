@@ -182,3 +182,69 @@ export function deleteTemplate(id) {
 export function getTemplate(id) {
   return loadTemplates().find((t) => t.id === id) || null
 }
+
+// ── 故事板（多步创作） ──
+
+const STORYBOARD_KEY = 'childcode_storyboard'
+const MAX_FRAMES = 8
+
+/**
+ * 读取当前故事板
+ * @returns {Array<{id: string, json: object, imageUrl: string, addedAt: number}>}
+ */
+export function loadStoryboard() {
+  try {
+    const raw = localStorage.getItem(STORYBOARD_KEY)
+    return raw ? JSON.parse(raw) : []
+  } catch {
+    return []
+  }
+}
+
+/**
+ * 添加一帧到故事板末尾
+ * @returns {boolean} 是否成功（可能已满）
+ */
+export function addStoryboardFrame(json, imageUrl) {
+  const frames = loadStoryboard()
+  if (frames.length >= MAX_FRAMES) return false
+  frames.push({
+    id: Date.now().toString(36),
+    json: JSON.parse(JSON.stringify(json)),
+    imageUrl,
+    addedAt: Date.now(),
+  })
+  localStorage.setItem(STORYBOARD_KEY, JSON.stringify(frames))
+  return true
+}
+
+/**
+ * 删除故事板中的一帧
+ */
+export function removeStoryboardFrame(id) {
+  const frames = loadStoryboard().filter((f) => f.id !== id)
+  localStorage.setItem(STORYBOARD_KEY, JSON.stringify(frames))
+}
+
+/**
+ * 重新排列故事板帧顺序
+ * @param {string[]} orderedIds 按新顺序排列的 id 数组
+ */
+export function reorderStoryboard(orderedIds) {
+  const frames = loadStoryboard()
+  const map = Object.fromEntries(frames.map((f) => [f.id, f]))
+  const reordered = orderedIds.map((id) => map[id]).filter(Boolean)
+  localStorage.setItem(STORYBOARD_KEY, JSON.stringify(reordered))
+}
+
+/**
+ * 清空故事板
+ */
+export function clearStoryboard() {
+  localStorage.removeItem(STORYBOARD_KEY)
+}
+
+/**
+ * 故事板最大帧数
+ */
+export const STORYBOARD_MAX_FRAMES = MAX_FRAMES

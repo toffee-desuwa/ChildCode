@@ -2,7 +2,7 @@ import { useState, useRef, useMemo, memo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BlocklyEditor from '../components/BlocklyEditor'
 import { isComplete, hasDuplicates, getDuplicateMessage } from '../blocks/exportJson'
-import { getConfigStatus, loadConfig, isQuotaExhausted, incrementUsage, addHistoryEntry, saveTemplate } from '../config/storage'
+import { getConfigStatus, loadConfig, isQuotaExhausted, incrementUsage, addHistoryEntry, saveTemplate, addStoryboardFrame, loadStoryboard, STORYBOARD_MAX_FRAMES } from '../config/storage'
 import { derivePrompt } from '../generation/derivePrompt'
 import { generateImage } from '../generation/provider'
 import { diffBlocks } from '../generation/diffBlocks'
@@ -23,6 +23,7 @@ export default function WorkspacePage() {
   const templateBlocks = location.state?.templateBlocks || null
   const [currentJson, setCurrentJson] = useState(null)
   const [templateSaved, setTemplateSaved] = useState(false)
+  const [storyboardMsg, setStoryboardMsg] = useState(null)
   const [snapshotA, setSnapshotA] = useState(null) // { json, imageUrl }
   const [snapshotB, setSnapshotB] = useState(null) // { json, imageUrl }
   const [generating, setGenerating] = useState(false)
@@ -129,6 +130,21 @@ export default function WorkspacePage() {
     setTimeout(() => setTemplateSaved(false), 2000)
   }
 
+  // 添加当前生成结果到故事板
+  const handleAddToStoryboard = () => {
+    // 优先添加最新的（B），没有则用 A
+    const target = snapshotB || snapshotA
+    if (!target) return
+    const ok = addStoryboardFrame(target.json, target.imageUrl)
+    if (ok) {
+      const count = loadStoryboard().length
+      setStoryboardMsg(`已添加第 ${count} 帧（最多 ${STORYBOARD_MAX_FRAMES} 帧）`)
+    } else {
+      setStoryboardMsg(`故事板已满（最多 ${STORYBOARD_MAX_FRAMES} 帧）`)
+    }
+    setTimeout(() => setStoryboardMsg(null), 2500)
+  }
+
   // "Start new round" — promote B to A, clear B
   const handleNewRound = () => {
     snapshotARef.current = snapshotB
@@ -148,6 +164,16 @@ export default function WorkspacePage() {
             className="secondary"
           >
             {templateSaved ? '已保存' : '存为模板'}
+          </button>
+          <button
+            onClick={handleAddToStoryboard}
+            disabled={!snapshotA}
+            className="secondary"
+          >
+            {storyboardMsg || '加入故事板'}
+          </button>
+          <button onClick={() => navigate('/storyboard')} className="secondary">
+            故事板
           </button>
           <button onClick={() => navigate('/templates')} className="secondary">
             我的模板

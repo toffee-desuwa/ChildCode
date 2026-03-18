@@ -638,3 +638,124 @@ button.secondary {
   font-size: 13px;
   padding: 6px 14px;
 }
+
+/* ── 故事板页 ── */
+
+.storyboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.storyboard-header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.storyboard-subtitle {
+  color: #888;
+  margin-bottom: 16px;
+}
+
+.storyboard-strip {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding: 12px 0;
+  margin-bottom: 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  background: #fafafa;
+  padding: 12px;
+}
+
+.storyboard-strip-frame {
+  flex-shrink: 0;
+  position: relative;
+}
+
+.storyboard-strip-number {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.storyboard-strip-img {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.storyboard-frames {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.storyboard-frame-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.storyboard-frame-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.storyboard-frame-label {
+  font-weight: bold;
+  color: #4a90d9;
+}
+
+.storyboard-frame-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.storyboard-frame-actions button {
+  font-size: 12px;
+  padding: 4px 10px;
+}
+
+.storyboard-frame-img {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  margin-bottom: 8px;
+}
+
+.storyboard-frame-blocks {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.storyboard-frame-blocks li {
+  background: #f0f4ff;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 13px;
+}
+
+.storyboard-clear-btn {
+  margin-top: 8px;
+}
