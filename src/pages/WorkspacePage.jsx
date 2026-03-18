@@ -6,18 +6,14 @@ import { getConfigStatus, loadConfig, isQuotaExhausted, incrementUsage } from '.
 import { derivePrompt } from '../generation/derivePrompt'
 import { generateImage } from '../generation/provider'
 import { diffBlocks } from '../generation/diffBlocks'
+import { getGuidance, getComparisonFeedback } from '../guidance/phaseGuide'
+import GuidanceHint from '../components/GuidanceHint'
+import { CATEGORY_LABELS } from '../blocks/whitelist'
 
 const CONFIG_STATUS_TEXT = {
   not_configured: '未配置 — 请让爸爸妈妈先完成设置',
   configured: '已配置',
   invalid: '配置无效 — 请让爸爸妈妈检查设置',
-}
-
-const CATEGORY_LABELS = {
-  subject: '对象',
-  action: '动作',
-  scene: '场景',
-  style: '风格',
 }
 
 export default function WorkspacePage() {
@@ -33,6 +29,8 @@ export default function WorkspacePage() {
 
   // Ref mirrors snapshotA to avoid closure staleness in async handleGenerate
   const snapshotARef = useRef(null)
+  // 缓存 first-image 阶段的建议类别，防止每次渲染闪烁
+  const guidanceSuggestionRef = useRef(null)
 
   const configStatus = getConfigStatus()
   const complete = currentJson && isComplete(currentJson)
@@ -42,6 +40,11 @@ export default function WorkspacePage() {
   const hasA = snapshotA !== null
   const hasB = snapshotB !== null
   const canGenerate = complete && !duplicated && configStatus === 'configured' && !generating && !quotaExhausted
+
+  const guidance = getGuidance(currentJson, snapshotA, snapshotB, guidanceSuggestionRef.current)
+  if (guidance.suggestedCategory) {
+    guidanceSuggestionRef.current = guidance.suggestedCategory
+  }
 
   const handleGenerate = async () => {
     if (!canGenerate) return
@@ -107,6 +110,8 @@ export default function WorkspacePage() {
     return diffBlocks(snapshotA.json, snapshotB.json)
   }, [snapshotA, snapshotB])
 
+  const comparisonPositive = comparison ? getComparisonFeedback(comparison) : null
+
   // "Start new round" — promote B to A, clear B
   const handleNewRound = () => {
     snapshotARef.current = snapshotB
@@ -129,9 +134,7 @@ export default function WorkspacePage() {
           <h3>积木搭建区</h3>
           <BlocklyEditor onJsonChange={setCurrentJson} />
 
-          {hasA && !hasB && (
-            <p className="phase-hint">试试只改一个块，看看会有什么不同？</p>
-          )}
+          <GuidanceHint message={guidance.message} phase={guidance.phase} />
 
           {zeroChangeWarn && (
             <p className="status-hint">你没有修改积木哦，改一个块试试？</p>
@@ -199,6 +202,10 @@ export default function WorkspacePage() {
       {comparison && (
         <section className="compare-area">
           <h3>对比区</h3>
+
+          {comparisonPositive && (
+            <p className="compare-positive">{comparisonPositive}</p>
+          )}
 
           {comparison.count > 1 && (
             <p className="compare-hint">
