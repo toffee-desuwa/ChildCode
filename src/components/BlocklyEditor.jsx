@@ -8,11 +8,13 @@ import { loadConfig } from '../config/storage'
 // 注册积木定义（只执行一次，注册全部类别）
 registerBlocks()
 
-export default function BlocklyEditor({ onJsonChange }) {
+export default function BlocklyEditor({ onJsonChange, initialBlocks }) {
   const containerRef = useRef(null)
   const workspaceRef = useRef(null)
   // Store callback in ref so Blockly listener always calls latest version
   const onJsonChangeRef = useRef(onJsonChange)
+  // 模板初始积木只在挂载时使用一次
+  const initialBlocksRef = useRef(initialBlocks)
 
   // Keep ref in sync with prop, via effect (lint-safe)
   useEffect(() => {
@@ -49,6 +51,20 @@ export default function BlocklyEditor({ onJsonChange }) {
 
       const json = exportBlocksJson(workspace)
       onJsonChangeRef.current(json)
+    }
+
+    // 从模板加载初始积木
+    if (initialBlocksRef.current) {
+      let yOffset = 30
+      for (const [type, data] of Object.entries(initialBlocksRef.current)) {
+        if (!data) continue
+        const block = workspace.newBlock(type)
+        block.setFieldValue(data.value, 'VALUE')
+        block.initSvg()
+        block.render()
+        block.moveTo(new Blockly.utils.Coordinate(30, yOffset))
+        yOffset += 60
+      }
     }
 
     workspace.addChangeListener(handleChange)

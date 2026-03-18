@@ -3,7 +3,7 @@ const USAGE_COUNT_KEY = 'childcode_usage_count'
 
 /**
  * 从 localStorage 读取配置
- * 返回 { apiKey, usageLimit } 或 null
+ * 返回 { apiKey, usageLimit, ageTier? } 或 null
  */
 export function loadConfig() {
   try {
@@ -20,8 +20,9 @@ export function loadConfig() {
 /**
  * 保存配置到 localStorage
  */
-export function saveConfig({ apiKey, usageLimit }) {
+export function saveConfig({ apiKey, usageLimit, ageTier }) {
   const data = { apiKey, usageLimit }
+  if (ageTier) data.ageTier = ageTier
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
 }
 
@@ -129,4 +130,55 @@ export function addHistoryEntry(json, imageUrl) {
  */
 export function clearHistory() {
   localStorage.removeItem(HISTORY_KEY)
+}
+
+// ── 可复用模板 ──
+
+const TEMPLATES_KEY = 'childcode_templates'
+const MAX_TEMPLATES = 20
+
+/**
+ * 读取已保存的模板列表
+ * @returns {Array<{id: string, name: string, blocks: object, createdAt: number}>}
+ */
+export function loadTemplates() {
+  try {
+    const raw = localStorage.getItem(TEMPLATES_KEY)
+    return raw ? JSON.parse(raw) : []
+  } catch {
+    return []
+  }
+}
+
+/**
+ * 保存当前积木组合为模板
+ * @returns {string} 新模板的 id
+ */
+export function saveTemplate(name, blocks) {
+  const templates = loadTemplates()
+  const id = Date.now().toString(36)
+  templates.unshift({
+    id,
+    name,
+    blocks: JSON.parse(JSON.stringify(blocks)),
+    createdAt: Date.now(),
+  })
+  if (templates.length > MAX_TEMPLATES) templates.length = MAX_TEMPLATES
+  localStorage.setItem(TEMPLATES_KEY, JSON.stringify(templates))
+  return id
+}
+
+/**
+ * 删除指定模板
+ */
+export function deleteTemplate(id) {
+  const templates = loadTemplates().filter((t) => t.id !== id)
+  localStorage.setItem(TEMPLATES_KEY, JSON.stringify(templates))
+}
+
+/**
+ * 获取指定模板
+ */
+export function getTemplate(id) {
+  return loadTemplates().find((t) => t.id === id) || null
 }

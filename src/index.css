@@ -558,3 +558,83 @@ button.secondary {
   font-weight: bold;
   color: #333;
 }
+
+/* ── 模板页 ── */
+
+.templates-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.templates-header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.templates-subtitle {
+  color: #888;
+  margin-bottom: 16px;
+}
+
+.templates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.template-card {
+  background: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.template-name {
+  font-size: 15px;
+  color: #333;
+}
+
+.template-blocks {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.template-blocks li {
+  background: #f0f4ff;
+  border-radius: 6px;
+  padding: 2px 8px;
+  font-size: 13px;
+}
+
+.template-blocks .block-type {
+  color: #888;
+  margin-right: 4px;
+}
+
+.template-blocks .block-value {
+  font-weight: bold;
+  color: #333;
+}
+
+.template-meta {
+  font-size: 12px;
+  color: #aaa;
+}
+
+.template-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.template-actions button {
+  font-size: 13px;
+  padding: 6px 14px;
+}

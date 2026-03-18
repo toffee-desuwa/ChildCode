@@ -3,6 +3,7 @@ import WelcomePage from './pages/WelcomePage'
 import WorkspacePage from './pages/WorkspacePage'
 import ConfigPage from './pages/ConfigPage'
 import HistoryPage from './pages/HistoryPage'
+import TemplatesPage from './pages/TemplatesPage'
 
 export default function App() {
   return (
@@ -12,6 +13,7 @@ export default function App() {
         <Route path="/workspace" element={<WorkspacePage />} />
         <Route path="/config" element={<ConfigPage />} />
         <Route path="/history" element={<HistoryPage />} />
+        <Route path="/templates" element={<TemplatesPage />} />
       </Routes>
     </BrowserRouter>
   )

@@ -1,8 +1,8 @@
 import { useState, useRef, useMemo, memo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import BlocklyEditor from '../components/BlocklyEditor'
 import { isComplete, hasDuplicates, getDuplicateMessage } from '../blocks/exportJson'
-import { getConfigStatus, loadConfig, isQuotaExhausted, incrementUsage, addHistoryEntry } from '../config/storage'
+import { getConfigStatus, loadConfig, isQuotaExhausted, incrementUsage, addHistoryEntry, saveTemplate } from '../config/storage'
 import { derivePrompt } from '../generation/derivePrompt'
 import { generateImage } from '../generation/provider'
 import { diffBlocks } from '../generation/diffBlocks'
@@ -19,7 +19,10 @@ const CONFIG_STATUS_TEXT = {
 
 export default function WorkspacePage() {
   const navigate = useNavigate()
+  const location = useLocation()
+  const templateBlocks = location.state?.templateBlocks || null
   const [currentJson, setCurrentJson] = useState(null)
+  const [templateSaved, setTemplateSaved] = useState(false)
   const [snapshotA, setSnapshotA] = useState(null) // { json, imageUrl }
   const [snapshotB, setSnapshotB] = useState(null) // { json, imageUrl }
   const [generating, setGenerating] = useState(false)
@@ -113,6 +116,19 @@ export default function WorkspacePage() {
   }, [snapshotA, snapshotB])
 
 
+  // 保存当前积木组合为模板
+  const handleSaveTemplate = () => {
+    if (!currentJson || !isComplete(currentJson)) return
+    const usedBlocks = Object.entries(currentJson.blocks)
+      .filter(([, v]) => v !== null)
+      .map(([type, v]) => CATEGORY_LABELS[type] + '·' + v.label)
+      .join(' + ')
+    const name = usedBlocks || '我的模板'
+    saveTemplate(name, currentJson.blocks)
+    setTemplateSaved(true)
+    setTimeout(() => setTemplateSaved(false), 2000)
+  }
+
   // "Start new round" — promote B to A, clear B
   const handleNewRound = () => {
     snapshotARef.current = snapshotB
@@ -126,6 +142,16 @@ export default function WorkspacePage() {
       <header className="workspace-header">
         <h2>ChildCode 创作区</h2>
         <div className="workspace-header-actions">
+          <button
+            onClick={handleSaveTemplate}
+            disabled={!complete}
+            className="secondary"
+          >
+            {templateSaved ? '已保存' : '存为模板'}
+          </button>
+          <button onClick={() => navigate('/templates')} className="secondary">
+            我的模板
+          </button>
           <button onClick={() => navigate('/history')} className="secondary">
             我的历史
           </button>
@@ -138,7 +164,7 @@ export default function WorkspacePage() {
       <div className="workspace-layout">
         <section className="blocks-area">
           <h3>积木搭建区</h3>
-          <BlocklyEditor onJsonChange={setCurrentJson} />
+          <BlocklyEditor onJsonChange={setCurrentJson} initialBlocks={templateBlocks} />
 
           <GuidanceHint message={guidance.message} phase={guidance.phase} />
 
