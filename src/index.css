@@ -391,3 +391,49 @@ button.secondary {
 .new-round-btn {
   margin-top: 16px;
 }
+
+/* === F08: 引导提示样式 === */
+
+@keyframes guidance-fade-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.guidance-hint {
+  padding: 10px 16px;
+  border-radius: 8px;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  font-weight: bold;
+  animation: guidance-fade-in 0.3s ease-out;
+}
+
+.guidance-empty {
+  background: #e3f2fd;
+  border: 1px solid #90caf9;
+  color: #1565c0;
+}
+
+.guidance-incomplete {
+  background: #fff3e0;
+  border: 1px solid #ffcc80;
+  color: #e65100;
+}
+
+.guidance-ready {
+  background: #e8f5e9;
+  border: 1px solid #a5d6a7;
+  color: #2e7d32;
+}
+
+.guidance-first-image {
+  background: #e3f2fd;
+  border: 1px solid #90caf9;
+  color: #1565c0;
+}
+
+.compare-positive {
+  color: #2e7d32;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
