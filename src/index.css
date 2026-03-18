@@ -489,3 +489,66 @@ button.secondary {
   font-weight: bold;
   font-size: 0.9rem;
 }
+
+/* ── Header actions ── */
+
+.workspace-header-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* ── History page ── */
+
+.history-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.history-card {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.history-image {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+}
+
+.history-meta {
+  padding: 10px 12px;
+}
+
+.history-time {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.history-blocks {
+  list-style: none;
+  margin-top: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.history-blocks li {
+  font-size: 0.8rem;
+  background: #f5f5f5;
+  border-radius: 6px;
+  padding: 2px 8px;
+}
+
+.history-block-type {
+  color: #888;
+  margin-right: 4px;
+}
+
+.history-block-value {
+  font-weight: bold;
+  color: #333;
+}

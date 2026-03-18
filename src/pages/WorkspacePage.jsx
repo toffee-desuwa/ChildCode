@@ -2,7 +2,7 @@ import { useState, useRef, useMemo, memo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BlocklyEditor from '../components/BlocklyEditor'
 import { isComplete, hasDuplicates, getDuplicateMessage } from '../blocks/exportJson'
-import { getConfigStatus, loadConfig, isQuotaExhausted, incrementUsage } from '../config/storage'
+import { getConfigStatus, loadConfig, isQuotaExhausted, incrementUsage, addHistoryEntry } from '../config/storage'
 import { derivePrompt } from '../generation/derivePrompt'
 import { generateImage } from '../generation/provider'
 import { diffBlocks } from '../generation/diffBlocks'
@@ -81,9 +81,10 @@ export default function WorkspacePage() {
         imageUrl: result.url,
       }
 
-      // Count usage after successful generation
+      // Count usage and save to history after successful generation
       incrementUsage()
       setQuotaExhausted(isQuotaExhausted())
+      addHistoryEntry(currentJson, result.url)
 
       // Use ref (always current) to decide slot
       if (snapshotARef.current === null) {
@@ -124,9 +125,14 @@ export default function WorkspacePage() {
     <div className="page workspace-page">
       <header className="workspace-header">
         <h2>ChildCode 创作区</h2>
-        <button onClick={() => navigate('/')} className="secondary">
-          返回首页
-        </button>
+        <div className="workspace-header-actions">
+          <button onClick={() => navigate('/history')} className="secondary">
+            我的历史
+          </button>
+          <button onClick={() => navigate('/')} className="secondary">
+            返回首页
+          </button>
+        </div>
       </header>
 
       <div className="workspace-layout">

@@ -91,3 +91,42 @@ export function isQuotaExhausted() {
 export function resetUsageCount() {
   localStorage.setItem(USAGE_COUNT_KEY, '0')
 }
+
+// ── 表达历史 ──
+
+const HISTORY_KEY = 'childcode_history'
+const MAX_HISTORY = 50
+
+/**
+ * 读取创作历史
+ * @returns {Array<{json: object, imageUrl: string, timestamp: number}>}
+ */
+export function loadHistory() {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY)
+    return raw ? JSON.parse(raw) : []
+  } catch {
+    return []
+  }
+}
+
+/**
+ * 添加一条创作记录（最新在前，最多保留 MAX_HISTORY 条）
+ */
+export function addHistoryEntry(json, imageUrl) {
+  const history = loadHistory()
+  history.unshift({
+    json: JSON.parse(JSON.stringify(json)),
+    imageUrl,
+    timestamp: Date.now(),
+  })
+  if (history.length > MAX_HISTORY) history.length = MAX_HISTORY
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(history))
+}
+
+/**
+ * 清空创作历史（家长操作）
+ */
+export function clearHistory() {
+  localStorage.removeItem(HISTORY_KEY)
+}
