@@ -72,8 +72,8 @@
       "id": "F10",
       "name": "expression-history",
       "description": "表达历史：孩子可以回看之前的创作，看到自己表达能力的变化轨迹",
-      "status": "backlog",
-      "notes": "当前只保留最近两个快照，终局需要完整历史"
+      "status": "done",
+      "notes": "localStorage 持久化，最多50条，/history 页面展示"
     },
     {
       "id": "F11",
