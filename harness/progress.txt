@@ -22,3 +22,12 @@
 - pages/ConfigPage.jsx (83L) — 可复用
 - pages/WelcomePage.jsx (18L) — 太简单，可能重写
 - index.css (393L) — 需重新设计
+
+## F08: guided-exploration (2026-03-19)
+- 新增 src/guidance/phaseGuide.js — 阶段感知引导逻辑
+- 新增 src/components/GuidanceHint.jsx — 引导提示组件
+- 修改 src/blocks/whitelist.js — 导出 CATEGORY_LABELS
+- 修改 src/pages/WorkspacePage.jsx — 替换硬编码提示为阶段引导
+- 修改 src/index.css — 引导提示样式，删除废弃 .phase-hint
+- 修改 src/blocks/exportJson.js — 改用共享 CATEGORY_LABELS
+- 验证：npm run build OK, npm run lint OK

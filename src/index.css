@@ -315,12 +315,6 @@ button.secondary {
   flex-shrink: 0;
 }
 
-.phase-hint {
-  color: #4a90d9;
-  margin-top: 8px;
-  font-weight: bold;
-}
-
 .compare-warn {
   color: #e67e22;
   font-weight: bold;

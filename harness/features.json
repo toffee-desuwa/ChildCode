@@ -58,8 +58,8 @@
       "id": "F08",
       "name": "guided-exploration",
       "description": "引导式探索：不是让孩子无限刷图，而是系统引导'试试只改一个块'",
-      "status": "backlog",
-      "notes": "终局核心体验，当前只有简单提示，需要设计完整引导流"
+      "status": "done",
+      "notes": "阶段感知引导系统，根据 workspace 状态显示上下文提示"
     },
     {
       "id": "F09",

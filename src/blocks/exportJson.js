@@ -1,8 +1,4 @@
-import { BLOCK_CATEGORIES } from './whitelist'
-
-const CATEGORY_LABELS = Object.fromEntries(
-  Object.entries(BLOCK_CATEGORIES).map(([type, cat]) => [type, cat.label])
-)
+import { BLOCK_CATEGORIES, CATEGORY_LABELS } from './whitelist'
 
 /**
  * 从 Blockly workspace 导出 JSON 真相层
