@@ -93,8 +93,8 @@
       "id": "F13",
       "name": "multi-step-creation",
       "description": "多步创作：从单图到连续图/故事板，表达复杂度渐进提升",
-      "status": "backlog",
-      "notes": "终局载体延展，图片只是入口"
+      "status": "done",
+      "notes": "故事板系统：最多8帧，workspace 一键添加，strip 预览 + 详情卡片，可排序/删除"
     },
     {
       "id": "F14",
