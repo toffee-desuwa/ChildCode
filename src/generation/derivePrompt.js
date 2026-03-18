@@ -1,10 +1,9 @@
 /**
  * 从 JSON 真相层派生底层 prompt
  *
- * 规则（见 docs/V0_SCHEMA_AND_FLOW.md Section C）：
- * - 读取 subject、action、scene、style 四类核心信息
- * - 按固定模板组合成一句自然语言描述
- * - MVP 只使用这四类信息，不引入额外修饰
+ * 规则：
+ * - 必填四类（subject、action、scene、style）缺一不可
+ * - 可选类（emotion、weather、time）存在则追加到 prompt
  */
 export function derivePrompt(json) {
   const { blocks } = json
@@ -17,5 +16,18 @@ export function derivePrompt(json) {
     return null
   }
 
-  return `${style}风格，${subject}在${scene}中${action}`
+  // 基础 prompt
+  let prompt = `${style}风格，${subject}在${scene}中${action}`
+
+  // 可选修饰
+  const extras = []
+  if (blocks.emotion?.label) extras.push(`表情${blocks.emotion.label}`)
+  if (blocks.weather?.label) extras.push(`${blocks.weather.label}`)
+  if (blocks.time?.label) extras.push(`${blocks.time.label}时分`)
+
+  if (extras.length > 0) {
+    prompt += `，${extras.join('，')}`
+  }
+
+  return prompt
 }

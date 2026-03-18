@@ -228,6 +228,12 @@ button.secondary {
   margin-top: 4px;
 }
 
+.field-hint {
+  color: #888;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
 .config-actions {
   display: flex;
   gap: 12px;

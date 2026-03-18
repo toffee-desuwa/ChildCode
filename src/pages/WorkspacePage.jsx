@@ -9,7 +9,7 @@ import { diffBlocks } from '../generation/diffBlocks'
 import { getGuidance } from '../guidance/phaseGuide'
 import GuidanceHint from '../components/GuidanceHint'
 import ChangeInsight from '../components/ChangeInsight'
-import { CATEGORY_LABELS } from '../blocks/whitelist'
+import { CATEGORY_LABELS, BLOCK_CATEGORIES } from '../blocks/whitelist'
 
 const CONFIG_STATUS_TEXT = {
   not_configured: '未配置 — 请让爸爸妈妈先完成设置',
@@ -280,8 +280,10 @@ const CompareCard = memo(function CompareCard({ label, snapshot, changedFields }
       <h4>{label}</h4>
       <img src={snapshot.imageUrl} alt={label} className="compare-image" />
       <ul className="compare-blocks">
-        {['subject', 'action', 'scene', 'style'].map((type) => {
+        {Object.keys(BLOCK_CATEGORIES).map((type) => {
           const block = snapshot.json.blocks[type]
+          // 跳过未使用的可选类别
+          if (!block) return null
           const changed = changedFields.includes(type)
           return (
             <li
@@ -289,7 +291,7 @@ const CompareCard = memo(function CompareCard({ label, snapshot, changedFields }
               className={changed ? 'is-changed' : ''}
             >
               <span className="block-type">{CATEGORY_LABELS[type]}</span>
-              <span className="block-value">{block?.label ?? '—'}</span>
+              <span className="block-value">{block.label}</span>
             </li>
           )
         })}

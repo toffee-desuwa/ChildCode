@@ -2,10 +2,11 @@
  * 阶段感知引导系统
  * 根据当前 workspace 状态返回引导信息，纯函数，无副作用
  */
-import { BLOCK_CATEGORIES, CATEGORY_LABELS } from '../blocks/whitelist'
+import { BLOCK_CATEGORIES, CATEGORY_LABELS, getRequiredCategories } from '../blocks/whitelist'
 import { hasDuplicates } from '../blocks/exportJson'
 
-const CATEGORIES = Object.keys(BLOCK_CATEGORIES)
+const ALL_CATEGORIES = Object.keys(BLOCK_CATEGORIES)
+const REQUIRED = getRequiredCategories()
 
 /**
  * 根据当前状态判定阶段并返回引导信息
@@ -20,14 +21,14 @@ export function getGuidance(currentJson, snapshotA, snapshotB, cachedSuggestion)
   if (!currentJson) return { phase: 'empty', message: '从左边的工具箱拖几个积木过来试试！' }
 
   // workspace 清空所有积木后，blocks 全为 null
-  const allNull = CATEGORIES.every(c => !currentJson.blocks[c])
+  const allNull = ALL_CATEGORIES.every(c => !currentJson.blocks[c])
   if (allNull) return { phase: 'empty', message: '从左边的工具箱拖几个积木过来试试！' }
 
   // 重复积木 — 不显示引导，让现有 duplicate UI 处理
   if (hasDuplicates(currentJson)) return { phase: 'invalid', message: null }
 
-  // 未凑齐四类
-  const missing = CATEGORIES.filter(c => !currentJson.blocks[c])
+  // 未凑齐必填四类
+  const missing = REQUIRED.filter(c => !currentJson.blocks[c])
   if (missing.length > 0) {
     const names = missing.map(c => CATEGORY_LABELS[c])
     return { phase: 'incomplete', message: `还差${names.join('、')}就齐了！` }
@@ -40,7 +41,9 @@ export function getGuidance(currentJson, snapshotA, snapshotB, cachedSuggestion)
 
   // 已有第一张图，等待第二张
   if (!snapshotB) {
-    const suggestion = cachedSuggestion || CATEGORIES[Math.floor(Math.random() * CATEGORIES.length)]
+    // 建议改任意已放置的类别
+    const placed = ALL_CATEGORIES.filter(c => currentJson.blocks[c])
+    const suggestion = cachedSuggestion || placed[Math.floor(Math.random() * placed.length)]
     return {
       phase: 'first-image',
       message: `试试只改一个积木，看看画会怎么变？比如换个${CATEGORY_LABELS[suggestion]}？`,

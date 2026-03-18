@@ -1,8 +1,7 @@
-import { BLOCK_CATEGORIES, CATEGORY_LABELS } from './whitelist'
+import { BLOCK_CATEGORIES, CATEGORY_LABELS, getRequiredCategories } from './whitelist'
 
 /**
  * 从 Blockly workspace 导出 JSON 真相层
- * 结构与 docs/V0_SCHEMA_AND_FLOW.md 中的 schema 一致
  *
  * 如果某类块缺失，对应字段为 null
  * 如果某类块重复，返回 duplicates 列表标记无效态
@@ -58,15 +57,12 @@ export function getDuplicateMessage(json) {
 }
 
 /**
- * 检查 JSON 真相层是否四类齐全且无重复
+ * 检查 JSON 真相层是否必填类别齐全且无重复
+ * 只检查 required 类别（tier 1 的四类），扩展类别为可选
  */
 export function isComplete(json) {
   if (hasDuplicates(json)) return false
   const { blocks } = json
-  return (
-    blocks.subject !== null &&
-    blocks.action !== null &&
-    blocks.scene !== null &&
-    blocks.style !== null
-  )
+  const required = getRequiredCategories()
+  return required.every((type) => blocks[type] !== null)
 }

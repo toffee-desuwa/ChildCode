@@ -1,9 +1,11 @@
 import { useEffect, useRef } from 'react'
 import * as Blockly from 'blockly'
-import { registerBlocks, toolbox } from '../blocks/definitions'
+import { registerBlocks, buildToolbox } from '../blocks/definitions'
 import { exportBlocksJson } from '../blocks/exportJson'
+import { getBlocksByTier, DEFAULT_AGE_TIER } from '../blocks/whitelist'
+import { loadConfig } from '../config/storage'
 
-// 注册积木定义（只执行一次）
+// 注册积木定义（只执行一次，注册全部类别）
 registerBlocks()
 
 export default function BlocklyEditor({ onJsonChange }) {
@@ -21,6 +23,12 @@ export default function BlocklyEditor({ onJsonChange }) {
     if (!containerRef.current) return
     // If workspace already exists in this container, skip
     if (workspaceRef.current) return
+
+    // 根据家长配置的年龄段过滤可用积木
+    const config = loadConfig()
+    const ageTier = config?.ageTier || DEFAULT_AGE_TIER
+    const categories = getBlocksByTier(ageTier)
+    const toolbox = buildToolbox(categories)
 
     const workspace = Blockly.inject(containerRef.current, {
       toolbox,
