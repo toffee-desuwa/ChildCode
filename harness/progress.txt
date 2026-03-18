@@ -31,3 +31,11 @@
 - 修改 src/index.css — 引导提示样式，删除废弃 .phase-hint
 - 修改 src/blocks/exportJson.js — 改用共享 CATEGORY_LABELS
 - 验证：npm run build OK, npm run lint OK
+
+## F09: change-insight-display (2026-03-19)
+- 增强 src/generation/diffBlocks.js — 返回 details 数组含 field/from/to
+- 新增 src/components/ChangeInsight.jsx — 因果展示组件（from→to 流式布局）
+- 修改 src/pages/WorkspacePage.jsx — 用 ChangeInsight 替换旧 compare-positive
+- 修改 src/index.css — 紫色主题变化洞察样式
+- 移除 getComparisonFeedback 导入（功能由 ChangeInsight 内置替代）
+- 验证：npm run build OK, npm run lint OK

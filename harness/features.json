@@ -65,8 +65,8 @@
       "id": "F09",
       "name": "change-insight-display",
       "description": "变化洞察展示：明确告诉孩子'你改了哪个块，变化主要来自哪里'",
-      "status": "backlog",
-      "notes": "当前只高亮字段名，需要更直观的因果展示"
+      "status": "done",
+      "notes": "ChangeInsight 组件显示 from→to 因果关系，diffBlocks 返回变化详情"
     },
     {
       "id": "F10",
