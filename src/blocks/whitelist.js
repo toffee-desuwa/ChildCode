@@ -53,3 +53,11 @@ export const BLOCK_CATEGORIES = {
     ],
   },
 }
+
+/**
+ * 类别中文标签映射，从 BLOCK_CATEGORIES 派生
+ * 供 phaseGuide.js、WorkspacePage.jsx 等模块共用
+ */
+export const CATEGORY_LABELS = Object.fromEntries(
+  Object.entries(BLOCK_CATEGORIES).map(([type, cat]) => [type, cat.label])
+)
