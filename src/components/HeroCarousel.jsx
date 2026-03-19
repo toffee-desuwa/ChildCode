@@ -109,7 +109,7 @@ export default function HeroCarousel() {
       className={`w-2 h-2 rounded-full transition-all duration-300 cursor-pointer ${
         i === setIndex ? 'bg-indigo-400 w-6' : 'bg-slate-600 hover:bg-slate-500'
       }`}
-      aria-label={`Demo set ${i + 1}`}
+      aria-label={t('carousel.demoSet', { index: i + 1 })}
     />
   ))
 

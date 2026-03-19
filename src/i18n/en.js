@@ -186,6 +186,7 @@ export default {
   'templates.empty': 'No templates saved yet. Try "Save as Template" in the workspace!',
   'templates.use': 'Use Template',
   'templates.delete': 'Delete',
+  'templates.defaultName': 'Template',
 
   // Storyboard Page
   'storyboard.title': 'My Storyboard',
@@ -252,6 +253,7 @@ export default {
   'carousel.insight.scene': 'Change the scene → the whole background transforms',
   'carousel.insight.style': 'Change the style → the same scene looks completely different',
   'carousel.fallback': 'Demo images loading failed',
+  'carousel.demoSet': 'Demo set {index}',
 
   // Mobile workspace
   'workspace.mobile.title': 'Best experienced on desktop',

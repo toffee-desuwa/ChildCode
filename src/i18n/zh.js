@@ -186,6 +186,7 @@ export default {
   'templates.empty': '还没有保存模板，去创作区试试「存为模板」吧',
   'templates.use': '使用模板',
   'templates.delete': '删除',
+  'templates.defaultName': '模板',
 
   // Storyboard Page
   'storyboard.title': '我的故事板',
@@ -252,6 +253,7 @@ export default {
   'carousel.insight.scene': '改场景 → 整个背景都变了',
   'carousel.insight.style': '改风格 → 同样的画面换了一种质感',
   'carousel.fallback': '演示图片加载失败',
+  'carousel.demoSet': '演示组 {index}',
 
   // Mobile workspace
   'workspace.mobile.title': '建议在电脑上使用',

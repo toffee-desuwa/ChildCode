@@ -58,7 +58,7 @@ export default function WorkspacePage() {
       .filter(([, v]) => v !== null)
       .map(([type, v]) => t('blocks.category.' + type) + '\u00b7' + (v.value ? t('blocks.option.' + v.value) : v.label))
       .join(' + ')
-    const name = usedBlocks || 'Template'
+    const name = usedBlocks || t('templates.defaultName')
     saveTemplate(name, currentJson.blocks)
     setTemplateSaved(true)
     setTimeout(() => setTemplateSaved(false), 2000)
