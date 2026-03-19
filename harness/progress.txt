@@ -139,3 +139,33 @@
 - 验证：npm run build OK, npm run lint OK
 
 项目 F01-F20 全部 done/reuse-existing，F21 deferred。
+
+## F22: tailwind-setup (2026-03-19)
+- Installed tailwindcss v4 + @tailwindcss/vite (16 packages, 0 vulnerabilities)
+- Modified vite.config.js — added tailwindcss() plugin
+- Modified index.html — added Inter font via Google Fonts CDN with preconnect
+- Modified src/index.css — added @import "tailwindcss", @custom-variant dark (class-based), @theme design tokens:
+  - Surface: slate palette (50-950) for backgrounds
+  - Primary: indigo (400-700) for CTAs
+  - Accent: violet (400-600) for secondary emphasis
+  - Semantic: success/warning/error
+  - Font: Inter + system fallback stack
+- Legacy CSS kept below Tailwind import — un-layered CSS overrides layered preflight, no breakage
+- ~~Considered removing preflight to avoid conflicts~~ → unnecessary, CSS cascade handles it
+- Build OK (CSS 11.79KB → 20.44KB with Tailwind base), Lint OK
+- Next: F23 (i18n system)
+
+## F23: i18n-system (2026-03-19)
+- New src/i18n/en.js — 70+ English translation keys for WelcomePage + WorkspacePage
+- New src/i18n/zh.js — matching Chinese translations
+- New src/i18n/context.js — I18nContext + useI18n hook
+- New src/i18n/I18nProvider.jsx — provider component with localStorage persistence
+- New src/i18n/index.js — barrel re-export
+- Modified src/App.jsx — wrapped with I18nProvider
+- Modified src/pages/WelcomePage.jsx — all hardcoded Chinese → t() calls
+- Modified src/pages/WorkspacePage.jsx — all hardcoded Chinese → t() calls
+- ~~Initially put everything in index.js~~ → split to context.js + I18nProvider.jsx to fix react-refresh lint rule
+- Child components (GuidanceHint, ChangeInsight, ControlFeeling, phaseGuide) NOT migrated — deferred to F24+ when CATEGORY_LABELS also get i18n'd
+- Design: flat key namespace, {param} interpolation, localStorage key `childcode_lang`, default `en`
+- Build OK, Lint OK
+- Next: F24 (blockly blocks i18n)

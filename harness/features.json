@@ -157,15 +157,15 @@
       "id": "F22",
       "name": "tailwind-setup",
       "description": "安装 Tailwind CSS + PostCSS，配置深色模式主题，创建基础 design tokens（颜色/圆角/阴影），移除旧 index.css 中可被 Tailwind 替代的部分",
-      "status": "backlog",
-      "notes": "只做基础设施，不改任何页面组件。Tailwind 不管 Blockly 的 DOM（Blockly 用自己的 theme API）。深色模式用 class 策略。字体：Inter（英文）+ 系统字体回退。参考 spec: docs/superpowers/specs/2026-03-19-childcode-launch-design.md Section 2"
+      "status": "done",
+      "notes": "Tailwind v4 + @tailwindcss/vite, class-based dark mode, @theme design tokens (surface/primary/accent/semantic), Inter font via CDN. Legacy CSS kept for existing components."
     },
     {
       "id": "F23",
       "name": "i18n-system",
       "description": "创建 i18n 模块：src/i18n/en.js + src/i18n/zh.js + useI18n hook，语言切换存 localStorage，所有组件从 i18n 读文案",
-      "status": "backlog",
-      "notes": "这一步只搭框架+迁移 WelcomePage 和 WorkspacePage 的文案。其余页面在后续 feature 里逐步迁移。默认英文。"
+      "status": "done",
+      "notes": "React Context + useI18n hook, flat-key lookup with {param} interpolation. I18nProvider wraps App. WelcomePage + WorkspacePage migrated. Default English. Child components deferred to F24+."
     },
     {
       "id": "F24",
