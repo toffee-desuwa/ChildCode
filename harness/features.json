@@ -151,6 +151,140 @@
       "description": "商业化基础：主题包/创作包付费、Pro 功能解锁",
       "status": "deferred",
       "notes": "等用户介入决策后再做"
+    },
+
+    {
+      "id": "F22",
+      "name": "tailwind-setup",
+      "description": "安装 Tailwind CSS + PostCSS，配置深色模式主题，创建基础 design tokens（颜色/圆角/阴影），移除旧 index.css 中可被 Tailwind 替代的部分",
+      "status": "backlog",
+      "notes": "只做基础设施，不改任何页面组件。Tailwind 不管 Blockly 的 DOM（Blockly 用自己的 theme API）。深色模式用 class 策略。字体：Inter（英文）+ 系统字体回退。参考 spec: docs/superpowers/specs/2026-03-19-childcode-launch-design.md Section 2"
+    },
+    {
+      "id": "F23",
+      "name": "i18n-system",
+      "description": "创建 i18n 模块：src/i18n/en.js + src/i18n/zh.js + useI18n hook，语言切换存 localStorage，所有组件从 i18n 读文案",
+      "status": "backlog",
+      "notes": "这一步只搭框架+迁移 WelcomePage 和 WorkspacePage 的文案。其余页面在后续 feature 里逐步迁移。默认英文。"
+    },
+    {
+      "id": "F24",
+      "name": "blockly-blocks-i18n",
+      "description": "whitelist.js 积木标签改为英文默认，中文作为 alternate。definitions.js 和 exportJson.js 适配",
+      "status": "backlog",
+      "notes": "积木分类标签（Subject/Action/Scene/Style）和所有积木值（Cat/Dog/Run/Sleep...）都要英文。JSON 导出的 key 不变，只改显示标签。"
+    },
+    {
+      "id": "F25",
+      "name": "hero-page-redesign",
+      "description": "WelcomePage 重写：深色渐变背景，'Scratch for the AI Era' 大标题，'Try it now' CTA 按钮，现代科技感布局",
+      "status": "backlog",
+      "notes": "替换现有 WelcomePage，不是新路由。用 Tailwind 类。参考 Vercel/Linear 首页风格。暂不做 carousel 动画（F30 做）。i18n 文案从 i18n 模块读取。"
+    },
+    {
+      "id": "F26",
+      "name": "workspace-redesign",
+      "description": "WorkspacePage Tailwind 重写：Blockly 深色主题，积木分类彩色编码（Subject=蓝/Action=绿/Scene=橙/Style=紫），右侧卡片布局，渐变生成按钮，A/B 对比布局带 diff 高亮",
+      "status": "backlog",
+      "notes": "Blockly 用 Blockly.Theme API 设颜色，不用 Tailwind。其余 UI（按钮/卡片/布局）用 Tailwind。保留所有业务逻辑不变（useGeneration hook）。"
+    },
+    {
+      "id": "F27",
+      "name": "code-quality-audit-2",
+      "description": "代码质量审查：检查 F22-F26 引入的 Tailwind 迁移质量，确认无残留旧 CSS 冲突，Blockly 渲染正常，i18n 覆盖率，build + lint 通过",
+      "status": "backlog",
+      "notes": "重点：1) Tailwind 和 Blockly DOM 无冲突 2) 所有旧 CSS class 已迁移或清理 3) i18n 无漏翻 4) 深色模式全页面一致"
+    },
+    {
+      "id": "F28",
+      "name": "secondary-pages-restyle",
+      "description": "ConfigPage/HistoryPage/TemplatesPage/StoryboardPage 全部用 Tailwind 重写样式，深色主题，i18n 文案迁移",
+      "status": "backlog",
+      "notes": "四个页面一起做，因为它们的样式模式相似（卡片网格/表单/按钮）。家长面板 dashboard 卡片也一并改。"
+    },
+    {
+      "id": "F29",
+      "name": "demo-image-system",
+      "description": "预渲染 demo 图片系统：public/demo-images/ 存放图片，src/demo/imageMap.json 映射积木组合→图片路径，provider.js mock 模式改为从 imageMap 匹配",
+      "status": "backlog",
+      "notes": "匹配逻辑：block JSON 排序拼接为 key，精确查找 imageMap。无匹配时显示友好 fallback 卡片 + 最近似推荐。图片由人工提前生成放入 public/demo-images/，Ralph 只做代码逻辑。先放 placeholder 图片，真图后续人工替换。"
+    },
+    {
+      "id": "F30",
+      "name": "hero-carousel",
+      "description": "首页自动轮播组件：展示 3-4 组预渲染对比案例，积木标签滑入→图片 A 淡入→积木变化高亮→图片 B 交叉淡入，5 秒循环",
+      "status": "backlog",
+      "notes": "纯 CSS 动画 + React state 切换，不引入 GSAP/Lottie。数据从 imageMap.json 读取展示组。图片加载失败 fallback 为静态截图。集成到 hero page 的 CTA 按钮上方。"
+    },
+    {
+      "id": "F31",
+      "name": "mobile-responsive",
+      "description": "移动端适配：hero carousel 全响应式，workspace 在 <768px 显示 'Best on desktop' 提示 + carousel 替代，其余页面堆叠卡片布局",
+      "status": "backlog",
+      "notes": "Blockly workspace 不在移动端渲染（拖拽不可用）。小红书引流的用户会在手机上打开，必须看到 carousel 效果。"
+    },
+    {
+      "id": "F32",
+      "name": "code-quality-audit-3",
+      "description": "代码质量审查：F28-F31 质量检查，移动端全页面测试，carousel 动画性能，demo 图片系统匹配逻辑，build + lint",
+      "status": "backlog",
+      "notes": "重点：1) 移动端无水平滚动 2) carousel 动画流畅不卡 3) 深色模式全页面无白色残留 4) 所有页面 i18n 100% 覆盖"
+    },
+    {
+      "id": "F33",
+      "name": "og-meta-tags",
+      "description": "Open Graph + Twitter Card 元标签：og:title/description/image, twitter:card, 加到 index.html",
+      "status": "backlog",
+      "notes": "og:image 用 1200x630 的 hero 截图（先放 placeholder，人工替换）。确保 Twitter/小红书 分享链接时预览卡正确。"
+    },
+    {
+      "id": "F34",
+      "name": "vercel-deployment",
+      "description": "Vercel 部署配置：vercel.json SPA rewrites，build 设置，确认 react-router 刷新不 404",
+      "status": "backlog",
+      "notes": "纯前端 Vite 项目，Vercel 零配置基本能跑，但需要 rewrites 规则处理 SPA 路由。不用 GitHub Pages（SPA 路由问题）。"
+    },
+    {
+      "id": "F35",
+      "name": "readme-english",
+      "description": "README.md 英文版：logo + tagline + badges + hero GIF placeholder + What/Why/Demo/QuickStart/Architecture/Contributing/License",
+      "status": "backlog",
+      "notes": "参考 spec Section 4 的结构。GIF 先放 placeholder（[Demo GIF coming soon]），人工录制后替换。Architecture 部分画 Blocks→JSON→Prompt→Image 流程图（ASCII 或 Mermaid）。"
+    },
+    {
+      "id": "F36",
+      "name": "readme-chinese",
+      "description": "README-CN.md 中文版：与英文版结构一致，文案本地化",
+      "status": "backlog",
+      "notes": "底部加 English version 链接。保持与 README.md 同步。"
+    },
+    {
+      "id": "F37",
+      "name": "code-quality-audit-4",
+      "description": "最终代码质量审查：全项目 build + lint + 中文残留扫描 + 死代码清理 + 旧 CSS 彻底移除",
+      "status": "backlog",
+      "notes": "这是上线前最后一次审查。重点：1) grep 中文字符确认只在 i18n/zh.js 和 README-CN.md 中 2) index.css 中旧样式全部清理 3) 无 console.log 残留 4) package.json 无多余依赖"
+    },
+    {
+      "id": "F38",
+      "name": "pre-rendered-images",
+      "description": "用真实 API 生成 15-20 张预渲染 demo 图片，替换 placeholder，更新 imageMap.json",
+      "status": "deferred",
+      "notes": "人工操作：用 OpenAI API 生成图片，挑选最佳效果，放入 public/demo-images/。Ralph 做不了这个。"
+    },
+    {
+      "id": "F39",
+      "name": "hero-gif-recording",
+      "description": "从最终产品录制 15 秒 hero GIF，替换 README 中的 placeholder",
+      "status": "deferred",
+      "notes": "人工操作：产品 polish 完成后录屏。"
+    },
+    {
+      "id": "F40",
+      "name": "social-media-launch",
+      "description": "小红书/B站/X 同步发布，监控 star 曲线，根据热度决定第二波（知乎/即刻/V2EX/HN）",
+      "status": "deferred",
+      "notes": "人工操作：写文案、录视频、发布、监控。参考 spec Section 5。"
     }
   ]
 }
