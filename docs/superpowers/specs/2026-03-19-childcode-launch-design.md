@@ -16,7 +16,11 @@
 - Maintain README-CN.md for Chinese audience
 - App UI defaults to English, supports Chinese toggle
 
-**Font:** MiSans (Xiaomi open-source, covers Chinese + English, free for commercial use)
+**Font:**
+- English: Inter (via Google Fonts CDN, lightweight)
+- Chinese (when toggled): MiSans subset (Xiaomi open-source, free for commercial use)
+- Fallback: system font stack (`-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif`)
+- Reason: Full MiSans CJK is 5-20MB, would kill first-load performance. English visitors (GitHub Trending audience) get Inter. Chinese toggle lazy-loads MiSans subset.
 
 **Logo:** Minimal icon combining block shape + AI glow. Generate with AI later — not first priority.
 
@@ -31,9 +35,9 @@
 
 ## 2. UI Redesign
 
-**Scope:** Visual layer only. No changes to routing, business logic, hooks, providers, or storage.
+**Scope:** Visual layer + i18n. No changes to routing, business logic, hooks, providers, or storage. This is a significant refactor touching every component file (22 source files) — primarily className rewrites and copy string extraction.
 
-**Tech:** Replace current CSS with Tailwind CSS.
+**Tech:** Tailwind CSS for all custom components. **Exception:** Blockly's own DOM/SVG elements are NOT styled with Tailwind (Blockly injects its own DOM that we don't control). Blockly is styled via its built-in theme API only. Tailwind applies to everything outside the Blockly container.
 
 ### 2.1 Hero Page (Most Critical)
 
@@ -60,20 +64,39 @@ Target:
 ### 2.3 Design Language
 
 - Color: Dark mode primary (developer-friendly, looks great in screenshots), light mode toggle
-- Font: MiSans (unified Chinese + English)
+- Font: Inter (English) / MiSans subset (Chinese), system font fallback
 - Rounded cards + subtle shadows + gradient accents
 - Simple page transition animations (fade)
 
-### 2.4 Internationalization
+### 2.4 Hero Animation Implementation
+
+The hero auto-playing showcase is the highest-impact visual element. Implementation:
+- **Tech:** Pure CSS animations + React state transitions. No heavy libraries (no GSAP, no Lottie).
+- **Mechanism:** Pre-rendered image pairs stored as static assets. A React component cycles through sets on a timer (5s per set). Each cycle: block labels animate in (CSS slide) → image A fades in → one block label highlights/swaps (CSS color pulse) → image B crossfades over image A.
+- **Fallback:** If images fail to load, show static screenshots instead of broken animation.
+
+### 2.5 Mobile Responsiveness
+
+- Hero page carousel: fully responsive, works on mobile (this is what Xiaohongshu visitors see)
+- Workspace: show "Best experienced on desktop" banner on screens < 768px, with the carousel still visible below
+- Blockly workspace is NOT rendered on mobile (Blockly's drag-drop is unusable on small screens)
+- Config/History/Templates pages: basic responsive layout with stacked cards
+
+### 2.6 Internationalization
+
+This is a significant task — every user-facing string in every component is currently Chinese.
 
 - All UI copy defaults to English
-- Support Chinese toggle (extract copy strings from components)
+- Create `src/i18n/en.js` and `src/i18n/zh.js` with all UI strings
+- Components import strings from i18n module, language toggle stored in localStorage
+- **Blockly block labels also switch to English** (whitelist.js label field needs English values as default, Chinese as alternate)
+- Key English copy for hero page: "Scratch for the AI Era" / "Drag blocks. Generate art. Change one block. See what changes." / "Try it now" / "Parent Setup"
 
-### 2.5 What Does NOT Change
+### 2.7 What Does NOT Change
 
-- Route structure (6 pages: welcome, workspace, config, history, templates, storyboard)
+- Route structure (6 pages — hero page replaces current WelcomePage, not a new route)
 - Business logic (useGeneration hook, provider pattern, storage API)
-- Blockly core interactions (drag-drop, JSON export, whitelist inventory)
+- Blockly core interactions (drag-drop, JSON export)
 - Data model (JSON truth layer → prompt derivation)
 
 ---
@@ -96,11 +119,27 @@ Each set demonstrates: change ONE block → see precisely HOW the AI output chan
 
 **Layer 1 (Zero friction):** Hero page auto-carousel of pre-rendered comparisons. Animated sequence: blocks slide in → image fades out → block changes (highlight flash) → new image fades in. Visitor watches 10 seconds, understands the product.
 
-**Layer 2 (Hands-on):** Click "Try it now" → workspace with real Blockly drag-drop. "Generate" returns closest match from pre-rendered image library (mock mode). Feels real, costs nothing.
+**Layer 2 (Hands-on):** Click "Try it now" → workspace with real Blockly drag-drop. "Generate" returns from pre-rendered image library (enhanced mock mode).
+
+**Mock image matching system specification:**
+- Store 15-20 pre-rendered images as static assets in `public/demo-images/`
+- Each image mapped to a block combination in `src/demo/imageMap.json`: `{ "cat-running-forest-watercolor": "demo-001.png", ... }`
+- Matching logic: exact key lookup from current block JSON. Key = sorted block values joined by `-`
+- **Fallback when no match:** Show a friendly placeholder card: "This combination hasn't been pre-rendered yet! In the full version with an API key, you'd see a unique AI-generated image here." + show the closest available match as a suggestion
+- Images are bundled in the repo (each ~200KB JPEG, total ~3-4MB for 20 images — acceptable for a demo)
 
 ### 3.3 Deployment
 
-- GitHub Pages or Vercel (pure frontend, zero cost, auto-deploy, HTTPS included)
+- **Vercel** (recommended over GitHub Pages — natively handles SPA routing, auto-deploy from GitHub, free tier, HTTPS included)
+- GitHub Pages is a fallback option but requires a 404.html redirect hack for react-router
+
+### 3.4 Open Graph Meta Tags
+
+Critical for social media sharing (Twitter cards, Xiaohongshu link previews):
+- `og:title`: "ChildCode — Scratch for the AI Era"
+- `og:description`: "Block-based AI interaction for kids. No prompts. No code. Just drag, create, and learn."
+- `og:image`: A polished screenshot of the hero page (1200x630px, pre-generated)
+- `twitter:card`: `summary_large_image`
 
 ---
 
@@ -218,11 +257,22 @@ The cross-discipline angle is the hook. CS student building AI projects is norma
 
 ## Success Criteria
 
+Qualitative:
 - [ ] A developer opens the demo link and says "oh this is cool" within 3 seconds
 - [ ] README GIF demonstrates the full block→generate→change→compare loop
 - [ ] Product looks modern and polished in screenshots (dark theme, clean typography)
-- [ ] All UI is English by default
-- [ ] Demo works without API key (pre-rendered + mock mode)
-- [ ] Deployed to GitHub Pages or Vercel with HTTPS
+
+Functional:
+- [ ] All UI is English by default, Chinese toggle works
+- [ ] Blockly block labels are in English by default
+- [ ] Demo works without API key (pre-rendered carousel + mock workspace)
+- [ ] Hero page carousel auto-plays on both desktop and mobile
+- [ ] Mobile visitors see carousel + "best on desktop" for workspace
+- [ ] Deployed to Vercel with HTTPS and custom domain (if available)
+- [ ] Open Graph meta tags render correct preview cards on Twitter/Xiaohongshu
+
+Launch readiness:
 - [ ] Chinese and English README both available
-- [ ] Social media posts ready for simultaneous launch
+- [ ] GIF recorded from final product
+- [ ] Social media posts drafted for simultaneous launch
+- [ ] No Chinese text visible in any screenshot used for GitHub/Twitter
