@@ -20,9 +20,11 @@ export function loadConfig() {
 /**
  * 保存配置到 localStorage
  */
-export function saveConfig({ apiKey, usageLimit, ageTier }) {
+export function saveConfig({ apiKey, usageLimit, ageTier, provider, apiBase }) {
   const data = { apiKey, usageLimit }
   if (ageTier) data.ageTier = ageTier
+  if (provider) data.provider = provider
+  if (apiBase) data.apiBase = apiBase
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
 }
 

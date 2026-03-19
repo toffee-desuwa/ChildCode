@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { loadConfig, saveConfig, validateConfig, getUsageCount, resetUsageCount, loadHistory, loadMastery, loadStoryboard, loadTemplates, clearHistory } from '../config/storage'
 import { AGE_TIERS, DEFAULT_AGE_TIER } from '../blocks/whitelist'
+import { PROVIDERS } from '../generation/provider'
 
 function getInitialConfig() {
   const config = loadConfig()
@@ -9,6 +10,8 @@ function getInitialConfig() {
     apiKey: config?.apiKey || '',
     usageLimit: config?.usageLimit ? String(config.usageLimit) : '',
     ageTier: config?.ageTier || DEFAULT_AGE_TIER,
+    provider: config?.provider || 'openai',
+    apiBase: config?.apiBase || '',
   }
 }
 
@@ -18,6 +21,8 @@ export default function ConfigPage() {
   const [apiKey, setApiKey] = useState(initial.apiKey)
   const [usageLimit, setUsageLimit] = useState(initial.usageLimit)
   const [ageTier, setAgeTier] = useState(initial.ageTier)
+  const [provider, setProvider] = useState(initial.provider)
+  const [apiBase, setApiBase] = useState(initial.apiBase)
   const [errors, setErrors] = useState({})
   const [saveMsg, setSaveMsg] = useState(null)
   const [usageCount, setUsageCount] = useState(() => getUsageCount())
@@ -31,7 +36,7 @@ export default function ConfigPage() {
       return
     }
 
-    saveConfig({ apiKey: apiKey.trim(), usageLimit: Number(usageLimit), ageTier })
+    saveConfig({ apiKey: apiKey.trim(), usageLimit: Number(usageLimit), ageTier, provider, apiBase: apiBase.trim() })
     setSaveMsg('保存成功（年龄段变更需刷新创作页生效）')
   }
 
@@ -50,6 +55,29 @@ export default function ConfigPage() {
           />
           {errors.apiKey && <p className="field-error">{errors.apiKey}</p>}
         </label>
+
+        <label className="config-field">
+          <span>图片生成服务</span>
+          <select value={provider} onChange={(e) => setProvider(e.target.value)}>
+            {Object.entries(PROVIDERS).map(([key, { label }]) => (
+              <option key={key} value={key}>{label}</option>
+            ))}
+          </select>
+          <p className="field-hint">国内用户可选择"OpenAI 兼容 API"并填写可用的 API 地址</p>
+        </label>
+
+        {PROVIDERS[provider]?.needsApiBase && (
+          <label className="config-field">
+            <span>API 地址</span>
+            <input
+              type="text"
+              value={apiBase}
+              onChange={(e) => setApiBase(e.target.value)}
+              placeholder="例如：https://api.siliconflow.cn"
+            />
+            <p className="field-hint">填写兼容 OpenAI 接口的 API 基础地址</p>
+          </label>
+        )}
 
         <label className="config-field">
           <span>创作次数上限</span>
