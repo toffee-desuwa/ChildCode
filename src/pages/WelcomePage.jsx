@@ -55,8 +55,49 @@ export default function WelcomePage() {
       </p>
 
       {/* Auto-playing demo carousel */}
-      <div className="w-full mb-12">
+      <div className="w-full mb-16">
         <HeroCarousel />
+      </div>
+
+      {/* Growth Ladder — Prompt → Skill → Harness */}
+      <div className="w-full max-w-4xl mx-auto mb-16">
+        <h2 className="text-2xl sm:text-3xl font-bold text-white mb-3">
+          {t('welcome.ladder.title')}
+        </h2>
+        <p className="text-sm text-slate-500 mb-8">
+          {t('welcome.ladder.subtitle')}
+        </p>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+          {[
+            { key: 'prompt', icon: '🧩', color: 'from-indigo-500/20 to-indigo-600/10', border: 'border-indigo-500/30', accent: 'text-indigo-400', soon: false },
+            { key: 'skill', icon: '🔧', color: 'from-emerald-500/20 to-emerald-600/10', border: 'border-emerald-500/30', accent: 'text-emerald-400', soon: true },
+            { key: 'harness', icon: '🚀', color: 'from-amber-500/20 to-amber-600/10', border: 'border-amber-500/30', accent: 'text-amber-400', soon: true },
+          ].map((level, i) => (
+            <div
+              key={level.key}
+              className={`relative bg-gradient-to-b ${level.color} border ${level.border} rounded-2xl p-6 text-left ${level.soon ? 'opacity-75' : ''}`}
+            >
+              {level.soon && (
+                <span className="absolute top-3 right-3 text-[10px] font-semibold uppercase tracking-wider bg-slate-700/80 text-slate-300 px-2 py-0.5 rounded-full">
+                  {t('welcome.ladder.comingSoon')}
+                </span>
+              )}
+              <div className="text-3xl mb-3">{level.icon}</div>
+              <div className={`text-xs font-semibold uppercase tracking-wider ${level.accent} mb-1`}>
+                {t(`welcome.ladder.${level.key}.label`)}
+              </div>
+              <h3 className="text-lg font-bold text-white mb-2">
+                {t(`welcome.ladder.${level.key}.title`)}
+              </h3>
+              <p className="text-sm text-slate-400 leading-relaxed">
+                {t(`welcome.ladder.${level.key}.desc`)}
+              </p>
+              {i < 2 && (
+                <div className="hidden sm:block absolute -right-4 top-1/2 -translate-y-1/2 text-slate-600 text-xl z-10">→</div>
+              )}
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* CTA */}

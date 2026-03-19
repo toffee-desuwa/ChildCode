@@ -2,27 +2,27 @@
   "_comment": "Maps sorted block-value keys to pre-rendered demo images. Key = alphabetically sorted core four values joined by '-'. Images in public/demo-images/.",
   "entries": {
     "cat-forest-running-watercolor": {
-      "file": "demo-001.svg",
+      "file": "demo-001.png",
       "label": "Cat running in forest (watercolor)"
     },
     "cat-forest-sleeping-watercolor": {
-      "file": "demo-002.svg",
+      "file": "demo-002.png",
       "label": "Cat sleeping in forest (watercolor)"
     },
     "dragon-flying-pixel_art-sky": {
-      "file": "demo-003.svg",
+      "file": "demo-003.png",
       "label": "Dragon flying in sky (pixel art)"
     },
     "dragon-flying-ocean-pixel_art": {
-      "file": "demo-004.svg",
+      "file": "demo-004.png",
       "label": "Dragon flying in ocean (pixel art)"
     },
     "cartoon-city-dancing-robot": {
-      "file": "demo-005.svg",
+      "file": "demo-005.png",
       "label": "Robot dancing in city (cartoon)"
     },
     "city-dancing-oil_painting-robot": {
-      "file": "demo-006.svg",
+      "file": "demo-006.png",
       "label": "Robot dancing in city (oil painting)"
     }
   }

@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { I18nProvider } from './i18n'
 import WelcomePage from './pages/WelcomePage'
 import WorkspacePage from './pages/WorkspacePage'
@@ -18,6 +18,7 @@ export default function App() {
           <Route path="/history" element={<HistoryPage />} />
           <Route path="/templates" element={<TemplatesPage />} />
           <Route path="/storyboard" element={<StoryboardPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
     </I18nProvider>

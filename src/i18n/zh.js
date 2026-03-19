@@ -13,6 +13,20 @@ export default {
   'welcome.myHistory': '我的历史',
   'welcome.parentSettings': '家长设置',
 
+  // Growth Ladder
+  'welcome.ladder.title': '不只是画画 — 一条 AI 时代的成长阶梯',
+  'welcome.ladder.subtitle': '从拖积木到掌握人机协作',
+  'welcome.ladder.prompt.label': 'L1 · Prompt 直觉启蒙',
+  'welcome.ladder.prompt.title': '拖一拖，看变化',
+  'welcome.ladder.prompt.desc': '孩子发现"怎么组织输入，AI 就怎么变化"。改一块积木，看到不同的结果。适合 8-12 岁。',
+  'welcome.ladder.skill.label': 'L2 · Skill 思维萌芽',
+  'welcome.ladder.skill.title': '复用与混搭',
+  'welcome.ladder.skill.desc': '把好的组合存成模板，建立个人风格库。结构化表达自然涌现。适合 12-16 岁。',
+  'welcome.ladder.harness.label': 'L3 · Harness 思维入口',
+  'welcome.ladder.harness.title': '规划与掌控',
+  'welcome.ladder.harness.desc': '拆目标、组步骤、加约束、做失败处理 — 每个 AI 高手背后的思维模型。适合 14 岁以上。',
+  'welcome.ladder.comingSoon': '即将上线',
+
   // Workspace Page
   'workspace.header': 'ChildCode 创作区',
   'workspace.saveTemplate': '存为模板',

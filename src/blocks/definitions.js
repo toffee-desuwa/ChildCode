@@ -67,8 +67,8 @@ export function registerBlocks() {
             'VALUE'
           )
         this.setOutput(false)
-        this.setPreviousStatement(false)
-        this.setNextStatement(false)
+        this.setPreviousStatement(true)
+        this.setNextStatement(true)
         this.setDeletable(true)
         this.setMovable(true)
         this.setStyle(`${type}_style`)

@@ -13,6 +13,20 @@ export default {
   'welcome.myHistory': 'My History',
   'welcome.parentSettings': 'Parent Settings',
 
+  // Growth Ladder
+  'welcome.ladder.title': 'Not just drawing — a growth ladder for the AI era',
+  'welcome.ladder.subtitle': 'From dragging blocks to mastering human-AI collaboration',
+  'welcome.ladder.prompt.label': 'L1 · Prompt Intuition',
+  'welcome.ladder.prompt.title': 'Drag, See, Learn',
+  'welcome.ladder.prompt.desc': 'Kids discover that how you organize input shapes what AI creates. Change one block, see the difference. Ages 8-12.',
+  'welcome.ladder.skill.label': 'L2 · Skill Building',
+  'welcome.ladder.skill.title': 'Reuse & Remix',
+  'welcome.ladder.skill.desc': 'Save winning combinations as templates. Build a personal style library. Structured expression emerges naturally. Ages 12-16.',
+  'welcome.ladder.harness.label': 'L3 · Harness Thinking',
+  'welcome.ladder.harness.title': 'Plan & Control',
+  'welcome.ladder.harness.desc': 'Break goals into steps, add constraints, handle failures. The mental model behind every AI power user. Ages 14+.',
+  'welcome.ladder.comingSoon': 'Coming Soon',
+
   // Workspace Page
   'workspace.header': 'ChildCode Workspace',
   'workspace.saveTemplate': 'Save as Template',

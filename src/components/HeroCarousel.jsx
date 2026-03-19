@@ -15,8 +15,8 @@ const DEMO_SETS = [
       { category: 'style', valueA: 'watercolor', valueB: 'watercolor' },
     ],
     changedIndex: 1,
-    imageA: '/demo-images/demo-001.svg',
-    imageB: '/demo-images/demo-002.svg',
+    imageA: '/demo-images/demo-001.png',
+    imageB: '/demo-images/demo-002.png',
     insight: 'carousel.insight.action',
   },
   {
@@ -27,8 +27,8 @@ const DEMO_SETS = [
       { category: 'style', valueA: 'pixel_art', valueB: 'pixel_art' },
     ],
     changedIndex: 2,
-    imageA: '/demo-images/demo-003.svg',
-    imageB: '/demo-images/demo-004.svg',
+    imageA: '/demo-images/demo-003.png',
+    imageB: '/demo-images/demo-004.png',
     insight: 'carousel.insight.scene',
   },
   {
@@ -39,8 +39,8 @@ const DEMO_SETS = [
       { category: 'style', valueA: 'cartoon', valueB: 'oil_painting' },
     ],
     changedIndex: 3,
-    imageA: '/demo-images/demo-005.svg',
-    imageB: '/demo-images/demo-006.svg',
+    imageA: '/demo-images/demo-005.png',
+    imageB: '/demo-images/demo-006.png',
     insight: 'carousel.insight.style',
   },
 ]
@@ -59,12 +59,12 @@ const CYCLE_MS =
   PHASE_DURATIONS.blockSwap +
   PHASE_DURATIONS.showB
 
-// Category colors for block tags
+// Scratch-style block colors — solid, vivid, kid-friendly
 const CATEGORY_COLORS = {
-  subject: 'bg-indigo-500/80 text-indigo-100',
-  action: 'bg-emerald-500/80 text-emerald-100',
-  scene: 'bg-amber-500/80 text-amber-100',
-  style: 'bg-pink-500/80 text-pink-100',
+  subject: { bg: '#6366f1', dark: '#4f46e5', text: '#fff', emoji: '🐾' },
+  action: { bg: '#10b981', dark: '#059669', text: '#fff', emoji: '⚡' },
+  scene:  { bg: '#f59e0b', dark: '#d97706', text: '#fff', emoji: '🌍' },
+  style:  { bg: '#ec4899', dark: '#db2777', text: '#fff', emoji: '🎨' },
 }
 
 export default function HeroCarousel() {
@@ -114,62 +114,107 @@ export default function HeroCarousel() {
   ))
 
   return (
-    <div className="w-full max-w-3xl mx-auto">
-      {/* Block tags row */}
-      <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 mb-3 sm:mb-4 min-h-[2rem]">
+    <div className="w-full px-4 sm:px-6">
+      {/* Scratch-style block row */}
+      <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-4 sm:mb-5 min-h-[3.5rem]">
         {set.blocks.map((block, i) => {
           const isChanged = i === set.changedIndex
           const value = useB && isChanged ? block.valueB : block.valueA
-          const label = `${t(`blocks.category.${block.category}`)}: ${t(`blocks.option.${value}`)}`
-          const colorClass = CATEGORY_COLORS[block.category] || 'bg-slate-600 text-slate-200'
+          const category = t(`blocks.category.${block.category}`)
+          const option = t(`blocks.option.${value}`)
+          const colors = CATEGORY_COLORS[block.category] || { bg: '#475569', dark: '#334155', text: '#fff', emoji: '📦' }
 
           return (
-            <span
+            <div
               key={`${setIndex}-${i}`}
               className={`
-                inline-flex items-center px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium
+                relative flex flex-col items-center
                 transition-all duration-500
-                ${colorClass}
-                ${blocksReady ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}
-                ${isChanged && highlightChanged ? 'ring-2 ring-white/60 scale-110' : ''}
+                ${blocksReady ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}
+                ${isChanged && highlightChanged ? 'scale-110 z-10' : ''}
               `}
-              style={{
-                transitionDelay: `${i * 100}ms`,
-              }}
+              style={{ transitionDelay: `${i * 120}ms` }}
             >
-              {label}
-            </span>
+              {/* Block body — Scratch-style */}
+              <div
+                className="relative px-4 py-2 sm:px-5 sm:py-2.5 rounded-lg font-bold text-sm sm:text-base"
+                style={{
+                  backgroundColor: colors.bg,
+                  color: colors.text,
+                  boxShadow: `0 4px 0 0 ${colors.dark}, 0 8px 16px rgba(0,0,0,0.3)`,
+                  border: `2px solid ${colors.dark}`,
+                  transform: isChanged && highlightChanged ? 'translateY(-3px)' : 'none',
+                  transition: 'transform 0.3s, box-shadow 0.3s',
+                }}
+              >
+                {/* Notch on top */}
+                <div
+                  className="absolute -top-[8px] left-3 w-8 h-[8px] rounded-t-sm"
+                  style={{ backgroundColor: colors.bg, borderTop: `2px solid ${colors.dark}`, borderLeft: `2px solid ${colors.dark}`, borderRight: `2px solid ${colors.dark}` }}
+                />
+                {/* Bump on bottom */}
+                <div
+                  className="absolute -bottom-[8px] left-3 w-8 h-[8px] rounded-b-sm"
+                  style={{ backgroundColor: colors.bg, borderBottom: `2px solid ${colors.dark}`, borderLeft: `2px solid ${colors.dark}`, borderRight: `2px solid ${colors.dark}` }}
+                />
+                <span className="mr-1.5">{colors.emoji}</span>
+                <span className="opacity-70 text-xs sm:text-sm">{category}: </span>
+                <span>{option}</span>
+              </div>
+
+              {/* Glow ring when changed */}
+              {isChanged && highlightChanged && (
+                <div
+                  className="absolute inset-0 -m-1 rounded-lg animate-pulse"
+                  style={{ boxShadow: `0 0 16px 4px ${colors.bg}66` }}
+                />
+              )}
+            </div>
           )
         })}
       </div>
 
       {/* Image display area */}
-      <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] rounded-xl sm:rounded-2xl border border-slate-700/50 bg-slate-800/30 overflow-hidden">
-        {/* Image A */}
+      <div className="relative w-full aspect-[4/3] sm:aspect-[21/9] rounded-xl sm:rounded-2xl border border-slate-700/50 bg-slate-800/30 overflow-hidden">
+        {/* Image A — full width normally, left half during showB */}
         {!imgError.a ? (
           <img
             src={set.imageA}
             alt={set.blocks.map(b => t(`blocks.option.${b.valueA}`)).join(', ')}
-            className={`absolute inset-0 w-full h-full object-contain p-2 sm:p-4 transition-opacity duration-700 ${
+            className={`absolute top-0 h-full object-cover transition-all duration-700 ${
               showImageA ? 'opacity-100' : 'opacity-0'
-            }`}
+            } ${showImageB ? 'left-0 w-[49.5%]' : 'left-0 w-full'}`}
             onError={() => setImgError(e => ({ ...e, a: true }))}
           />
         ) : null}
 
-        {/* Image B (crossfades over A) */}
+        {/* Image B — slides in from right during showB */}
         {!imgError.b ? (
           <img
             src={set.imageB}
             alt={set.blocks.map((b, i) =>
               t(`blocks.option.${i === set.changedIndex ? b.valueB : b.valueA}`)
             ).join(', ')}
-            className={`absolute inset-0 w-full h-full object-contain p-2 sm:p-4 transition-opacity duration-700 ${
-              showImageB ? 'opacity-100' : 'opacity-0'
+            className={`absolute top-0 right-0 h-full w-[49.5%] object-cover transition-all duration-700 ${
+              showImageB ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-8'
             }`}
             onError={() => setImgError(e => ({ ...e, b: true }))}
           />
         ) : null}
+
+        {/* Center divider during showB */}
+        <div className={`absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-[3px] bg-indigo-400/80 transition-opacity duration-500 ${
+          showImageB ? 'opacity-100' : 'opacity-0'
+        }`} />
+
+        {/* Arrow indicator during showB */}
+        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transition-opacity duration-500 z-10 ${
+          showImageB ? 'opacity-100' : 'opacity-0'
+        }`}>
+          <div className="bg-slate-900/80 backdrop-blur-sm rounded-full w-10 h-10 flex items-center justify-center text-indigo-300 text-lg font-bold">
+            →
+          </div>
+        </div>
 
         {/* Fallback if images fail */}
         {imgError.a && imgError.b && (
