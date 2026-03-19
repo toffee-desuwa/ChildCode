@@ -114,8 +114,8 @@
       "id": "F16",
       "name": "parent-dashboard",
       "description": "家长面板增强：查看孩子表达成长轨迹、使用统计、安全日志",
-      "status": "backlog",
-      "notes": "家长不只是配置者，还能看到孩子成长"
+      "status": "done",
+      "notes": "4卡统计+掌握度等级+积木探索广度+资产概览，集成在 config 页"
     },
     {
       "id": "F17",
