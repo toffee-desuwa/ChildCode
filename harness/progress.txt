@@ -236,3 +236,15 @@
 - ~~ConfigPage still has hardcoded Chinese UI text~~ → deferred to F28 (full secondary page restyle)
 - Build OK, Lint OK
 - Next: F28
+
+## F28: secondary-pages-restyle (2026-03-19)
+- Rewrote ConfigPage.jsx with Tailwind dark theme, full i18n (30+ new keys for config + parent dashboard)
+- Rewrote HistoryPage.jsx with Tailwind dark theme, responsive 2/3/4-column grid
+- Rewrote TemplatesPage.jsx with Tailwind dark theme, indigo-tinted block tags
+- Rewrote StoryboardPage.jsx with Tailwind dark theme, dark strip preview + frame cards
+- ParentDashboard: stats grid with indigo-400 accents, mastery levels via i18n, block exploration tags
+- Removed ~400 lines of legacy CSS from index.css (all .legacy-page, .config-*, .history-*, .templates-*, .storyboard-*, .dashboard-*, .placeholder-box styles)
+- Only remaining CSS: Tailwind import + tokens, body reset, fadeIn keyframe
+- CSS bundle: 35.6KB → 34.0KB (smaller despite new Tailwind utilities)
+- Build OK, Lint OK
+- Next: F29

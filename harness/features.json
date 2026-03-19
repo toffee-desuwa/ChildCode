@@ -199,8 +199,8 @@
       "id": "F28",
       "name": "secondary-pages-restyle",
       "description": "ConfigPage/HistoryPage/TemplatesPage/StoryboardPage 全部用 Tailwind 重写样式，深色主题，i18n 文案迁移",
-      "status": "backlog",
-      "notes": "四个页面一起做，因为它们的样式模式相似（卡片网格/表单/按钮）。家长面板 dashboard 卡片也一并改。"
+      "status": "done",
+      "notes": "All 4 pages restyled with Tailwind dark theme. ConfigPage fully i18n'd (30+ new keys). ParentDashboard i18n'd. ~400 lines legacy CSS removed. CSS bundle shrunk."
     },
     {
       "id": "F29",
