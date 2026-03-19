@@ -37,7 +37,7 @@ export default function StoryboardPage() {
   }
 
   return (
-    <div className="page storyboard-page">
+    <div className="legacy-page page storyboard-page">
       <div className="storyboard-header">
         <h2>{t('storyboard.title')}</h2>
         <div className="storyboard-header-actions">

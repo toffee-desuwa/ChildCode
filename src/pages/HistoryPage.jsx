@@ -25,8 +25,8 @@ export default function HistoryPage() {
   const [history] = useState(() => loadHistory())
 
   return (
-    <div className="page history-page">
-      <header className="workspace-header">
+    <div className="legacy-page page history-page">
+      <header className="templates-header">
         <h2>{t('history.title')}</h2>
         <button onClick={() => navigate('/workspace')} className="secondary">
           {t('history.back')}

@@ -5,7 +5,7 @@ import { exportBlocksJson } from '../blocks/exportJson'
 import { getBlocksByTier, DEFAULT_AGE_TIER } from '../blocks/whitelist'
 import { loadConfig } from '../config/storage'
 
-// 注册积木定义（只执行一次，注册全部类别）
+// Register block definitions (runs once, registers all categories)
 registerBlocks()
 
 export default function BlocklyEditor({ onJsonChange, initialBlocks }) {
@@ -13,7 +13,7 @@ export default function BlocklyEditor({ onJsonChange, initialBlocks }) {
   const workspaceRef = useRef(null)
   // Store callback in ref so Blockly listener always calls latest version
   const onJsonChangeRef = useRef(onJsonChange)
-  // 模板初始积木只在挂载时使用一次
+  // Template initial blocks — used only on mount
   const initialBlocksRef = useRef(initialBlocks)
 
   // Keep ref in sync with prop, via effect (lint-safe)
@@ -26,7 +26,7 @@ export default function BlocklyEditor({ onJsonChange, initialBlocks }) {
     // If workspace already exists in this container, skip
     if (workspaceRef.current) return
 
-    // 根据家长配置的年龄段过滤可用积木
+    // Filter available blocks by parent-configured age tier
     const config = loadConfig()
     const ageTier = config?.ageTier || DEFAULT_AGE_TIER
     const categories = getBlocksByTier(ageTier)
@@ -54,7 +54,7 @@ export default function BlocklyEditor({ onJsonChange, initialBlocks }) {
       onJsonChangeRef.current(json)
     }
 
-    // 从模板加载初始积木
+    // Load initial blocks from template
     if (initialBlocksRef.current) {
       let yOffset = 30
       for (const [type, data] of Object.entries(initialBlocksRef.current)) {
@@ -69,7 +69,7 @@ export default function BlocklyEditor({ onJsonChange, initialBlocks }) {
     }
 
     workspace.addChangeListener(handleChange)
-    // 初始导出一次 (pass null event to bypass UI check)
+    // Initial export (pass null event to bypass UI check)
     handleChange(null)
 
     return () => {

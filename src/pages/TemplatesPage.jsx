@@ -18,7 +18,7 @@ export default function TemplatesPage() {
   }
 
   return (
-    <div className="page templates-page">
+    <div className="legacy-page page templates-page">
       <header className="templates-header">
         <h2>{t('templates.title')}</h2>
         <div className="templates-header-actions">

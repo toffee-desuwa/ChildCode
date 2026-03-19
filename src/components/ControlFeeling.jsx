@@ -2,7 +2,7 @@ import { memo } from 'react'
 import { useI18n } from '../i18n'
 
 /**
- * Control feeling components:
+ * Control feeling components — dark theme, render inside WorkspacePage:
  * 1. PredictionHint — before generation, prompts "you changed X, guess what happens?"
  * 2. MasteryBadge — shows growth based on single-block comparison count
  * 3. ControlReflection — after comparison, gives causal feedback
@@ -18,7 +18,12 @@ function getMasteryLevelIndex(singleChanges) {
   return 0
 }
 
-const MASTERY_COLORS = ['#90caf9', '#66bb6a', '#ffa726', '#ab47bc']
+const MASTERY_COLORS = [
+  { border: 'border-blue-400/50', text: 'text-blue-300' },
+  { border: 'border-emerald-400/50', text: 'text-emerald-300' },
+  { border: 'border-amber-400/50', text: 'text-amber-300' },
+  { border: 'border-purple-400/50', text: 'text-purple-300' },
+]
 
 /**
  * Prediction hint — shown when A exists and block changes detected
@@ -31,7 +36,7 @@ export const PredictionHint = memo(function PredictionHint({ changedFields }) {
   const names = changedFields.map((f) => t('blocks.category.' + f)).join(', ')
 
   return (
-    <div className="prediction-hint">
+    <div className="bg-indigo-500/10 border border-indigo-500/30 rounded-lg px-4 py-2.5 mt-2 text-indigo-300 font-semibold text-sm animate-[fadeIn_0.3s_ease-out]">
       <p>{t('prediction.hint', { names })}</p>
     </div>
   )
@@ -46,13 +51,13 @@ export const MasteryBadge = memo(function MasteryBadge({ mastery }) {
   if (!mastery || mastery.totalComparisons === 0) return null
 
   const levelIdx = getMasteryLevelIndex(mastery.singleChanges)
-  const color = MASTERY_COLORS[levelIdx]
+  const colors = MASTERY_COLORS[levelIdx]
   const label = t('mastery.level.' + levelIdx)
 
   return (
-    <div className="mastery-badge" style={{ borderColor: color }}>
-      <span className="mastery-label" style={{ color }}>{label}</span>
-      <span className="mastery-count">{t('mastery.count', { count: mastery.singleChanges })}</span>
+    <div className={`inline-flex items-center gap-2 px-3.5 py-1.5 border-2 rounded-full bg-slate-800/50 mb-3 ${colors.border}`}>
+      <span className={`font-bold text-sm ${colors.text}`}>{label}</span>
+      <span className="text-xs text-slate-400">{t('mastery.count', { count: mastery.singleChanges })}</span>
     </div>
   )
 })
@@ -74,7 +79,7 @@ export const ControlReflection = memo(function ControlReflection({ details, mast
     const idx = mastery ? mastery.singleChanges % 3 : 0
 
     return (
-      <div className="control-reflection control-reflection-single">
+      <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg px-4 py-2.5 mb-3 font-semibold text-sm text-emerald-300 animate-[fadeIn_0.3s_ease-out]">
         <p>{t('reflection.single.' + idx, { category, from: fromLabel, to: toLabel })}</p>
       </div>
     )
@@ -82,7 +87,7 @@ export const ControlReflection = memo(function ControlReflection({ details, mast
 
   // Multi block change: encourage focus
   return (
-    <div className="control-reflection control-reflection-multi">
+    <div className="bg-amber-500/10 border border-amber-500/30 rounded-lg px-4 py-2.5 mb-3 font-semibold text-sm text-amber-300 animate-[fadeIn_0.3s_ease-out]">
       <p>{t('reflection.multi', { count: details.length })}</p>
     </div>
   )

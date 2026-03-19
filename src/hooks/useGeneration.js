@@ -6,8 +6,8 @@ import { generateImage } from '../generation/provider'
 import { diffBlocks } from '../generation/diffBlocks'
 
 /**
- * 图片生成核心逻辑 hook
- * 管理 snapshotA/B、生成状态、对比结果、掌握度
+ * Core image generation hook.
+ * Manages snapshotA/B, generation state, comparison results, mastery tracking.
  */
 export function useGeneration(currentJson, configStatus) {
   const [snapshotA, setSnapshotA] = useState(null)
@@ -27,13 +27,13 @@ export function useGeneration(currentJson, configStatus) {
   const hasB = snapshotB !== null
   const canGenerate = complete && configStatus === 'configured' && !generating && !quotaExhausted
 
-  // 实时检测当前积木与 A 的差异，用于预测提示
+  // Live diff: detect changes between current blocks and A for prediction hint
   const liveDiff = useMemo(() => {
     if (!snapshotA || !currentJson || snapshotB) return null
     return diffBlocks(snapshotA.json, currentJson)
   }, [snapshotA, snapshotB, currentJson])
 
-  // AB 对比结果
+  // A/B comparison result
   const comparison = useMemo(() => {
     if (!snapshotA || !snapshotB) return null
     return diffBlocks(snapshotA.json, snapshotB.json)
@@ -61,7 +61,7 @@ export function useGeneration(currentJson, configStatus) {
     try {
       const prompt = derivePrompt(currentJson)
       if (!prompt) {
-        setError('积木组合不完整，无法生成')
+        setError('Incomplete block combination — cannot generate')
         return
       }
 
@@ -89,7 +89,7 @@ export function useGeneration(currentJson, configStatus) {
       if (import.meta.env.DEV) {
         console.error('Generation error:', err)
       }
-      setError('这次创作没有成功，请稍后再试一次。若一直失败，请让家长检查设置。')
+      setError('Generation failed. Please try again later, or ask a parent to check settings.')
       setGenerationFailed(true)
     } finally {
       setGenerating(false)

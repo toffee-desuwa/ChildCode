@@ -2,7 +2,7 @@ const STORAGE_KEY = 'childcode_config'
 const USAGE_COUNT_KEY = 'childcode_usage_count'
 
 /**
- * 安全写入 localStorage（防御 quota 溢出和安全限制）
+ * Safe localStorage write (defends against quota overflow and security restrictions)
  */
 function safeSetItem(key, value) {
   try {
@@ -17,19 +17,19 @@ function safeSetItem(key, value) {
 }
 
 /**
- * 安全删除 localStorage key
+ * Safe localStorage key removal
  */
 function safeRemoveItem(key) {
   try {
     localStorage.removeItem(key)
   } catch {
-    // 删除失败静默忽略
+    // Silently ignore removal failures
   }
 }
 
 /**
- * 从 localStorage 读取配置
- * 返回 { apiKey, usageLimit, ageTier? } 或 null
+ * Load config from localStorage
+ * @returns {{ apiKey: string, usageLimit: number, ageTier?: string } | null}
  */
 export function loadConfig() {
   try {
@@ -44,7 +44,7 @@ export function loadConfig() {
 }
 
 /**
- * 保存配置到 localStorage
+ * Save config to localStorage
  */
 export function saveConfig({ apiKey, usageLimit, ageTier, provider, apiBase }) {
   const data = { apiKey, usageLimit }
@@ -55,19 +55,19 @@ export function saveConfig({ apiKey, usageLimit, ageTier, provider, apiBase }) {
 }
 
 /**
- * 校验配置字段
- * 返回 { valid, errors }
+ * Validate config fields
+ * @returns {{ valid: boolean, errors: object }}
  */
 export function validateConfig({ apiKey, usageLimit }) {
   const errors = {}
 
   if (!apiKey || apiKey.trim() === '') {
-    errors.apiKey = 'API Key 不能为空'
+    errors.apiKey = 'API Key is required'
   }
 
   const limit = Number(usageLimit)
   if (!Number.isInteger(limit) || limit <= 0) {
-    errors.usageLimit = '使用额度必须是正整数'
+    errors.usageLimit = 'Usage limit must be a positive integer'
   }
 
   return {
@@ -77,8 +77,8 @@ export function validateConfig({ apiKey, usageLimit }) {
 }
 
 /**
- * 获取配置状态摘要
- * 返回 'not_configured' | 'configured' | 'invalid'
+ * Get config status summary
+ * @returns {'not_configured' | 'configured' | 'invalid'}
  */
 export function getConfigStatus() {
   const config = loadConfig()
@@ -88,7 +88,7 @@ export function getConfigStatus() {
 }
 
 /**
- * 获取已使用次数
+ * Get current usage count
  */
 export function getUsageCount() {
   try {
@@ -101,7 +101,7 @@ export function getUsageCount() {
 }
 
 /**
- * 已使用次数 +1
+ * Increment usage count by 1
  */
 export function incrementUsage() {
   const count = getUsageCount() + 1
@@ -110,7 +110,7 @@ export function incrementUsage() {
 }
 
 /**
- * 检查额度是否已用完
+ * Check if usage quota is exhausted
  */
 export function isQuotaExhausted() {
   const config = loadConfig()
@@ -119,19 +119,19 @@ export function isQuotaExhausted() {
 }
 
 /**
- * 重置已使用次数（家长操作）
+ * Reset usage count (parent action)
  */
 export function resetUsageCount() {
   safeSetItem(USAGE_COUNT_KEY, '0')
 }
 
-// ── 表达历史 ──
+// -- Expression history --
 
 const HISTORY_KEY = 'childcode_history'
 const MAX_HISTORY = 50
 
 /**
- * 读取创作历史
+ * Load creation history
  * @returns {Array<{json: object, imageUrl: string, timestamp: number}>}
  */
 export function loadHistory() {
@@ -144,7 +144,7 @@ export function loadHistory() {
 }
 
 /**
- * 添加一条创作记录（最新在前，最多保留 MAX_HISTORY 条）
+ * Add a creation entry (newest first, max MAX_HISTORY entries)
  */
 export function addHistoryEntry(json, imageUrl) {
   const history = loadHistory()
@@ -158,19 +158,19 @@ export function addHistoryEntry(json, imageUrl) {
 }
 
 /**
- * 清空创作历史（家长操作）
+ * Clear creation history (parent action)
  */
 export function clearHistory() {
   safeRemoveItem(HISTORY_KEY)
 }
 
-// ── 可复用模板 ──
+// -- Reusable templates --
 
 const TEMPLATES_KEY = 'childcode_templates'
 const MAX_TEMPLATES = 20
 
 /**
- * 读取已保存的模板列表
+ * Load saved template list
  * @returns {Array<{id: string, name: string, blocks: object, createdAt: number}>}
  */
 export function loadTemplates() {
@@ -183,8 +183,8 @@ export function loadTemplates() {
 }
 
 /**
- * 保存当前积木组合为模板
- * @returns {string} 新模板的 id
+ * Save current block combination as a template
+ * @returns {string} New template id
  */
 export function saveTemplate(name, blocks) {
   const templates = loadTemplates()
@@ -201,7 +201,7 @@ export function saveTemplate(name, blocks) {
 }
 
 /**
- * 删除指定模板
+ * Delete a template by id
  */
 export function deleteTemplate(id) {
   const templates = loadTemplates().filter((t) => t.id !== id)
@@ -209,19 +209,19 @@ export function deleteTemplate(id) {
 }
 
 /**
- * 获取指定模板
+ * Get a template by id
  */
 export function getTemplate(id) {
   return loadTemplates().find((t) => t.id === id) || null
 }
 
-// ── 故事板（多步创作） ──
+// -- Storyboard (multi-step creation) --
 
 const STORYBOARD_KEY = 'childcode_storyboard'
 const MAX_FRAMES = 8
 
 /**
- * 读取当前故事板
+ * Load current storyboard
  * @returns {Array<{id: string, json: object, imageUrl: string, addedAt: number}>}
  */
 export function loadStoryboard() {
@@ -234,8 +234,8 @@ export function loadStoryboard() {
 }
 
 /**
- * 添加一帧到故事板末尾
- * @returns {boolean} 是否成功（可能已满）
+ * Add a frame to the end of the storyboard
+ * @returns {boolean} Whether successful (may be full)
  */
 export function addStoryboardFrame(json, imageUrl) {
   const frames = loadStoryboard()
@@ -251,7 +251,7 @@ export function addStoryboardFrame(json, imageUrl) {
 }
 
 /**
- * 删除故事板中的一帧
+ * Remove a frame from the storyboard
  */
 export function removeStoryboardFrame(id) {
   const frames = loadStoryboard().filter((f) => f.id !== id)
@@ -259,8 +259,8 @@ export function removeStoryboardFrame(id) {
 }
 
 /**
- * 重新排列故事板帧顺序
- * @param {string[]} orderedIds 按新顺序排列的 id 数组
+ * Reorder storyboard frames
+ * @param {string[]} orderedIds - IDs in desired order
  */
 export function reorderStoryboard(orderedIds) {
   const frames = loadStoryboard()
@@ -270,23 +270,23 @@ export function reorderStoryboard(orderedIds) {
 }
 
 /**
- * 清空故事板
+ * Clear storyboard
  */
 export function clearStoryboard() {
   safeRemoveItem(STORYBOARD_KEY)
 }
 
 /**
- * 故事板最大帧数
+ * Storyboard max frame count
  */
 export const STORYBOARD_MAX_FRAMES = MAX_FRAMES
 
-// ── 控制感掌握度 ──
+// -- Control feeling mastery --
 
 const MASTERY_KEY = 'childcode_mastery'
 
 /**
- * 读取掌握度统计
+ * Load mastery statistics
  * @returns {{ singleChanges: number, totalComparisons: number }}
  */
 export function loadMastery() {
@@ -299,14 +299,14 @@ export function loadMastery() {
 }
 
 /**
- * 是否首次使用（没有任何创作历史）
+ * Check if this is a first-time user (no creation history)
  */
 export function isFirstTimeUser() {
   return loadHistory().length === 0
 }
 
 /**
- * 记录一次对比（区分单块变化和多块变化）
+ * Record a comparison (distinguishes single vs multi block changes)
  */
 export function recordComparison(changedCount) {
   const mastery = loadMastery()

@@ -41,7 +41,7 @@ export default function ConfigPage() {
   }
 
   return (
-    <div className="page config-page">
+    <div className="legacy-page page config-page">
       <h2>家长设置</h2>
 
       <div className="config-form">
