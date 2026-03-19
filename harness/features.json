@@ -107,8 +107,8 @@
       "id": "F15",
       "name": "age-progressive-ui",
       "description": "年龄渐进 UI：8-12 极简积木 → 12-16 结构表达 → 14+ harness 入口",
-      "status": "backlog",
-      "notes": "终局产品线的 UI 层体现"
+      "status": "done",
+      "notes": "CSS class age-tier-N，tier1 大字简化/tier2 默认+模板/tier3 紧凑+全功能，welcome 文案适配"
     },
     {
       "id": "F16",
