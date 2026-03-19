@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import { loadConfig, isFirstTimeUser } from '../config/storage'
 import { AGE_TIERS, DEFAULT_AGE_TIER, BLOCK_CATEGORIES } from '../blocks/whitelist'
 import { useI18n } from '../i18n'
+import HeroCarousel from '../components/HeroCarousel'
 
 /**
  * Pick one random block per required category for quick-start experience
@@ -53,9 +54,9 @@ export default function WelcomePage() {
         {t('welcome.howItWorks')}
       </p>
 
-      {/* Carousel placeholder — F30 will replace this */}
-      <div className="w-full max-w-3xl h-48 sm:h-64 rounded-2xl border border-slate-700/50 bg-slate-800/30 flex items-center justify-center mb-12">
-        <p className="text-slate-600 text-sm">{t('welcome.carouselPlaceholder')}</p>
+      {/* Auto-playing demo carousel */}
+      <div className="w-full mb-12">
+        <HeroCarousel />
       </div>
 
       {/* CTA */}

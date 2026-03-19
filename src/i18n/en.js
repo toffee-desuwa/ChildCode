@@ -242,6 +242,17 @@ export default {
   'dashboard.clearHistory': 'Clear Creation History',
   'dashboard.historyCleared': 'History Cleared',
 
+  // Demo-only block labels (not in whitelist, used by carousel showcase)
+  'blocks.option.sky': 'Sky',
+  'blocks.option.ocean': 'Ocean',
+  'blocks.option.city': 'City',
+
+  // Hero carousel
+  'carousel.insight.action': 'Change the action → the character moves differently',
+  'carousel.insight.scene': 'Change the scene → the whole background transforms',
+  'carousel.insight.style': 'Change the style → the same scene looks completely different',
+  'carousel.fallback': 'Demo images loading failed',
+
   // Share
   'share.text': 'I created art with ChildCode!\nBlocks: {blocks}\n\nTry making AI art with blocks too!',
   'share.title': 'ChildCode Creation',

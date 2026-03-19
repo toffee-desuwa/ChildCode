@@ -242,6 +242,17 @@ export default {
   'dashboard.clearHistory': '清空创作历史',
   'dashboard.historyCleared': '历史已清空',
 
+  // Demo-only block labels
+  'blocks.option.sky': '天空',
+  'blocks.option.ocean': '海洋',
+  'blocks.option.city': '城市',
+
+  // Hero carousel
+  'carousel.insight.action': '改动作 → 角色的姿态完全不同',
+  'carousel.insight.scene': '改场景 → 整个背景都变了',
+  'carousel.insight.style': '改风格 → 同样的画面换了一种质感',
+  'carousel.fallback': '演示图片加载失败',
+
   // Share
   'share.text': '我用 ChildCode 创作了一幅画！\n积木组合：{blocks}\n\n来试试用积木控制 AI 画画吧！',
   'share.title': 'ChildCode 创作',
