@@ -225,7 +225,7 @@
       "id": "F32",
       "name": "code-quality-audit-3",
       "description": "代码质量审查：F28-F31 质量检查，移动端全页面测试，carousel 动画性能，demo 图片系统匹配逻辑，build + lint",
-      "status": "backlog",
+      "status": "done",
       "notes": "重点：1) 移动端无水平滚动 2) carousel 动画流畅不卡 3) 深色模式全页面无白色残留 4) 所有页面 i18n 100% 覆盖"
     },
     {

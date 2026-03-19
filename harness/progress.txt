@@ -285,3 +285,16 @@
 - Config/Templates/Storyboard pages already responsive — no changes needed
 - Build OK, Lint OK
 - Next: F32
+
+## F32: code-quality-audit-3 (2026-03-19)
+- Full audit of F28-F31: mobile responsive, carousel perf, dark mode, i18n, code quality
+- Mobile responsive: PASS — all pages use proper responsive grids, no horizontal overflow
+- Carousel animation: PASS — uses CSS transforms (translate, scale, opacity), no layout thrashing
+- Dark mode: PASS — no hardcoded white/light colors, all slate-based dark theme
+- Code quality: PASS — no unused imports, no production console.logs, consistent patterns
+- i18n: fixed 2 gaps:
+  - WorkspacePage: hardcoded 'Template' fallback → t('templates.defaultName')
+  - HeroCarousel: hardcoded aria-label → t('carousel.demoSet')
+  - Added keys: templates.defaultName, carousel.demoSet (en + zh)
+- Build OK, Lint OK
+- Next: F33
