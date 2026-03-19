@@ -1,11 +1,10 @@
 // English translations (default language)
 export default {
-  // Welcome Page
-  'welcome.title': 'ChildCode',
-  'welcome.subtitle.1': 'Create your art with blocks!',
-  'welcome.subtitle.2': 'Combine blocks to express ideas and see how AI interprets them',
-  'welcome.subtitle.3': 'Control AI output with structured expressions — explore input vs. result',
-  'welcome.onboarding.tagline': 'First time here? Experience the magic of AI art in 30 seconds!',
+  // Welcome Page (Hero)
+  'welcome.tagline': 'Scratch for the AI Era',
+  'welcome.description': 'Block-based AI interaction for kids. No prompts. No code. Just drag, create, and learn.',
+  'welcome.howItWorks': 'Drag blocks. Generate art. Change one block. See what changes.',
+  'welcome.carouselPlaceholder': 'Interactive demo coming soon',
   'welcome.onboarding.cta': 'Try it now',
   'welcome.onboarding.steps': 'Drag blocks \u2192 Generate \u2192 See the result!',
   'welcome.startCreating': 'Start Creating',

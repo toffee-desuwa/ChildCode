@@ -1,11 +1,10 @@
 // Chinese translations
 export default {
-  // Welcome Page
-  'welcome.title': 'ChildCode',
-  'welcome.subtitle.1': '用积木创造你的画！',
-  'welcome.subtitle.2': '用积木组合表达，看 AI 怎么理解你的想法',
-  'welcome.subtitle.3': '用结构化表达控制 AI 输出，探索输入与结果的关系',
-  'welcome.onboarding.tagline': '第一次来？30 秒体验 AI 画画的魔法！',
+  // Welcome Page (Hero)
+  'welcome.tagline': 'AI 时代的 Scratch',
+  'welcome.description': '用积木和 AI 互动，不用写 prompt，不用写代码，拖一拖就能创作。',
+  'welcome.howItWorks': '拖积木 \u2192 生成图片 \u2192 改一块 \u2192 看变化',
+  'welcome.carouselPlaceholder': '互动演示即将上线',
   'welcome.onboarding.cta': '一键试试',
   'welcome.onboarding.steps': '拖积木 \u2192 点生成 \u2192 看画面！',
   'welcome.startCreating': '开始创作',

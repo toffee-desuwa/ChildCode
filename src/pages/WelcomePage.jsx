@@ -30,43 +30,78 @@ export default function WelcomePage() {
   }
 
   return (
-    <div className={`page welcome-page age-tier-${maxTier}`}>
-      <h1>{t('welcome.title')}</h1>
-      <p>{t(`welcome.subtitle.${maxTier}`)}</p>
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-900 to-indigo-950 flex flex-col items-center justify-center px-6 text-center">
+      {/* Brand */}
+      <h2 className="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-400 mb-4">
+        ChildCode
+      </h2>
 
-      {firstTime && (
-        <div className="onboarding-hero">
-          <p className="onboarding-tagline">{t('welcome.onboarding.tagline')}</p>
-          <button onClick={handleQuickStart} className="onboarding-cta">
-            {t('welcome.onboarding.cta')}
-          </button>
-          <p className="onboarding-steps">
-            {t('welcome.onboarding.steps')}
-          </p>
-        </div>
-      )}
+      {/* Headline */}
+      <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold leading-tight mb-6">
+        <span className="bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
+          {t('welcome.tagline')}
+        </span>
+      </h1>
 
-      <div className="welcome-actions">
-        <button onClick={() => navigate('/workspace')}>{t('welcome.startCreating')}</button>
+      {/* Description */}
+      <p className="text-lg sm:text-xl text-slate-400 max-w-2xl mb-4 leading-relaxed">
+        {t('welcome.description')}
+      </p>
+
+      {/* Subtitle — how it works */}
+      <p className="text-sm text-slate-500 mb-12">
+        {t('welcome.howItWorks')}
+      </p>
+
+      {/* Carousel placeholder — F30 will replace this */}
+      <div className="w-full max-w-3xl h-48 sm:h-64 rounded-2xl border border-slate-700/50 bg-slate-800/30 flex items-center justify-center mb-12">
+        <p className="text-slate-600 text-sm">{t('welcome.carouselPlaceholder')}</p>
+      </div>
+
+      {/* CTA */}
+      <button
+        onClick={firstTime ? handleQuickStart : () => navigate('/workspace')}
+        className="group relative px-10 py-4 bg-indigo-600 hover:bg-indigo-500 text-white text-lg font-semibold rounded-xl transition-all duration-300 shadow-lg shadow-indigo-500/25 hover:shadow-indigo-500/40 hover:scale-[1.02] cursor-pointer"
+      >
+        {firstTime ? t('welcome.onboarding.cta') : t('welcome.startCreating')}
+        <span className="block text-xs font-normal text-indigo-200 mt-1 opacity-80">
+          {t('welcome.onboarding.steps')}
+        </span>
+      </button>
+
+      {/* Navigation links */}
+      <nav className="mt-16 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm">
         {maxTier >= 2 && (
-          <button onClick={() => navigate('/templates')} className="secondary">
+          <button
+            onClick={() => navigate('/templates')}
+            className="text-slate-500 hover:text-indigo-400 transition-colors cursor-pointer"
+          >
             {t('welcome.myTemplates')}
           </button>
         )}
         {maxTier >= 3 && (
-          <button onClick={() => navigate('/storyboard')} className="secondary">
+          <button
+            onClick={() => navigate('/storyboard')}
+            className="text-slate-500 hover:text-indigo-400 transition-colors cursor-pointer"
+          >
             {t('welcome.storyboard')}
           </button>
         )}
         {!firstTime && (
-          <button onClick={() => navigate('/history')} className="secondary">
+          <button
+            onClick={() => navigate('/history')}
+            className="text-slate-500 hover:text-indigo-400 transition-colors cursor-pointer"
+          >
             {t('welcome.myHistory')}
           </button>
         )}
-        <button onClick={() => navigate('/config')} className="secondary">
+        <button
+          onClick={() => navigate('/config')}
+          className="text-slate-500 hover:text-indigo-400 transition-colors cursor-pointer"
+        >
           {t('welcome.parentSettings')}
         </button>
-      </div>
+      </nav>
     </div>
   )
 }
