@@ -259,3 +259,18 @@
 - Updated useGeneration.js to pass currentJson to generateImage
 - Build OK, Lint OK
 - Next: F30
+
+## F30: hero-carousel (2026-03-19)
+- Created src/components/HeroCarousel.jsx — auto-cycling demo showcase
+- State machine with 4 phases: blocksIn (800ms) → showA (1200ms) → blockSwap (600ms) → showB (2400ms) = 5s cycle
+- 3 demo sets from imageMap: action change (cat running→sleeping), scene change (dragon sky→ocean), style change (robot cartoon→oil painting)
+- Block tags as colored pills (category-coded: indigo/emerald/amber/pink), slide-in animation with staggered delays
+- Changed block gets ring-2 highlight + scale-110 during blockSwap/showB phases
+- Image crossfade via absolute positioning + opacity transitions
+- Insight text overlay on showB phase ("Change the action → character moves differently")
+- Dot indicators for manual set navigation
+- Integrated into WelcomePage replacing placeholder div
+- Added i18n keys: carousel.insight.action/scene/style, carousel.fallback, blocks.option.sky/ocean/city (demo-only)
+- ~~Initial version had useEffect setState for imgError reset~~ → moved to advancePhase callback to fix lint
+- Build OK, Lint OK
+- Next: F31

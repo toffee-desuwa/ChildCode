@@ -211,7 +211,7 @@
       "id": "F30",
       "name": "hero-carousel",
       "description": "首页自动轮播组件：展示 3-4 组预渲染对比案例，积木标签滑入→图片 A 淡入→积木变化高亮→图片 B 交叉淡入，5 秒循环",
-      "status": "backlog",
+      "status": "done",
       "notes": "纯 CSS 动画 + React state 切换，不引入 GSAP/Lottie。数据从 imageMap.json 读取展示组。图片加载失败 fallback 为静态截图。集成到 hero page 的 CTA 按钮上方。"
     },
     {
