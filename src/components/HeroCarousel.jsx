@@ -116,7 +116,7 @@ export default function HeroCarousel() {
   return (
     <div className="w-full max-w-3xl mx-auto">
       {/* Block tags row */}
-      <div className="flex flex-wrap justify-center gap-2 mb-4 min-h-[2rem]">
+      <div className="flex flex-wrap justify-center gap-1.5 sm:gap-2 mb-3 sm:mb-4 min-h-[2rem]">
         {set.blocks.map((block, i) => {
           const isChanged = i === set.changedIndex
           const value = useB && isChanged ? block.valueB : block.valueA
@@ -127,7 +127,7 @@ export default function HeroCarousel() {
             <span
               key={`${setIndex}-${i}`}
               className={`
-                inline-flex items-center px-3 py-1 rounded-full text-xs font-medium
+                inline-flex items-center px-2 py-0.5 sm:px-3 sm:py-1 rounded-full text-[10px] sm:text-xs font-medium
                 transition-all duration-500
                 ${colorClass}
                 ${blocksReady ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'}
@@ -144,13 +144,13 @@ export default function HeroCarousel() {
       </div>
 
       {/* Image display area */}
-      <div className="relative w-full aspect-[16/10] rounded-2xl border border-slate-700/50 bg-slate-800/30 overflow-hidden">
+      <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] rounded-xl sm:rounded-2xl border border-slate-700/50 bg-slate-800/30 overflow-hidden">
         {/* Image A */}
         {!imgError.a ? (
           <img
             src={set.imageA}
             alt={set.blocks.map(b => t(`blocks.option.${b.valueA}`)).join(', ')}
-            className={`absolute inset-0 w-full h-full object-contain p-4 transition-opacity duration-700 ${
+            className={`absolute inset-0 w-full h-full object-contain p-2 sm:p-4 transition-opacity duration-700 ${
               showImageA ? 'opacity-100' : 'opacity-0'
             }`}
             onError={() => setImgError(e => ({ ...e, a: true }))}
@@ -164,7 +164,7 @@ export default function HeroCarousel() {
             alt={set.blocks.map((b, i) =>
               t(`blocks.option.${i === set.changedIndex ? b.valueB : b.valueA}`)
             ).join(', ')}
-            className={`absolute inset-0 w-full h-full object-contain p-4 transition-opacity duration-700 ${
+            className={`absolute inset-0 w-full h-full object-contain p-2 sm:p-4 transition-opacity duration-700 ${
               showImageB ? 'opacity-100' : 'opacity-0'
             }`}
             onError={() => setImgError(e => ({ ...e, b: true }))}

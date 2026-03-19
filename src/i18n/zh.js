@@ -253,6 +253,12 @@ export default {
   'carousel.insight.style': '改风格 → 同样的画面换了一种质感',
   'carousel.fallback': '演示图片加载失败',
 
+  // Mobile workspace
+  'workspace.mobile.title': '建议在电脑上使用',
+  'workspace.mobile.subtitle': '积木工作区使用拖拽操作，在大屏幕上体验更好。',
+  'workspace.mobile.cta': '在电脑上打开',
+  'workspace.mobile.preview': '先看看你能创造什么：',
+
   // Share
   'share.text': '我用 ChildCode 创作了一幅画！\n积木组合：{blocks}\n\n来试试用积木控制 AI 画画吧！',
   'share.title': 'ChildCode 创作',

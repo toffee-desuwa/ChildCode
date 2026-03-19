@@ -31,7 +31,7 @@ export default function WelcomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-900 to-indigo-950 flex flex-col items-center justify-center px-6 text-center">
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 via-slate-900 to-indigo-950 flex flex-col items-center justify-center px-4 sm:px-6 py-8 sm:py-0 text-center">
       {/* Brand */}
       <h2 className="text-sm font-semibold uppercase tracking-[0.3em] text-indigo-400 mb-4">
         ChildCode

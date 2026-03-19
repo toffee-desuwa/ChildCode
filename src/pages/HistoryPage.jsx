@@ -42,7 +42,7 @@ export default function HistoryPage() {
             <p>{t('history.empty')}</p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             {history.map((entry, i) => (
               <div key={entry.timestamp + '-' + i} className="rounded-xl bg-slate-800/60 border border-slate-700/50 overflow-hidden">
                 <img src={entry.imageUrl} alt={t('history.imageAlt', { index: i + 1 })} className="w-full aspect-square object-cover" />

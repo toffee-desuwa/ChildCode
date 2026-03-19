@@ -10,6 +10,7 @@ import { BLOCK_CATEGORIES, AGE_TIERS, DEFAULT_AGE_TIER } from '../blocks/whiteli
 import { PredictionHint, MasteryBadge, ControlReflection } from '../components/ControlFeeling'
 import { shareCreation, downloadImage } from '../sharing/shareCard'
 import { useGeneration } from '../hooks/useGeneration'
+import HeroCarousel from '../components/HeroCarousel'
 import { useI18n } from '../i18n'
 
 // Blockly container height varies by age tier
@@ -166,8 +167,24 @@ export default function WorkspacePage() {
         </div>
       )}
 
-      {/* Main workspace grid */}
-      <div className={`grid grid-cols-1 lg:grid-cols-2 ${maxTier === 3 ? 'gap-4' : 'gap-6'} max-w-7xl mx-auto mb-8`}>
+      {/* Mobile: "Best on desktop" banner + carousel (visible <768px) */}
+      <div className="md:hidden max-w-7xl mx-auto mb-8">
+        <div className="rounded-xl bg-indigo-500/10 border border-indigo-500/30 p-6 text-center mb-6">
+          <h3 className="text-lg font-semibold text-indigo-300 mb-2">{t('workspace.mobile.title')}</h3>
+          <p className="text-sm text-slate-400 mb-4">{t('workspace.mobile.subtitle')}</p>
+          <button
+            onClick={() => navigate('/')}
+            className="px-6 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-medium rounded-lg transition-colors cursor-pointer"
+          >
+            {t('workspace.mobile.cta')}
+          </button>
+        </div>
+        <p className="text-sm text-slate-500 text-center mb-4">{t('workspace.mobile.preview')}</p>
+        <HeroCarousel />
+      </div>
+
+      {/* Main workspace grid (hidden on mobile, visible >=768px) */}
+      <div className={`hidden md:grid grid-cols-1 lg:grid-cols-2 ${maxTier === 3 ? 'gap-4' : 'gap-6'} max-w-7xl mx-auto mb-8`}>
         {/* Left: Blocks area */}
         <section>
           <h3 className="text-lg font-semibold text-slate-300 mb-3">{t('workspace.blocksTitle')}</h3>
@@ -252,9 +269,9 @@ export default function WorkspacePage() {
         </section>
       </div>
 
-      {/* Error banner */}
+      {/* Error banner (desktop only) */}
       {error && (
-        <section className="flex items-center justify-between gap-3 px-4 py-3 mb-6 max-w-7xl mx-auto bg-red-500/10 border border-red-500/30 rounded-xl text-red-400">
+        <section className="hidden md:flex items-center justify-between gap-3 px-4 py-3 mb-6 max-w-7xl mx-auto bg-red-500/10 border border-red-500/30 rounded-xl text-red-400">
           <p className="text-sm">{error}</p>
           <div className="flex gap-2 flex-shrink-0">
             {generationFailed && (
@@ -275,9 +292,9 @@ export default function WorkspacePage() {
         </section>
       )}
 
-      {/* Comparison area — only when both snapshots exist */}
+      {/* Comparison area — only when both snapshots exist (desktop only) */}
       {comparison && (
-        <section className="max-w-7xl mx-auto mb-8">
+        <section className="hidden md:block max-w-7xl mx-auto mb-8">
           <h3 className="text-lg font-semibold text-slate-300 mb-4">{t('workspace.compareTitle')}</h3>
 
           <MasteryBadge mastery={mastery} />
@@ -298,9 +315,9 @@ export default function WorkspacePage() {
         </section>
       )}
 
-      {/* Placeholder when no comparison yet */}
+      {/* Placeholder when no comparison yet (desktop only) */}
       {!comparison && (
-        <section className="max-w-7xl mx-auto mb-8">
+        <section className="hidden md:block max-w-7xl mx-auto mb-8">
           <h3 className="text-lg font-semibold text-slate-300 mb-4">{t('workspace.compareTitle')}</h3>
           <div className="min-h-[80px] flex items-center justify-center rounded-xl border-2 border-dashed border-slate-700 bg-slate-800/30">
             <p className="text-slate-500 text-sm">{t('workspace.comparePlaceholder')}</p>
@@ -308,9 +325,9 @@ export default function WorkspacePage() {
         </section>
       )}
 
-      {/* JSON truth layer — dev-only */}
+      {/* JSON truth layer — dev-only (desktop only) */}
       {import.meta.env.DEV && (
-        <section className="max-w-7xl mx-auto mb-6">
+        <section className="hidden md:block max-w-7xl mx-auto mb-6">
           <h3 className="text-sm font-semibold text-slate-400 mb-2">
             {t('workspace.jsonTitle')}{' '}
             <span className="text-xs bg-slate-700 text-slate-400 px-2 py-0.5 rounded ml-1">{t('workspace.jsonDevBadge')}</span>
@@ -328,8 +345,8 @@ export default function WorkspacePage() {
         </section>
       )}
 
-      {/* Config status */}
-      <section className="max-w-7xl mx-auto">
+      {/* Config status (desktop only) */}
+      <section className="hidden md:block max-w-7xl mx-auto">
         <div className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm ${
           configStatus === 'configured'
             ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'

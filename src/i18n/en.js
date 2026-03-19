@@ -253,6 +253,12 @@ export default {
   'carousel.insight.style': 'Change the style → the same scene looks completely different',
   'carousel.fallback': 'Demo images loading failed',
 
+  // Mobile workspace
+  'workspace.mobile.title': 'Best experienced on desktop',
+  'workspace.mobile.subtitle': 'The block-based workspace uses drag & drop, which works best on a larger screen.',
+  'workspace.mobile.cta': 'Open on Desktop',
+  'workspace.mobile.preview': 'In the meantime, see what you can create:',
+
   // Share
   'share.text': 'I created art with ChildCode!\nBlocks: {blocks}\n\nTry making AI art with blocks too!',
   'share.title': 'ChildCode Creation',
