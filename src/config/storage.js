@@ -248,3 +248,31 @@ export function clearStoryboard() {
  * 故事板最大帧数
  */
 export const STORYBOARD_MAX_FRAMES = MAX_FRAMES
+
+// ── 控制感掌握度 ──
+
+const MASTERY_KEY = 'childcode_mastery'
+
+/**
+ * 读取掌握度统计
+ * @returns {{ singleChanges: number, totalComparisons: number }}
+ */
+export function loadMastery() {
+  try {
+    const raw = localStorage.getItem(MASTERY_KEY)
+    return raw ? JSON.parse(raw) : { singleChanges: 0, totalComparisons: 0 }
+  } catch {
+    return { singleChanges: 0, totalComparisons: 0 }
+  }
+}
+
+/**
+ * 记录一次对比（区分单块变化和多块变化）
+ */
+export function recordComparison(changedCount) {
+  const mastery = loadMastery()
+  mastery.totalComparisons += 1
+  if (changedCount === 1) mastery.singleChanges += 1
+  localStorage.setItem(MASTERY_KEY, JSON.stringify(mastery))
+  return mastery
+}

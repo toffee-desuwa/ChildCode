@@ -2,7 +2,7 @@ import { useState, useRef, useMemo, memo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BlocklyEditor from '../components/BlocklyEditor'
 import { isComplete, hasDuplicates, getDuplicateMessage } from '../blocks/exportJson'
-import { getConfigStatus, loadConfig, isQuotaExhausted, incrementUsage, addHistoryEntry, saveTemplate, addStoryboardFrame, loadStoryboard, STORYBOARD_MAX_FRAMES } from '../config/storage'
+import { getConfigStatus, loadConfig, isQuotaExhausted, incrementUsage, addHistoryEntry, saveTemplate, addStoryboardFrame, loadStoryboard, STORYBOARD_MAX_FRAMES, loadMastery, recordComparison } from '../config/storage'
 import { derivePrompt } from '../generation/derivePrompt'
 import { generateImage } from '../generation/provider'
 import { diffBlocks } from '../generation/diffBlocks'
@@ -10,6 +10,7 @@ import { getGuidance } from '../guidance/phaseGuide'
 import GuidanceHint from '../components/GuidanceHint'
 import ChangeInsight from '../components/ChangeInsight'
 import { CATEGORY_LABELS, BLOCK_CATEGORIES } from '../blocks/whitelist'
+import { PredictionHint, MasteryBadge, ControlReflection } from '../components/ControlFeeling'
 
 const CONFIG_STATUS_TEXT = {
   not_configured: '未配置 — 请让爸爸妈妈先完成设置',
@@ -31,6 +32,7 @@ export default function WorkspacePage() {
   const [generationFailed, setGenerationFailed] = useState(false)
   const [zeroChangeWarn, setZeroChangeWarn] = useState(false)
   const [quotaExhausted, setQuotaExhausted] = useState(() => isQuotaExhausted())
+  const [mastery, setMastery] = useState(() => loadMastery())
 
   // Ref mirrors snapshotA to avoid closure staleness in async handleGenerate
   const snapshotARef = useRef(null)
@@ -45,6 +47,12 @@ export default function WorkspacePage() {
   const hasA = snapshotA !== null
   const hasB = snapshotB !== null
   const canGenerate = complete && !duplicated && configStatus === 'configured' && !generating && !quotaExhausted
+
+  // 实时检测当前积木与 A 的差异，用于预测提示
+  const liveDiff = useMemo(() => {
+    if (!snapshotA || !currentJson || snapshotB) return null
+    return diffBlocks(snapshotA.json, currentJson)
+  }, [snapshotA, snapshotB, currentJson])
 
   const guidance = getGuidance(currentJson, snapshotA, snapshotB, guidanceSuggestionRef.current)
   if (guidance.suggestedCategory) {
@@ -95,6 +103,9 @@ export default function WorkspacePage() {
         snapshotARef.current = newSnapshot
         setSnapshotA(newSnapshot)
       } else {
+        // 记录掌握度
+        const diff = diffBlocks(snapshotARef.current.json, currentJson)
+        setMastery(recordComparison(diff.count))
         setSnapshotB(newSnapshot)
       }
     } catch (err) {
@@ -194,6 +205,10 @@ export default function WorkspacePage() {
 
           <GuidanceHint message={guidance.message} phase={guidance.phase} />
 
+          {liveDiff && liveDiff.count > 0 && (
+            <PredictionHint changedFields={liveDiff.changedFields} />
+          )}
+
           {zeroChangeWarn && (
             <p className="status-hint">你没有修改积木哦，改一个块试试？</p>
           )}
@@ -261,13 +276,9 @@ export default function WorkspacePage() {
         <section className="compare-area">
           <h3>对比区</h3>
 
+          <MasteryBadge mastery={mastery} />
           <ChangeInsight details={comparison.details} />
-
-          {comparison.count > 1 && (
-            <p className="compare-hint">
-              你改了 {comparison.count} 个块哦。试试只改 1 个，更容易看出区别！
-            </p>
-          )}
+          <ControlReflection details={comparison.details} mastery={mastery} />
 
           <div className="compare-grid">
             <CompareCard label="第一张图" snapshot={snapshotA} changedFields={comparison.changedFields} />
