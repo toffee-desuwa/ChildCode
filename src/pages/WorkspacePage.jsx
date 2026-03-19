@@ -10,16 +10,12 @@ import { CATEGORY_LABELS, BLOCK_CATEGORIES, AGE_TIERS, DEFAULT_AGE_TIER } from '
 import { PredictionHint, MasteryBadge, ControlReflection } from '../components/ControlFeeling'
 import { shareCreation, downloadImage } from '../sharing/shareCard'
 import { useGeneration } from '../hooks/useGeneration'
-
-const CONFIG_STATUS_TEXT = {
-  not_configured: '未配置 — 请让爸爸妈妈先完成设置',
-  configured: '已配置',
-  invalid: '配置无效 — 请让爸爸妈妈检查设置',
-}
+import { useI18n } from '../i18n'
 
 export default function WorkspacePage() {
   const navigate = useNavigate()
   const location = useLocation()
+  const { t } = useI18n()
   const templateBlocks = location.state?.templateBlocks || null
   const isOnboarding = location.state?.onboarding || false
   const [currentJson, setCurrentJson] = useState(null)
@@ -34,7 +30,7 @@ export default function WorkspacePage() {
   const duplicated = currentJson && hasDuplicates(currentJson)
   const duplicateMsg = currentJson && getDuplicateMessage(currentJson)
 
-  // 缓存 first-image 阶段的建议类别，防止每次渲染闪烁
+  // Cache suggested category for first-image phase to prevent flicker
   const [cachedSuggestion, setCachedSuggestion] = useState(null)
 
   const {
@@ -43,55 +39,54 @@ export default function WorkspacePage() {
     canGenerate, liveDiff, comparison, handleGenerate, handleNewRound, clearError,
   } = useGeneration(currentJson, configStatus)
 
-  // canGenerate 额外检查：duplicate 积木不能生成
+  // canGenerate extra check: duplicate blocks cannot generate
   const canGenerateFinal = canGenerate && !duplicated
 
   const guidance = useMemo(() => {
     const g = getGuidance(currentJson, snapshotA, snapshotB, cachedSuggestion)
     if (g.suggestedCategory && g.suggestedCategory !== cachedSuggestion) {
-      // 延迟到下一轮渲染更新缓存，避免 render 中 setState
       queueMicrotask(() => setCachedSuggestion(g.suggestedCategory))
     }
     return g
   }, [currentJson, snapshotA, snapshotB, cachedSuggestion])
 
-  // 保存当前积木组合为模板
+  // Save current block combination as template
   const handleSaveTemplate = () => {
     if (!currentJson || !isComplete(currentJson)) return
     const usedBlocks = Object.entries(currentJson.blocks)
       .filter(([, v]) => v !== null)
-      .map(([type, v]) => CATEGORY_LABELS[type] + '·' + v.label)
+      .map(([type, v]) => CATEGORY_LABELS[type] + '\u00b7' + v.label)
       .join(' + ')
-    const name = usedBlocks || '我的模板'
+    const name = usedBlocks || 'Template'
     saveTemplate(name, currentJson.blocks)
     setTemplateSaved(true)
     setTimeout(() => setTemplateSaved(false), 2000)
   }
 
-  // 添加当前生成结果到故事板
+  // Add current generation result to storyboard
   const handleAddToStoryboard = () => {
     const target = snapshotB || snapshotA
     if (!target) return
     const ok = addStoryboardFrame(target.json, target.imageUrl)
     if (ok) {
       const count = loadStoryboard().length
-      setStoryboardMsg(`已添加第 ${count} 帧（最多 ${STORYBOARD_MAX_FRAMES} 帧）`)
+      setStoryboardMsg(t('workspace.storyboardAdded', { count, max: STORYBOARD_MAX_FRAMES }))
     } else {
-      setStoryboardMsg(`故事板已满（最多 ${STORYBOARD_MAX_FRAMES} 帧）`)
+      setStoryboardMsg(t('workspace.storyboardFull', { max: STORYBOARD_MAX_FRAMES }))
     }
     setTimeout(() => setStoryboardMsg(null), 2500)
   }
 
-  // 分享当前创作
+  // Share current creation
   const handleShare = async () => {
     const target = snapshotB || snapshotA
     if (!target) return
     const ok = await shareCreation(target.json, target.imageUrl)
-    setShareMsg(ok ? '已复制分享文案' : '分享失败')
+    setShareMsg(ok ? t('workspace.shareCopied') : t('workspace.shareFailed'))
     setTimeout(() => setShareMsg(null), 2500)
   }
 
-  // 下载当前创作图片
+  // Download current creation image
   const handleDownload = () => {
     const target = snapshotB || snapshotA
     if (!target) return
@@ -101,7 +96,7 @@ export default function WorkspacePage() {
   return (
     <div className={`page workspace-page age-tier-${maxTier}`}>
       <header className="workspace-header">
-        <h2>ChildCode 创作区</h2>
+        <h2>{t('workspace.header')}</h2>
         <div className="workspace-header-actions">
           {maxTier >= 2 && (
             <button
@@ -109,7 +104,7 @@ export default function WorkspacePage() {
               disabled={!complete}
               className="secondary"
             >
-              {templateSaved ? '已保存' : '存为模板'}
+              {templateSaved ? t('workspace.templateSaved') : t('workspace.saveTemplate')}
             </button>
           )}
           {maxTier >= 3 && (
@@ -119,46 +114,46 @@ export default function WorkspacePage() {
                 disabled={!snapshotA}
                 className="secondary"
               >
-                {storyboardMsg || '加入故事板'}
+                {storyboardMsg || t('workspace.addToStoryboard')}
               </button>
               <button onClick={() => navigate('/storyboard')} className="secondary">
-                故事板
+                {t('workspace.storyboard')}
               </button>
             </>
           )}
           {maxTier >= 2 && (
             <button onClick={() => navigate('/templates')} className="secondary">
-              我的模板
+              {t('workspace.myTemplates')}
             </button>
           )}
           <button onClick={() => navigate('/history')} className="secondary">
-            我的历史
+            {t('workspace.myHistory')}
           </button>
           <button onClick={() => navigate('/')} className="secondary">
-            返回首页
+            {t('workspace.home')}
           </button>
         </div>
       </header>
 
       {isOnboarding && !hasA && (
         <div className="onboarding-steps-bar">
-          <span className={`onboarding-step ${complete ? 'done' : 'active'}`}>1. 积木已就位</span>
-          <span className="onboarding-step-arrow">→</span>
-          <span className={`onboarding-step ${complete && !hasA ? 'active' : ''}`}>2. 点"生成图片"</span>
-          <span className="onboarding-step-arrow">→</span>
-          <span className="onboarding-step">3. 看画面！</span>
+          <span className={`onboarding-step ${complete ? 'done' : 'active'}`}>{t('workspace.onboarding.step1')}</span>
+          <span className="onboarding-step-arrow">{'\u2192'}</span>
+          <span className={`onboarding-step ${complete && !hasA ? 'active' : ''}`}>{t('workspace.onboarding.step2')}</span>
+          <span className="onboarding-step-arrow">{'\u2192'}</span>
+          <span className="onboarding-step">{t('workspace.onboarding.step3')}</span>
         </div>
       )}
 
       {isOnboarding && hasA && !hasB && (
         <div className="onboarding-steps-bar onboarding-success">
-          你的第一幅画诞生了！试试改一个积木，看画面会怎么变？
+          {t('workspace.onboarding.success')}
         </div>
       )}
 
       <div className="workspace-layout">
         <section className="blocks-area">
-          <h3>积木搭建区</h3>
+          <h3>{t('workspace.blocksTitle')}</h3>
           <BlocklyEditor onJsonChange={setCurrentJson} initialBlocks={templateBlocks} />
 
           <GuidanceHint message={guidance.message} phase={guidance.phase} />
@@ -168,7 +163,7 @@ export default function WorkspacePage() {
           )}
 
           {zeroChangeWarn && (
-            <p className="status-hint">你没有修改积木哦，改一个块试试？</p>
+            <p className="status-hint">{t('workspace.zeroChange')}</p>
           )}
 
           <button
@@ -177,40 +172,40 @@ export default function WorkspacePage() {
             className="generate-btn"
           >
             {generating
-              ? '正在创作中…'
+              ? t('workspace.generating')
               : hasA && !hasB
-                ? '再次生成'
-                : '生成图片'}
+                ? t('workspace.regenerate')
+                : t('workspace.generate')}
           </button>
 
           {quotaExhausted && (
-            <p className="status-hint">创作次数已用完，请让爸爸妈妈查看设置</p>
+            <p className="status-hint">{t('workspace.quotaExhausted')}</p>
           )}
 
           {configStatus !== 'configured' && (
-            <p className="status-hint">请先完成家长设置才能生成</p>
+            <p className="status-hint">{t('workspace.needConfig')}</p>
           )}
         </section>
 
         <section className="preview-area">
           <div className="image-slot">
-            <h3>第一张图</h3>
+            <h3>{t('workspace.imageA')}</h3>
             {snapshotA ? (
-              <img src={snapshotA.imageUrl} alt="第一张图" className="generated-image" />
+              <img src={snapshotA.imageUrl} alt={t('workspace.imageA')} className="generated-image" />
             ) : (
               <div className="placeholder-box image-placeholder">
-                <p>{generating ? '正在生成，请稍等…' : '拖好积木后，点击生成看看效果吧'}</p>
+                <p>{generating ? t('workspace.imageA.generating') : t('workspace.imageA.placeholder')}</p>
               </div>
             )}
           </div>
 
           <div className="image-slot">
-            <h3>第二张图</h3>
+            <h3>{t('workspace.imageB')}</h3>
             {snapshotB ? (
-              <img src={snapshotB.imageUrl} alt="第二张图" className="generated-image" />
+              <img src={snapshotB.imageUrl} alt={t('workspace.imageB')} className="generated-image" />
             ) : (
               <div className="placeholder-box image-placeholder">
-                <p>{hasA && generating ? '正在生成，请稍等…' : '改一个积木后，再生成一张来对比'}</p>
+                <p>{hasA && generating ? t('workspace.imageB.generating') : t('workspace.imageB.placeholder')}</p>
               </div>
             )}
           </div>
@@ -218,10 +213,10 @@ export default function WorkspacePage() {
           {hasA && (
             <div className="share-actions">
               <button onClick={handleShare} className="secondary">
-                {shareMsg || '分享创作'}
+                {shareMsg || t('workspace.share')}
               </button>
               <button onClick={handleDownload} className="secondary">
-                下载图片
+                {t('workspace.download')}
               </button>
             </div>
           )}
@@ -233,9 +228,9 @@ export default function WorkspacePage() {
           <p>{error}</p>
           <div className="error-actions">
             {generationFailed && (
-              <button onClick={() => { clearError(); handleGenerate() }}>重试</button>
+              <button onClick={() => { clearError(); handleGenerate() }}>{t('workspace.retry')}</button>
             )}
-            <button onClick={clearError} className="secondary">关闭</button>
+            <button onClick={clearError} className="secondary">{t('workspace.close')}</button>
           </div>
         </section>
       )}
@@ -243,19 +238,19 @@ export default function WorkspacePage() {
       {/* Comparison area — only when both snapshots exist */}
       {comparison && (
         <section className="compare-area">
-          <h3>对比区</h3>
+          <h3>{t('workspace.compareTitle')}</h3>
 
           <MasteryBadge mastery={mastery} />
           <ChangeInsight details={comparison.details} />
           <ControlReflection details={comparison.details} mastery={mastery} />
 
           <div className="compare-grid">
-            <CompareCard label="第一张图" snapshot={snapshotA} changedFields={comparison.changedFields} />
-            <CompareCard label="第二张图" snapshot={snapshotB} changedFields={comparison.changedFields} />
+            <CompareCard label={t('workspace.imageA')} snapshot={snapshotA} changedFields={comparison.changedFields} />
+            <CompareCard label={t('workspace.imageB')} snapshot={snapshotB} changedFields={comparison.changedFields} />
           </div>
 
           <button onClick={handleNewRound} className="secondary new-round-btn">
-            开始新一轮对比
+            {t('workspace.newRound')}
           </button>
         </section>
       )}
@@ -263,25 +258,25 @@ export default function WorkspacePage() {
       {/* Placeholder when no comparison yet */}
       {!comparison && (
         <section className="compare-area">
-          <h3>对比区</h3>
+          <h3>{t('workspace.compareTitle')}</h3>
           <div className="placeholder-box">
-            <p>生成两张图之后，就可以在这里对比啦</p>
+            <p>{t('workspace.comparePlaceholder')}</p>
           </div>
         </section>
       )}
 
-      {/* JSON 真相层 — dev-only, hidden from children */}
+      {/* JSON truth layer — dev-only, hidden from children */}
       {import.meta.env.DEV && (
         <section className="json-preview">
-          <h3>JSON 真相层 <span className="dev-badge">开发调试</span></h3>
+          <h3>{t('workspace.jsonTitle')} <span className="dev-badge">{t('workspace.jsonDevBadge')}</span></h3>
           {duplicated ? (
             <>
-              <pre className="json-output json-invalid">积木组合无效（存在重复类别）</pre>
+              <pre className="json-output json-invalid">{t('workspace.jsonInvalid')}</pre>
               <p className="status-error">{duplicateMsg}</p>
             </>
           ) : (
             <pre className="json-output">
-              {currentJson ? JSON.stringify(currentJson, null, 2) : '尚未选择积木'}
+              {currentJson ? JSON.stringify(currentJson, null, 2) : t('workspace.jsonEmpty')}
             </pre>
           )}
         </section>
@@ -289,10 +284,10 @@ export default function WorkspacePage() {
 
       <section className="status-area">
         <div className={`config-status config-${configStatus}`}>
-          <span>家长配置：{CONFIG_STATUS_TEXT[configStatus]}</span>
+          <span>{t('workspace.configLabel')}{t(`workspace.config.${configStatus}`)}</span>
           {configStatus !== 'configured' && (
             <button onClick={() => navigate('/config')} className="secondary">
-              前往设置
+              {t('workspace.goToSettings')}
             </button>
           )}
         </div>
@@ -313,7 +308,6 @@ const CompareCard = memo(function CompareCard({ label, snapshot, changedFields }
       <ul className="compare-blocks">
         {Object.keys(BLOCK_CATEGORIES).map((type) => {
           const block = snapshot.json.blocks[type]
-          // 跳过未使用的可选类别
           if (!block) return null
           const changed = changedFields.includes(type)
           return (
