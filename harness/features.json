@@ -3,7 +3,6 @@
   "version": "2.0",
   "description": "从终局倒推的完整 feature list — 不是 MVP，是产品终局",
   "notes": "status: backlog | in-progress | done | reuse-existing",
-
   "features": [
     {
       "id": "F01",
@@ -152,7 +151,6 @@
       "status": "deferred",
       "notes": "等用户介入决策后再做"
     },
-
     {
       "id": "F22",
       "name": "tailwind-setup",
@@ -206,7 +204,7 @@
       "id": "F29",
       "name": "demo-image-system",
       "description": "预渲染 demo 图片系统：public/demo-images/ 存放图片，src/demo/imageMap.json 映射积木组合→图片路径，provider.js mock 模式改为从 imageMap 匹配",
-      "status": "backlog",
+      "status": "done",
       "notes": "匹配逻辑：block JSON 排序拼接为 key，精确查找 imageMap。无匹配时显示友好 fallback 卡片 + 最近似推荐。图片由人工提前生成放入 public/demo-images/，Ralph 只做代码逻辑。先放 placeholder 图片，真图后续人工替换。"
     },
     {

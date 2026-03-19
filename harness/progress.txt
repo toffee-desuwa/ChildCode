@@ -248,3 +248,14 @@
 - CSS bundle: 35.6KB → 34.0KB (smaller despite new Tailwind utilities)
 - Build OK, Lint OK
 - Next: F29
+
+## F29: demo-image-system (2026-03-19)
+- Created src/demo/imageMap.json with 6 entries (3 spec comparison sets × A/B variants)
+- Created src/demo/demoImageMatcher.js: buildDemoKey(), findDemoImage(), findClosestDemoImage(), getAllDemoImages()
+- Key strategy: alphabetically sort core four block values, join with '-'
+- Created 6 placeholder SVGs in public/demo-images/ (to be replaced with real AI images later)
+- Modified provider.js: added demoProvider that checks imageMap first, falls back to friendly "not pre-rendered" SVG with closest-match suggestion
+- generateImage() now accepts optional blockJson param for key-based lookup
+- Updated useGeneration.js to pass currentJson to generateImage
+- Build OK, Lint OK
+- Next: F30
