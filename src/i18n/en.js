@@ -65,7 +65,7 @@ export default {
   'workspace.jsonEmpty': 'No blocks selected',
 
   // Config status
-  'workspace.configLabel': 'Parent Config:',
+  'workspace.configLabel': 'Parent Config: ',
   'workspace.config.not_configured': 'Not configured \u2014 please ask a parent to complete setup',
   'workspace.config.configured': 'Configured',
   'workspace.config.invalid': 'Invalid config \u2014 please ask a parent to check settings',
@@ -74,4 +74,134 @@ export default {
   // Error
   'workspace.retry': 'Retry',
   'workspace.close': 'Close',
+
+  // Block category labels
+  'blocks.category.subject': 'Subject',
+  'blocks.category.action': 'Action',
+  'blocks.category.scene': 'Scene',
+  'blocks.category.style': 'Style',
+  'blocks.category.emotion': 'Emotion',
+  'blocks.category.weather': 'Weather',
+  'blocks.category.time': 'Time',
+
+  // Block option labels — subject
+  'blocks.option.cat': 'Cat',
+  'blocks.option.dog': 'Dog',
+  'blocks.option.robot': 'Robot',
+  'blocks.option.girl': 'Girl',
+  'blocks.option.boy': 'Boy',
+  'blocks.option.dragon': 'Dragon',
+  'blocks.option.rabbit': 'Rabbit',
+  'blocks.option.astronaut': 'Astronaut',
+
+  // Block option labels — action
+  'blocks.option.running': 'Running',
+  'blocks.option.flying': 'Flying',
+  'blocks.option.painting': 'Painting',
+  'blocks.option.dancing': 'Dancing',
+  'blocks.option.sleeping': 'Sleeping',
+  'blocks.option.eating': 'Eating',
+  'blocks.option.playing_guitar': 'Playing Guitar',
+
+  // Block option labels — scene
+  'blocks.option.forest': 'Forest',
+  'blocks.option.space': 'Space',
+  'blocks.option.underwater': 'Underwater',
+  'blocks.option.castle': 'Castle',
+  'blocks.option.desert': 'Desert',
+  'blocks.option.snow_mountain': 'Snow Mountain',
+  'blocks.option.candy_land': 'Candy Land',
+
+  // Block option labels — style
+  'blocks.option.watercolor': 'Watercolor',
+  'blocks.option.pixel_art': 'Pixel Art',
+  'blocks.option.oil_painting': 'Oil Painting',
+  'blocks.option.cartoon': 'Cartoon',
+  'blocks.option.crayon': 'Crayon',
+  'blocks.option.paper_cut': 'Paper Cut',
+
+  // Block option labels — emotion
+  'blocks.option.happy': 'Happy',
+  'blocks.option.sad': 'Sad',
+  'blocks.option.surprised': 'Surprised',
+  'blocks.option.scared': 'Scared',
+  'blocks.option.angry': 'Angry',
+  'blocks.option.curious': 'Curious',
+
+  // Block option labels — weather
+  'blocks.option.sunny': 'Sunny',
+  'blocks.option.rainy': 'Rainy',
+  'blocks.option.snowy': 'Snowy',
+  'blocks.option.stormy': 'Stormy',
+  'blocks.option.rainbow': 'Rainbow',
+  'blocks.option.foggy': 'Foggy',
+
+  // Block option labels — time
+  'blocks.option.daytime': 'Daytime',
+  'blocks.option.dusk': 'Dusk',
+  'blocks.option.night': 'Night',
+  'blocks.option.dawn': 'Dawn',
+
+  // Duplicate message
+  'blocks.duplicateMsg': '{names} blocks are duplicated \u2014 please keep only one of each',
+
+  // Guidance messages
+  'guidance.empty': 'Drag some blocks from the toolbox to get started!',
+  'guidance.incomplete': 'Almost there! Still need: {missing}',
+  'guidance.ready': 'All set! Click "Generate Image" to see your blocks come alive',
+  'guidance.firstImage': 'Try changing just one block! How about a different {category}?',
+  'guidance.comparisonFeedback': 'You only changed "{category}" \u2014 see how the image changed! That\'s the power of this block',
+
+  // Change Insight
+  'insight.title': 'What did you change?',
+  'insight.singleTip': 'Just one block changed and the image is different! That\'s the power of "{category}"',
+
+  // Control Feeling — mastery levels
+  'mastery.level.0': 'Explorer',
+  'mastery.level.1': 'Apprentice',
+  'mastery.level.2': 'Block Master',
+  'mastery.level.3': 'Control Master',
+  'mastery.count': '{count} precise comparisons made',
+
+  // Control Feeling — prediction
+  'prediction.hint': 'You changed "{names}" \u2014 guess how the image will change?',
+
+  // Control Feeling — reflection (single block change, rotating messages)
+  'reflection.single.0': 'You changed "{category}" from "{from}" to "{to}" \u2014 that single change transformed the image!',
+  'reflection.single.1': 'Just one block change in "{category}" and the image is different \u2014 you\'re learning to control AI precisely!',
+  'reflection.single.2': '"{from}" \u2192 "{to}", one block change, one different picture. You\'ve mastered the power of "{category}"!',
+  // Control Feeling — reflection (multi block change)
+  'reflection.multi': 'You changed {count} blocks this time \u2014 lots of changes! Try changing just one next time to see each block\'s effect clearly.',
+
+  // History Page
+  'history.title': 'My Creation History',
+  'history.back': 'Back to Create',
+  'history.empty': 'No creations yet. Head to the workspace and try!',
+  'history.imageAlt': 'Creation {index}',
+
+  // Templates Page
+  'templates.title': 'My Templates',
+  'templates.back': 'Back to Create',
+  'templates.home': 'Home',
+  'templates.subtitle': 'Save your favorite block combinations for quick reuse',
+  'templates.empty': 'No templates saved yet. Try "Save as Template" in the workspace!',
+  'templates.use': 'Use Template',
+  'templates.delete': 'Delete',
+
+  // Storyboard Page
+  'storyboard.title': 'My Storyboard',
+  'storyboard.create': 'Create',
+  'storyboard.home': 'Home',
+  'storyboard.empty': 'No frames yet. Generate images in the workspace and click "Add to Storyboard"',
+  'storyboard.count': '{count} / {max} frames \u2014 generate more images in the workspace to add',
+  'storyboard.frameAlt': 'Frame {index}',
+  'storyboard.frameLabel': 'Frame {index}',
+  'storyboard.moveUp': 'Move Up',
+  'storyboard.moveDown': 'Move Down',
+  'storyboard.remove': 'Remove',
+  'storyboard.clear': 'Clear Storyboard',
+
+  // Share
+  'share.text': 'I created art with ChildCode!\nBlocks: {blocks}\n\nTry making AI art with blocks too!',
+  'share.title': 'ChildCode Creation',
 }

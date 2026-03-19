@@ -6,7 +6,7 @@ import { getConfigStatus, loadConfig, saveTemplate, addStoryboardFrame, loadStor
 import { getGuidance } from '../guidance/phaseGuide'
 import GuidanceHint from '../components/GuidanceHint'
 import ChangeInsight from '../components/ChangeInsight'
-import { CATEGORY_LABELS, BLOCK_CATEGORIES, AGE_TIERS, DEFAULT_AGE_TIER } from '../blocks/whitelist'
+import { BLOCK_CATEGORIES, AGE_TIERS, DEFAULT_AGE_TIER } from '../blocks/whitelist'
 import { PredictionHint, MasteryBadge, ControlReflection } from '../components/ControlFeeling'
 import { shareCreation, downloadImage } from '../sharing/shareCard'
 import { useGeneration } from '../hooks/useGeneration'
@@ -28,7 +28,7 @@ export default function WorkspacePage() {
   const maxTier = AGE_TIERS[ageTier]?.maxTier ?? 1
   const configStatus = getConfigStatus()
   const duplicated = currentJson && hasDuplicates(currentJson)
-  const duplicateMsg = currentJson && getDuplicateMessage(currentJson)
+  const duplicateMsg = currentJson && getDuplicateMessage(currentJson, t)
 
   // Cache suggested category for first-image phase to prevent flicker
   const [cachedSuggestion, setCachedSuggestion] = useState(null)
@@ -43,19 +43,19 @@ export default function WorkspacePage() {
   const canGenerateFinal = canGenerate && !duplicated
 
   const guidance = useMemo(() => {
-    const g = getGuidance(currentJson, snapshotA, snapshotB, cachedSuggestion)
+    const g = getGuidance(currentJson, snapshotA, snapshotB, cachedSuggestion, t)
     if (g.suggestedCategory && g.suggestedCategory !== cachedSuggestion) {
       queueMicrotask(() => setCachedSuggestion(g.suggestedCategory))
     }
     return g
-  }, [currentJson, snapshotA, snapshotB, cachedSuggestion])
+  }, [currentJson, snapshotA, snapshotB, cachedSuggestion, t])
 
   // Save current block combination as template
   const handleSaveTemplate = () => {
     if (!currentJson || !isComplete(currentJson)) return
     const usedBlocks = Object.entries(currentJson.blocks)
       .filter(([, v]) => v !== null)
-      .map(([type, v]) => CATEGORY_LABELS[type] + '\u00b7' + v.label)
+      .map(([type, v]) => t('blocks.category.' + type) + '\u00b7' + (v.value ? t('blocks.option.' + v.value) : v.label))
       .join(' + ')
     const name = usedBlocks || 'Template'
     saveTemplate(name, currentJson.blocks)
@@ -81,7 +81,7 @@ export default function WorkspacePage() {
   const handleShare = async () => {
     const target = snapshotB || snapshotA
     if (!target) return
-    const ok = await shareCreation(target.json, target.imageUrl)
+    const ok = await shareCreation(target.json, target.imageUrl, t)
     setShareMsg(ok ? t('workspace.shareCopied') : t('workspace.shareFailed'))
     setTimeout(() => setShareMsg(null), 2500)
   }
@@ -301,6 +301,8 @@ export default function WorkspacePage() {
  * Memoized — only re-renders when snapshot or changedFields reference changes.
  */
 const CompareCard = memo(function CompareCard({ label, snapshot, changedFields }) {
+  const { t } = useI18n()
+
   return (
     <div className="compare-card">
       <h4>{label}</h4>
@@ -315,8 +317,8 @@ const CompareCard = memo(function CompareCard({ label, snapshot, changedFields }
               key={type}
               className={changed ? 'is-changed' : ''}
             >
-              <span className="block-type">{CATEGORY_LABELS[type]}</span>
-              <span className="block-value">{block.label}</span>
+              <span className="block-type">{t('blocks.category.' + type)}</span>
+              <span className="block-value">{block.value ? t('blocks.option.' + block.value) : block.label}</span>
             </li>
           )
         })}

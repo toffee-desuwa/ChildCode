@@ -1,10 +1,10 @@
-import { BLOCK_CATEGORIES, CATEGORY_LABELS, getRequiredCategories } from './whitelist'
+import { BLOCK_CATEGORIES, getRequiredCategories } from './whitelist'
 
 /**
- * 从 Blockly workspace 导出 JSON 真相层
+ * Export JSON truth layer from Blockly workspace
  *
- * 如果某类块缺失，对应字段为 null
- * 如果某类块重复，返回 duplicates 列表标记无效态
+ * Missing category fields are null.
+ * Duplicate categories are listed in the duplicates array.
  */
 export function exportBlocksJson(workspace) {
   const allBlocks = workspace.getAllBlocks(false)
@@ -41,24 +41,30 @@ export function exportBlocksJson(workspace) {
 }
 
 /**
- * 检查是否有重复类别
+ * Check if there are duplicate categories
  */
 export function hasDuplicates(json) {
   return json.duplicates && json.duplicates.length > 0
 }
 
 /**
- * 获取重复类别的中文提示
+ * Get duplicate category message
+ * @param {object} json - exported blocks JSON
+ * @param {function} [t] - optional i18n translator function
  */
-export function getDuplicateMessage(json) {
+export function getDuplicateMessage(json, t) {
   if (!hasDuplicates(json)) return null
-  const names = json.duplicates.map((type) => CATEGORY_LABELS[type] || type)
-  return `${names.join('、')}积木重复了，请每类只保留一个`
+  const names = json.duplicates
+    .map((type) => t ? t('blocks.category.' + type) : BLOCK_CATEGORIES[type]?.label || type)
+    .join(t ? ', ' : ', ')
+  if (t) {
+    return t('blocks.duplicateMsg', { names })
+  }
+  return `${names} blocks are duplicated \u2014 please keep only one of each`
 }
 
 /**
- * 检查 JSON 真相层是否必填类别齐全且无重复
- * 只检查 required 类别（tier 1 的四类），扩展类别为可选
+ * Check if JSON truth layer has all required categories and no duplicates
  */
 export function isComplete(json) {
   if (hasDuplicates(json)) return false

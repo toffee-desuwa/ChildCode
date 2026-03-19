@@ -2,76 +2,206 @@
 export default {
   // Welcome Page
   'welcome.title': 'ChildCode',
-  'welcome.subtitle.1': '\u7528\u79ef\u6728\u521b\u9020\u4f60\u7684\u753b\uff01',
-  'welcome.subtitle.2': '\u7528\u79ef\u6728\u7ec4\u5408\u8868\u8fbe\uff0c\u770b AI \u600e\u4e48\u7406\u89e3\u4f60\u7684\u60f3\u6cd5',
-  'welcome.subtitle.3': '\u7528\u7ed3\u6784\u5316\u8868\u8fbe\u63a7\u5236 AI \u8f93\u51fa\uff0c\u63a2\u7d22\u8f93\u5165\u4e0e\u7ed3\u679c\u7684\u5173\u7cfb',
-  'welcome.onboarding.tagline': '\u7b2c\u4e00\u6b21\u6765\uff1f30 \u79d2\u4f53\u9a8c AI \u753b\u753b\u7684\u9b54\u6cd5\uff01',
-  'welcome.onboarding.cta': '\u4e00\u952e\u8bd5\u8bd5',
-  'welcome.onboarding.steps': '\u62d6\u79ef\u6728 \u2192 \u70b9\u751f\u6210 \u2192 \u770b\u753b\u9762\uff01',
-  'welcome.startCreating': '\u5f00\u59cb\u521b\u4f5c',
-  'welcome.myTemplates': '\u6211\u7684\u6a21\u677f',
-  'welcome.storyboard': '\u6545\u4e8b\u677f',
-  'welcome.myHistory': '\u6211\u7684\u5386\u53f2',
-  'welcome.parentSettings': '\u5bb6\u957f\u8bbe\u7f6e',
+  'welcome.subtitle.1': '用积木创造你的画！',
+  'welcome.subtitle.2': '用积木组合表达，看 AI 怎么理解你的想法',
+  'welcome.subtitle.3': '用结构化表达控制 AI 输出，探索输入与结果的关系',
+  'welcome.onboarding.tagline': '第一次来？30 秒体验 AI 画画的魔法！',
+  'welcome.onboarding.cta': '一键试试',
+  'welcome.onboarding.steps': '拖积木 \u2192 点生成 \u2192 看画面！',
+  'welcome.startCreating': '开始创作',
+  'welcome.myTemplates': '我的模板',
+  'welcome.storyboard': '故事板',
+  'welcome.myHistory': '我的历史',
+  'welcome.parentSettings': '家长设置',
 
   // Workspace Page
-  'workspace.header': 'ChildCode \u521b\u4f5c\u533a',
-  'workspace.saveTemplate': '\u5b58\u4e3a\u6a21\u677f',
-  'workspace.templateSaved': '\u5df2\u4fdd\u5b58',
-  'workspace.addToStoryboard': '\u52a0\u5165\u6545\u4e8b\u677f',
-  'workspace.storyboardAdded': '\u5df2\u6dfb\u52a0\u7b2c {count} \u5e27\uff08\u6700\u591a {max} \u5e27\uff09',
-  'workspace.storyboardFull': '\u6545\u4e8b\u677f\u5df2\u6ee1\uff08\u6700\u591a {max} \u5e27\uff09',
-  'workspace.storyboard': '\u6545\u4e8b\u677f',
-  'workspace.myTemplates': '\u6211\u7684\u6a21\u677f',
-  'workspace.myHistory': '\u6211\u7684\u5386\u53f2',
-  'workspace.home': '\u8fd4\u56de\u9996\u9875',
-  'workspace.shareCopied': '\u5df2\u590d\u5236\u5206\u4eab\u6587\u6848',
-  'workspace.shareFailed': '\u5206\u4eab\u5931\u8d25',
+  'workspace.header': 'ChildCode 创作区',
+  'workspace.saveTemplate': '存为模板',
+  'workspace.templateSaved': '已保存',
+  'workspace.addToStoryboard': '加入故事板',
+  'workspace.storyboardAdded': '已添加第 {count} 帧（最多 {max} 帧）',
+  'workspace.storyboardFull': '故事板已满（最多 {max} 帧）',
+  'workspace.storyboard': '故事板',
+  'workspace.myTemplates': '我的模板',
+  'workspace.myHistory': '我的历史',
+  'workspace.home': '返回首页',
+  'workspace.shareCopied': '已复制分享文案',
+  'workspace.shareFailed': '分享失败',
 
   // Onboarding steps bar
-  'workspace.onboarding.step1': '1. \u79ef\u6728\u5df2\u5c31\u4f4d',
-  'workspace.onboarding.step2': '2. \u70b9\u201c\u751f\u6210\u56fe\u7247\u201d',
-  'workspace.onboarding.step3': '3. \u770b\u753b\u9762\uff01',
-  'workspace.onboarding.success': '\u4f60\u7684\u7b2c\u4e00\u5e45\u753b\u8bde\u751f\u4e86\uff01\u8bd5\u8bd5\u6539\u4e00\u4e2a\u79ef\u6728\uff0c\u770b\u753b\u9762\u4f1a\u600e\u4e48\u53d8\uff1f',
+  'workspace.onboarding.step1': '1. 积木已就位',
+  'workspace.onboarding.step2': '2. 点"生成图片"',
+  'workspace.onboarding.step3': '3. 看画面！',
+  'workspace.onboarding.success': '你的第一幅画诞生了！试试改一个积木，看画面会怎么变？',
 
   // Blocks area
-  'workspace.blocksTitle': '\u79ef\u6728\u642d\u5efa\u533a',
-  'workspace.zeroChange': '\u4f60\u6ca1\u6709\u4fee\u6539\u79ef\u6728\u54e6\uff0c\u6539\u4e00\u4e2a\u5757\u8bd5\u8bd5\uff1f',
-  'workspace.generate': '\u751f\u6210\u56fe\u7247',
-  'workspace.generating': '\u6b63\u5728\u521b\u4f5c\u4e2d\u2026',
-  'workspace.regenerate': '\u518d\u6b21\u751f\u6210',
-  'workspace.quotaExhausted': '\u521b\u4f5c\u6b21\u6570\u5df2\u7528\u5b8c\uff0c\u8bf7\u8ba9\u7238\u7238\u5988\u5988\u67e5\u770b\u8bbe\u7f6e',
-  'workspace.needConfig': '\u8bf7\u5148\u5b8c\u6210\u5bb6\u957f\u8bbe\u7f6e\u624d\u80fd\u751f\u6210',
+  'workspace.blocksTitle': '积木搭建区',
+  'workspace.zeroChange': '你没有修改积木哦，改一个块试试？',
+  'workspace.generate': '生成图片',
+  'workspace.generating': '正在创作中\u2026',
+  'workspace.regenerate': '再次生成',
+  'workspace.quotaExhausted': '创作次数已用完，请让爸爸妈妈查看设置',
+  'workspace.needConfig': '请先完成家长设置才能生成',
 
   // Preview area
-  'workspace.imageA': '\u7b2c\u4e00\u5f20\u56fe',
-  'workspace.imageB': '\u7b2c\u4e8c\u5f20\u56fe',
-  'workspace.imageA.placeholder': '\u62d6\u597d\u79ef\u6728\u540e\uff0c\u70b9\u51fb\u751f\u6210\u770b\u770b\u6548\u679c\u5427',
-  'workspace.imageA.generating': '\u6b63\u5728\u751f\u6210\uff0c\u8bf7\u7a0d\u7b49\u2026',
-  'workspace.imageB.placeholder': '\u6539\u4e00\u4e2a\u79ef\u6728\u540e\uff0c\u518d\u751f\u6210\u4e00\u5f20\u6765\u5bf9\u6bd4',
-  'workspace.imageB.generating': '\u6b63\u5728\u751f\u6210\uff0c\u8bf7\u7a0d\u7b49\u2026',
-  'workspace.share': '\u5206\u4eab\u521b\u4f5c',
-  'workspace.download': '\u4e0b\u8f7d\u56fe\u7247',
+  'workspace.imageA': '第一张图',
+  'workspace.imageB': '第二张图',
+  'workspace.imageA.placeholder': '拖好积木后，点击生成看看效果吧',
+  'workspace.imageA.generating': '正在生成，请稍等\u2026',
+  'workspace.imageB.placeholder': '改一个积木后，再生成一张来对比',
+  'workspace.imageB.generating': '正在生成，请稍等\u2026',
+  'workspace.share': '分享创作',
+  'workspace.download': '下载图片',
 
   // Compare area
-  'workspace.compareTitle': '\u5bf9\u6bd4\u533a',
-  'workspace.comparePlaceholder': '\u751f\u6210\u4e24\u5f20\u56fe\u4e4b\u540e\uff0c\u5c31\u53ef\u4ee5\u5728\u8fd9\u91cc\u5bf9\u6bd4\u5566',
-  'workspace.newRound': '\u5f00\u59cb\u65b0\u4e00\u8f6e\u5bf9\u6bd4',
+  'workspace.compareTitle': '对比区',
+  'workspace.comparePlaceholder': '生成两张图之后，就可以在这里对比啦',
+  'workspace.newRound': '开始新一轮对比',
 
   // JSON debug
-  'workspace.jsonTitle': 'JSON \u771f\u76f8\u5c42',
-  'workspace.jsonDevBadge': '\u5f00\u53d1\u8c03\u8bd5',
-  'workspace.jsonInvalid': '\u79ef\u6728\u7ec4\u5408\u65e0\u6548\uff08\u5b58\u5728\u91cd\u590d\u7c7b\u522b\uff09',
-  'workspace.jsonEmpty': '\u5c1a\u672a\u9009\u62e9\u79ef\u6728',
+  'workspace.jsonTitle': 'JSON 真相层',
+  'workspace.jsonDevBadge': '开发调试',
+  'workspace.jsonInvalid': '积木组合无效（存在重复类别）',
+  'workspace.jsonEmpty': '尚未选择积木',
 
   // Config status
-  'workspace.configLabel': '\u5bb6\u957f\u914d\u7f6e\uff1a',
-  'workspace.config.not_configured': '\u672a\u914d\u7f6e \u2014 \u8bf7\u8ba9\u7238\u7238\u5988\u5988\u5148\u5b8c\u6210\u8bbe\u7f6e',
-  'workspace.config.configured': '\u5df2\u914d\u7f6e',
-  'workspace.config.invalid': '\u914d\u7f6e\u65e0\u6548 \u2014 \u8bf7\u8ba9\u7238\u7238\u5988\u5988\u68c0\u67e5\u8bbe\u7f6e',
-  'workspace.goToSettings': '\u524d\u5f80\u8bbe\u7f6e',
+  'workspace.configLabel': '家长配置：',
+  'workspace.config.not_configured': '未配置 \u2014 请让爸爸妈妈先完成设置',
+  'workspace.config.configured': '已配置',
+  'workspace.config.invalid': '配置无效 \u2014 请让爸爸妈妈检查设置',
+  'workspace.goToSettings': '前往设置',
 
   // Error
-  'workspace.retry': '\u91cd\u8bd5',
-  'workspace.close': '\u5173\u95ed',
+  'workspace.retry': '重试',
+  'workspace.close': '关闭',
+
+  // Block category labels
+  'blocks.category.subject': '对象',
+  'blocks.category.action': '动作',
+  'blocks.category.scene': '场景',
+  'blocks.category.style': '风格',
+  'blocks.category.emotion': '情绪',
+  'blocks.category.weather': '天气',
+  'blocks.category.time': '时间',
+
+  // Block option labels — subject
+  'blocks.option.cat': '猫',
+  'blocks.option.dog': '狗',
+  'blocks.option.robot': '机器人',
+  'blocks.option.girl': '小女孩',
+  'blocks.option.boy': '小男孩',
+  'blocks.option.dragon': '龙',
+  'blocks.option.rabbit': '兔子',
+  'blocks.option.astronaut': '宇航员',
+
+  // Block option labels — action
+  'blocks.option.running': '奔跑',
+  'blocks.option.flying': '飞翔',
+  'blocks.option.painting': '画画',
+  'blocks.option.dancing': '跳舞',
+  'blocks.option.sleeping': '睡觉',
+  'blocks.option.eating': '吃东西',
+  'blocks.option.playing_guitar': '弹吉他',
+
+  // Block option labels — scene
+  'blocks.option.forest': '森林',
+  'blocks.option.space': '太空',
+  'blocks.option.underwater': '海底',
+  'blocks.option.castle': '城堡',
+  'blocks.option.desert': '沙漠',
+  'blocks.option.snow_mountain': '雪山',
+  'blocks.option.candy_land': '糖果王国',
+
+  // Block option labels — style
+  'blocks.option.watercolor': '水彩',
+  'blocks.option.pixel_art': '像素风',
+  'blocks.option.oil_painting': '油画',
+  'blocks.option.cartoon': '卡通',
+  'blocks.option.crayon': '蜡笔画',
+  'blocks.option.paper_cut': '剪纸风',
+
+  // Block option labels — emotion
+  'blocks.option.happy': '开心',
+  'blocks.option.sad': '伤心',
+  'blocks.option.surprised': '惊讶',
+  'blocks.option.scared': '害怕',
+  'blocks.option.angry': '生气',
+  'blocks.option.curious': '好奇',
+
+  // Block option labels — weather
+  'blocks.option.sunny': '晴天',
+  'blocks.option.rainy': '下雨',
+  'blocks.option.snowy': '下雪',
+  'blocks.option.stormy': '雷电',
+  'blocks.option.rainbow': '彩虹',
+  'blocks.option.foggy': '雾气',
+
+  // Block option labels — time
+  'blocks.option.daytime': '白天',
+  'blocks.option.dusk': '黄昏',
+  'blocks.option.night': '夜晚',
+  'blocks.option.dawn': '黎明',
+
+  // Duplicate message
+  'blocks.duplicateMsg': '{names}积木重复了，请每类只保留一个',
+
+  // Guidance messages
+  'guidance.empty': '从左边的工具箱拖几个积木过来试试！',
+  'guidance.incomplete': '还差{missing}就齐了！',
+  'guidance.ready': '准备好了！点「生成图片」看看你的积木会变成什么画',
+  'guidance.firstImage': '试试只改一个积木，看看画会怎么变？比如换个{category}？',
+  'guidance.comparisonFeedback': '你只改了「{category}」，看看画面变化！这就是这个积木的力量',
+
+  // Change Insight
+  'insight.title': '你做了什么改变？',
+  'insight.singleTip': '只改了一个积木，画面就不一样了！这就是「{category}」的影响力',
+
+  // Control Feeling — mastery levels
+  'mastery.level.0': '小探索者',
+  'mastery.level.1': '表达学徒',
+  'mastery.level.2': '积木达人',
+  'mastery.level.3': '控制大师',
+  'mastery.count': '已完成 {count} 次精准对比',
+
+  // Control Feeling — prediction
+  'prediction.hint': '你改了「{names}」—— 猜猜画面会怎么变？',
+
+  // Control Feeling — reflection (single block change, rotating messages)
+  'reflection.single.0': '你把「{category}」从"{from}"换成了"{to}"，画面的变化就来自这一个改动！',
+  'reflection.single.1': '只动了「{category}」这一块，画面就不一样了——你正在学会精确控制 AI！',
+  'reflection.single.2': '"{from}"→"{to}"，一个积木的变化，一幅不同的画。你掌握了「{category}」的力量！',
+  // Control Feeling — reflection (multi block change)
+  'reflection.multi': '这次你改了 {count} 个积木。变化很大对吧？试试下次只改一个，更容易看清每个积木的力量！',
+
+  // History Page
+  'history.title': '我的创作历史',
+  'history.back': '返回创作',
+  'history.empty': '还没有创作记录，去创作区试试吧！',
+  'history.imageAlt': '创作 {index}',
+
+  // Templates Page
+  'templates.title': '我的模板',
+  'templates.back': '返回创作',
+  'templates.home': '返回首页',
+  'templates.subtitle': '保存常用的积木组合，下次创作可以直接用',
+  'templates.empty': '还没有保存模板，去创作区试试「存为模板」吧',
+  'templates.use': '使用模板',
+  'templates.delete': '删除',
+
+  // Storyboard Page
+  'storyboard.title': '我的故事板',
+  'storyboard.create': '去创作',
+  'storyboard.home': '返回首页',
+  'storyboard.empty': '还没有帧哦，去创作区生成图片后点"加入故事板"',
+  'storyboard.count': '{count} / {max} 帧 \u2014 在创作区生成图片后可以继续添加',
+  'storyboard.frameAlt': '第 {index} 帧',
+  'storyboard.frameLabel': '第 {index} 帧',
+  'storyboard.moveUp': '上移',
+  'storyboard.moveDown': '下移',
+  'storyboard.remove': '删除',
+  'storyboard.clear': '清空故事板',
+
+  // Share
+  'share.text': '我用 ChildCode 创作了一幅画！\n积木组合：{blocks}\n\n来试试用积木控制 AI 画画吧！',
+  'share.title': 'ChildCode 创作',
 }

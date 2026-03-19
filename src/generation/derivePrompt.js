@@ -1,9 +1,10 @@
 /**
- * 从 JSON 真相层派生底层 prompt
+ * Derive image generation prompt from JSON truth layer
  *
- * 规则：
- * - 必填四类（subject、action、scene、style）缺一不可
- * - 可选类（emotion、weather、time）存在则追加到 prompt
+ * Rules:
+ * - Core four (subject, action, scene, style) are all required
+ * - Optional categories (emotion, weather, time) appended when present
+ * - Prompt is always in English for best AI image generation results
  */
 export function derivePrompt(json) {
   const { blocks } = json
@@ -16,17 +17,17 @@ export function derivePrompt(json) {
     return null
   }
 
-  // 基础 prompt
-  let prompt = `${style}风格，${subject}在${scene}中${action}`
+  // Base prompt in English
+  let prompt = `${style} style, ${subject} ${action} in ${scene}`
 
-  // 可选修饰
+  // Optional modifiers
   const extras = []
-  if (blocks.emotion?.label) extras.push(`表情${blocks.emotion.label}`)
-  if (blocks.weather?.label) extras.push(`${blocks.weather.label}`)
-  if (blocks.time?.label) extras.push(`${blocks.time.label}时分`)
+  if (blocks.emotion?.label) extras.push(`looking ${blocks.emotion.label}`)
+  if (blocks.weather?.label) extras.push(`${blocks.weather.label} weather`)
+  if (blocks.time?.label) extras.push(`at ${blocks.time.label}`)
 
   if (extras.length > 0) {
-    prompt += `，${extras.join('，')}`
+    prompt += `, ${extras.join(', ')}`
   }
 
   return prompt

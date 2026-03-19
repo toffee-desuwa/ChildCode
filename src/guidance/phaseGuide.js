@@ -1,69 +1,73 @@
 /**
- * 阶段感知引导系统
- * 根据当前 workspace 状态返回引导信息，纯函数，无副作用
+ * Phase-aware guidance system
+ * Returns guidance messages based on current workspace state.
+ * Pure function, no side effects.
+ *
+ * @param {function} t - i18n translator function
  */
-import { BLOCK_CATEGORIES, CATEGORY_LABELS, getRequiredCategories } from '../blocks/whitelist'
+import { BLOCK_CATEGORIES, getRequiredCategories } from '../blocks/whitelist'
 import { hasDuplicates } from '../blocks/exportJson'
 
 const ALL_CATEGORIES = Object.keys(BLOCK_CATEGORIES)
 const REQUIRED = getRequiredCategories()
 
 /**
- * 根据当前状态判定阶段并返回引导信息
- * @param {object|null} currentJson - exportBlocksJson 返回值
- * @param {object|null} snapshotA - 第一张图快照
- * @param {object|null} snapshotB - 第二张图快照
- * @param {string|null} cachedSuggestion - 调用方缓存的建议类别，防闪烁
+ * Determine phase and return guidance message
+ * @param {object|null} currentJson - exportBlocksJson result
+ * @param {object|null} snapshotA - first image snapshot
+ * @param {object|null} snapshotB - second image snapshot
+ * @param {string|null} cachedSuggestion - caller-cached suggested category to prevent flicker
+ * @param {function} t - i18n translator function
  * @returns {{ phase: string, message: string|null, suggestedCategory?: string }}
  */
-export function getGuidance(currentJson, snapshotA, snapshotB, cachedSuggestion) {
-  // 初始状态（组件 mount 时 currentJson 为 null）
-  if (!currentJson) return { phase: 'empty', message: '从左边的工具箱拖几个积木过来试试！' }
+export function getGuidance(currentJson, snapshotA, snapshotB, cachedSuggestion, t) {
+  // Initial state (currentJson is null on component mount)
+  if (!currentJson) return { phase: 'empty', message: t('guidance.empty') }
 
-  // workspace 清空所有积木后，blocks 全为 null
+  // Workspace cleared — all blocks null
   const allNull = ALL_CATEGORIES.every(c => !currentJson.blocks[c])
-  if (allNull) return { phase: 'empty', message: '从左边的工具箱拖几个积木过来试试！' }
+  if (allNull) return { phase: 'empty', message: t('guidance.empty') }
 
-  // 重复积木 — 不显示引导，让现有 duplicate UI 处理
+  // Duplicate blocks — let existing duplicate UI handle it
   if (hasDuplicates(currentJson)) return { phase: 'invalid', message: null }
 
-  // 未凑齐必填四类
+  // Missing required categories
   const missing = REQUIRED.filter(c => !currentJson.blocks[c])
   if (missing.length > 0) {
-    const names = missing.map(c => CATEGORY_LABELS[c])
-    return { phase: 'incomplete', message: `还差${names.join('、')}就齐了！` }
+    const names = missing.map(c => t('blocks.category.' + c)).join(', ')
+    return { phase: 'incomplete', message: t('guidance.incomplete', { missing: names }) }
   }
 
-  // 四类齐全，未生成第一张图
+  // All four required present, no first image yet
   if (!snapshotA) {
-    return { phase: 'ready', message: '准备好了！点「生成图片」看看你的积木会变成什么画' }
+    return { phase: 'ready', message: t('guidance.ready') }
   }
 
-  // 已有第一张图，等待第二张
+  // Has first image, waiting for second
   if (!snapshotB) {
-    // 建议改任意已放置的类别
     const placed = ALL_CATEGORIES.filter(c => currentJson.blocks[c])
     const suggestion = cachedSuggestion || placed[Math.floor(Math.random() * placed.length)]
     return {
       phase: 'first-image',
-      message: `试试只改一个积木，看看画会怎么变？比如换个${CATEGORY_LABELS[suggestion]}？`,
+      message: t('guidance.firstImage', { category: t('blocks.category.' + suggestion) }),
       suggestedCategory: suggestion,
     }
   }
 
-  // 对比阶段 — 由现有 comparison UI 处理
+  // Comparison phase — handled by existing comparison UI
   return { phase: 'comparing', message: null }
 }
 
 /**
- * 对比阶段的增强反馈（单块变化时给正面强化）
+ * Enhanced feedback for comparison phase (single block change = positive reinforcement)
  * @param {{ changedFields: string[], count: number }} comparison
+ * @param {function} t - i18n translator function
  * @returns {string|null}
  */
-export function getComparisonFeedback(comparison) {
+export function getComparisonFeedback(comparison, t) {
   if (comparison.count === 1) {
-    const category = CATEGORY_LABELS[comparison.changedFields[0]]
-    return `你只改了「${category}」，看看画面变化！这就是这个积木的力量`
+    const category = t('blocks.category.' + comparison.changedFields[0])
+    return t('guidance.comparisonFeedback', { category })
   }
   return null
 }

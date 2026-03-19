@@ -1,9 +1,9 @@
 /**
- * 对比两个 JSON 真相层快照，返回变化的字段列表及变化详情
+ * Compare two JSON truth layer snapshots, return changed fields and details.
  *
- * @param {object} jsonA - 第一次生成时的 JSON
- * @param {object} jsonB - 第二次生成时的 JSON
- * @returns {{ changedFields: string[], count: number, details: Array<{field: string, from: string, to: string}> }}
+ * @param {object} jsonA - first generation JSON
+ * @param {object} jsonB - second generation JSON
+ * @returns {{ changedFields: string[], count: number, details: Array<{field: string, from: string, fromValue: string|null, to: string, toValue: string|null}> }}
  */
 const BLOCK_TYPES = ['subject', 'action', 'scene', 'style']
 
@@ -18,8 +18,10 @@ export function diffBlocks(jsonA, jsonB) {
       changedFields.push(type)
       details.push({
         field: type,
-        from: a?.label ?? '—',
-        to: b?.label ?? '—',
+        from: a?.label ?? '\u2014',
+        fromValue: a?.value ?? null,
+        to: b?.label ?? '\u2014',
+        toValue: b?.value ?? null,
       })
     }
   }

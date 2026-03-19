@@ -1,34 +1,34 @@
-import { CATEGORY_LABELS } from '../blocks/whitelist'
-
 /**
- * 生成分享文案
- * @param {object} json - 积木 JSON 真相层
+ * Build share text for a creation
+ * @param {object} json - block JSON truth layer
+ * @param {function} t - i18n translator function
  * @returns {string}
  */
-export function buildShareText(json) {
+export function buildShareText(json, t) {
   const blocks = Object.entries(json.blocks)
     .filter(([, v]) => v !== null)
-    .map(([type, v]) => `${CATEGORY_LABELS[type]}：${v.label}`)
-    .join('｜')
+    .map(([type, v]) => `${t('blocks.category.' + type)}: ${v.value ? t('blocks.option.' + v.value) : v.label}`)
+    .join(' | ')
 
-  return `我用 ChildCode 创作了一幅画！\n积木组合：${blocks}\n\n来试试用积木控制 AI 画画吧！`
+  return t('share.text', { blocks })
 }
 
 /**
- * 使用 Web Share API 分享（移动端优先）
+ * Share via Web Share API (mobile-first) with clipboard fallback
  * @param {object} json
  * @param {string} imageUrl
- * @returns {Promise<boolean>} 是否成功调用分享
+ * @param {function} t - i18n translator function
+ * @returns {Promise<boolean>} whether share was successful
  */
-export async function shareCreation(json, imageUrl) {
-  const text = buildShareText(json)
+export async function shareCreation(json, imageUrl, t) {
+  const text = buildShareText(json, t)
 
-  // 尝试 Web Share API（移动端浏览器支持）
+  // Try Web Share API (supported on mobile browsers)
   if (navigator.share) {
     try {
-      const shareData = { title: 'ChildCode 创作', text }
+      const shareData = { title: t('share.title'), text }
 
-      // 尝试分享图片（需要 File）
+      // Try sharing image (requires File)
       if (navigator.canShare && imageUrl.startsWith('data:')) {
         const blob = await fetch(imageUrl).then(r => r.blob())
         const file = new File([blob], 'childcode-creation.png', { type: blob.type })
@@ -40,11 +40,11 @@ export async function shareCreation(json, imageUrl) {
       await navigator.share(shareData)
       return true
     } catch {
-      // 用户取消或分享失败，fall through
+      // User cancelled or share failed, fall through
     }
   }
 
-  // 降级：复制文案到剪贴板
+  // Fallback: copy text to clipboard
   try {
     await navigator.clipboard.writeText(text)
     return true
@@ -54,7 +54,7 @@ export async function shareCreation(json, imageUrl) {
 }
 
 /**
- * 下载图片到本地
+ * Download image locally
  * @param {string} imageUrl
  * @param {string} filename
  */

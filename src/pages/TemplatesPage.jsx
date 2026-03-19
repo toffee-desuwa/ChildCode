@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { loadTemplates, deleteTemplate } from '../config/storage'
-import { CATEGORY_LABELS } from '../blocks/whitelist'
+import { useI18n } from '../i18n'
 
 export default function TemplatesPage() {
   const navigate = useNavigate()
+  const { t, lang } = useI18n()
   const [templates, setTemplates] = useState(() => loadTemplates())
 
   const handleUse = (template) => {
@@ -19,24 +20,24 @@ export default function TemplatesPage() {
   return (
     <div className="page templates-page">
       <header className="templates-header">
-        <h2>我的模板</h2>
+        <h2>{t('templates.title')}</h2>
         <div className="templates-header-actions">
           <button onClick={() => navigate('/workspace')} className="secondary">
-            返回创作
+            {t('templates.back')}
           </button>
           <button onClick={() => navigate('/')} className="secondary">
-            返回首页
+            {t('templates.home')}
           </button>
         </div>
       </header>
 
       <p className="templates-subtitle">
-        保存常用的积木组合，下次创作可以直接用
+        {t('templates.subtitle')}
       </p>
 
       {templates.length === 0 ? (
         <div className="placeholder-box">
-          <p>还没有保存模板，去创作区试试「存为模板」吧</p>
+          <p>{t('templates.empty')}</p>
         </div>
       ) : (
         <div className="templates-grid">
@@ -48,19 +49,19 @@ export default function TemplatesPage() {
                   if (!data) return null
                   return (
                     <li key={type}>
-                      <span className="block-type">{CATEGORY_LABELS[type]}</span>
-                      <span className="block-value">{data.label}</span>
+                      <span className="block-type">{t('blocks.category.' + type)}</span>
+                      <span className="block-value">{data.value ? t('blocks.option.' + data.value) : data.label}</span>
                     </li>
                   )
                 })}
               </ul>
               <div className="template-meta">
-                {new Date(tpl.createdAt).toLocaleDateString('zh-CN')}
+                {new Date(tpl.createdAt).toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US')}
               </div>
               <div className="template-actions">
-                <button onClick={() => handleUse(tpl)}>使用模板</button>
+                <button onClick={() => handleUse(tpl)}>{t('templates.use')}</button>
                 <button onClick={() => handleDelete(tpl.id)} className="secondary">
-                  删除
+                  {t('templates.delete')}
                 </button>
               </div>
             </div>

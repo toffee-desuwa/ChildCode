@@ -1,122 +1,122 @@
 /**
- * 白名单积木数据
- * tier 1 = 基础（8-10 岁），tier 2 = 扩展（10-12 岁），tier 3 = 进阶（12+ 岁）
+ * Whitelist block data
+ * tier 1 = basic (8-10), tier 2 = expanded (10-12), tier 3 = advanced (12+)
  */
 
 export const BLOCK_CATEGORIES = {
-  // ── tier 1：基础四类（始终可用）──
+  // ── tier 1: core four categories (always available) ──
   subject: {
-    label: '对象',
+    label: 'Subject',
     tier: 1,
     required: true,
     options: [
-      ['猫', 'cat'],
-      ['狗', 'dog'],
-      ['机器人', 'robot'],
-      ['小女孩', 'girl'],
-      ['小男孩', 'boy'],
-      ['龙', 'dragon'],
-      ['兔子', 'rabbit'],
-      ['宇航员', 'astronaut'],
+      ['Cat', 'cat'],
+      ['Dog', 'dog'],
+      ['Robot', 'robot'],
+      ['Girl', 'girl'],
+      ['Boy', 'boy'],
+      ['Dragon', 'dragon'],
+      ['Rabbit', 'rabbit'],
+      ['Astronaut', 'astronaut'],
     ],
   },
   action: {
-    label: '动作',
+    label: 'Action',
     tier: 1,
     required: true,
     options: [
-      ['奔跑', 'running'],
-      ['飞翔', 'flying'],
-      ['画画', 'painting'],
-      ['跳舞', 'dancing'],
-      ['睡觉', 'sleeping'],
-      ['吃东西', 'eating'],
-      ['弹吉他', 'playing_guitar'],
+      ['Running', 'running'],
+      ['Flying', 'flying'],
+      ['Painting', 'painting'],
+      ['Dancing', 'dancing'],
+      ['Sleeping', 'sleeping'],
+      ['Eating', 'eating'],
+      ['Playing Guitar', 'playing_guitar'],
     ],
   },
   scene: {
-    label: '场景',
+    label: 'Scene',
     tier: 1,
     required: true,
     options: [
-      ['森林', 'forest'],
-      ['太空', 'space'],
-      ['海底', 'underwater'],
-      ['城堡', 'castle'],
-      ['沙漠', 'desert'],
-      ['雪山', 'snow_mountain'],
-      ['糖果王国', 'candy_land'],
+      ['Forest', 'forest'],
+      ['Space', 'space'],
+      ['Underwater', 'underwater'],
+      ['Castle', 'castle'],
+      ['Desert', 'desert'],
+      ['Snow Mountain', 'snow_mountain'],
+      ['Candy Land', 'candy_land'],
     ],
   },
   style: {
-    label: '风格',
+    label: 'Style',
     tier: 1,
     required: true,
     options: [
-      ['水彩', 'watercolor'],
-      ['像素风', 'pixel_art'],
-      ['油画', 'oil_painting'],
-      ['卡通', 'cartoon'],
-      ['蜡笔画', 'crayon'],
-      ['剪纸风', 'paper_cut'],
+      ['Watercolor', 'watercolor'],
+      ['Pixel Art', 'pixel_art'],
+      ['Oil Painting', 'oil_painting'],
+      ['Cartoon', 'cartoon'],
+      ['Crayon', 'crayon'],
+      ['Paper Cut', 'paper_cut'],
     ],
   },
-  // ── tier 2：扩展类（10-12 岁解锁）──
+  // ── tier 2: expanded categories (unlocked at 10-12) ──
   emotion: {
-    label: '情绪',
+    label: 'Emotion',
     tier: 2,
     required: false,
     options: [
-      ['开心', 'happy'],
-      ['伤心', 'sad'],
-      ['惊讶', 'surprised'],
-      ['害怕', 'scared'],
-      ['生气', 'angry'],
-      ['好奇', 'curious'],
+      ['Happy', 'happy'],
+      ['Sad', 'sad'],
+      ['Surprised', 'surprised'],
+      ['Scared', 'scared'],
+      ['Angry', 'angry'],
+      ['Curious', 'curious'],
     ],
   },
   weather: {
-    label: '天气',
+    label: 'Weather',
     tier: 2,
     required: false,
     options: [
-      ['晴天', 'sunny'],
-      ['下雨', 'rainy'],
-      ['下雪', 'snowy'],
-      ['雷电', 'stormy'],
-      ['彩虹', 'rainbow'],
-      ['雾气', 'foggy'],
+      ['Sunny', 'sunny'],
+      ['Rainy', 'rainy'],
+      ['Snowy', 'snowy'],
+      ['Stormy', 'stormy'],
+      ['Rainbow', 'rainbow'],
+      ['Foggy', 'foggy'],
     ],
   },
-  // ── tier 3：进阶类（12+ 岁解锁）──
+  // ── tier 3: advanced categories (unlocked at 12+) ──
   time: {
-    label: '时间',
+    label: 'Time',
     tier: 3,
     required: false,
     options: [
-      ['白天', 'daytime'],
-      ['黄昏', 'dusk'],
-      ['夜晚', 'night'],
-      ['黎明', 'dawn'],
+      ['Daytime', 'daytime'],
+      ['Dusk', 'dusk'],
+      ['Night', 'night'],
+      ['Dawn', 'dawn'],
     ],
   },
 }
 
 /**
- * 年龄段 → 解锁的最高 tier
+ * Age tier → max unlocked tier
  */
 export const AGE_TIERS = {
-  '8-10': { label: '8-10 岁（基础）', maxTier: 1 },
-  '10-12': { label: '10-12 岁（扩展）', maxTier: 2 },
-  '12+': { label: '12 岁以上（进阶）', maxTier: 3 },
+  '8-10': { label: '8-10 (Basic)', maxTier: 1 },
+  '10-12': { label: '10-12 (Expanded)', maxTier: 2 },
+  '12+': { label: '12+ (Advanced)', maxTier: 3 },
 }
 
 export const DEFAULT_AGE_TIER = '8-10'
 
 /**
- * 按年龄段过滤可用积木类别
+ * Filter available block categories by age tier
  * @param {string} ageTier - '8-10' | '10-12' | '12+'
- * @returns {Object} 过滤后的 BLOCK_CATEGORIES 子集
+ * @returns {Object} filtered subset of BLOCK_CATEGORIES
  */
 export function getBlocksByTier(ageTier) {
   const maxTier = AGE_TIERS[ageTier]?.maxTier ?? 1
@@ -126,7 +126,7 @@ export function getBlocksByTier(ageTier) {
 }
 
 /**
- * 获取必填类别列表（始终是 tier 1 的四类）
+ * Get list of required categories (always the tier 1 four)
  */
 export function getRequiredCategories() {
   return Object.entries(BLOCK_CATEGORIES)
@@ -135,8 +135,8 @@ export function getRequiredCategories() {
 }
 
 /**
- * 类别中文标签映射，从 BLOCK_CATEGORIES 派生
- * 供 phaseGuide.js、WorkspacePage.jsx 等模块共用
+ * Category label map, derived from BLOCK_CATEGORIES.
+ * English labels — for localized display, use t('blocks.category.<type>') instead.
  */
 export const CATEGORY_LABELS = Object.fromEntries(
   Object.entries(BLOCK_CATEGORIES).map(([type, cat]) => [type, cat.label])
