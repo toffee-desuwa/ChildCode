@@ -862,3 +862,74 @@ button.secondary {
   font-size: 14px;
   padding: 8px 12px;
 }
+
+/* ── F16: 家长面板 ── */
+
+.parent-dashboard {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 2px solid #e0e0e0;
+}
+
+.parent-dashboard h3 {
+  margin-bottom: 16px;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.dashboard-card {
+  background: #f8f9ff;
+  border: 1px solid #e0e4f0;
+  border-radius: 12px;
+  padding: 16px;
+  text-align: center;
+}
+
+.dashboard-value {
+  font-size: 28px;
+  font-weight: bold;
+  color: #4a90d9;
+}
+
+.dashboard-label {
+  font-size: 13px;
+  color: #888;
+  margin-top: 4px;
+}
+
+.dashboard-section {
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: #fafafa;
+  border-radius: 8px;
+}
+
+.dashboard-section h4 {
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.dashboard-block-usage {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.dashboard-block-usage li {
+  background: #e8eaf6;
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 13px;
+}
+
+.dashboard-usage-count {
+  margin-left: 6px;
+  color: #4a90d9;
+  font-weight: bold;
+}

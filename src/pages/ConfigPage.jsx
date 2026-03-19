@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { loadConfig, saveConfig, validateConfig, getUsageCount, resetUsageCount } from '../config/storage'
+import { loadConfig, saveConfig, validateConfig, getUsageCount, resetUsageCount, loadHistory, loadMastery, loadStoryboard, loadTemplates, clearHistory } from '../config/storage'
 import { AGE_TIERS, DEFAULT_AGE_TIER } from '../blocks/whitelist'
 
 function getInitialConfig() {
@@ -91,6 +91,108 @@ export default function ConfigPage() {
           </button>
         </div>
       </div>
+
+      <ParentDashboard />
     </div>
+  )
+}
+
+/**
+ * 家长面板：查看孩子的表达成长轨迹和使用统计
+ */
+function ParentDashboard() {
+  const [history] = useState(() => loadHistory())
+  const [mastery] = useState(() => loadMastery())
+  const [storyboard] = useState(() => loadStoryboard())
+  const [templates] = useState(() => loadTemplates())
+  const [cleared, setCleared] = useState(false)
+  const [sevenDaysAgo] = useState(() => Date.now() - 7 * 24 * 60 * 60 * 1000)
+
+  // 掌握度等级
+  const masteryLevel =
+    mastery.singleChanges >= 15 ? '控制大师' :
+    mastery.singleChanges >= 8 ? '积木达人' :
+    mastery.singleChanges >= 3 ? '表达学徒' : '小探索者'
+
+  // 精准度百分比
+  const precision = mastery.totalComparisons > 0
+    ? Math.round((mastery.singleChanges / mastery.totalComparisons) * 100)
+    : 0
+
+  // 最近7天活跃度
+  const recentCount = history.filter(h => h.timestamp > sevenDaysAgo).length
+
+  // 使用过的积木种类统计
+  const blockUsage = {}
+  for (const entry of history) {
+    for (const [type, data] of Object.entries(entry.json.blocks)) {
+      if (data) {
+        blockUsage[type] = (blockUsage[type] || new Set())
+        blockUsage[type].add(data.value)
+      }
+    }
+  }
+
+  return (
+    <section className="parent-dashboard">
+      <h3>孩子的成长面板</h3>
+
+      <div className="dashboard-grid">
+        <div className="dashboard-card">
+          <div className="dashboard-value">{history.length}</div>
+          <div className="dashboard-label">总创作数</div>
+        </div>
+        <div className="dashboard-card">
+          <div className="dashboard-value">{recentCount}</div>
+          <div className="dashboard-label">近7天创作</div>
+        </div>
+        <div className="dashboard-card">
+          <div className="dashboard-value">{mastery.totalComparisons}</div>
+          <div className="dashboard-label">对比次数</div>
+        </div>
+        <div className="dashboard-card">
+          <div className="dashboard-value">{precision}%</div>
+          <div className="dashboard-label">精准对比率</div>
+        </div>
+      </div>
+
+      <div className="dashboard-section">
+        <h4>掌握度</h4>
+        <p>当前等级：<strong>{masteryLevel}</strong>（{mastery.singleChanges} 次单块精准对比）</p>
+        <p className="field-hint">精准对比 = 只改一个积木就生成对比，说明孩子在有意识地观察因果关系</p>
+      </div>
+
+      <div className="dashboard-section">
+        <h4>积木探索广度</h4>
+        {Object.keys(blockUsage).length > 0 ? (
+          <ul className="dashboard-block-usage">
+            {Object.entries(blockUsage).map(([type, values]) => (
+              <li key={type}>
+                <span className="block-type">{type}</span>
+                <span className="dashboard-usage-count">用过 {values.size} 种</span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="field-hint">还没有创作记录</p>
+        )}
+      </div>
+
+      <div className="dashboard-section">
+        <h4>创作资产</h4>
+        <p>模板：{templates.length} 个 | 故事板帧：{storyboard.length} 帧</p>
+      </div>
+
+      <div className="dashboard-section">
+        <h4>数据管理</h4>
+        <button
+          onClick={() => { clearHistory(); setCleared(true) }}
+          className="secondary"
+          disabled={cleared}
+        >
+          {cleared ? '历史已清空' : '清空创作历史'}
+        </button>
+      </div>
+    </section>
   )
 }
