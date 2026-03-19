@@ -185,7 +185,7 @@
       "id": "F26",
       "name": "workspace-redesign",
       "description": "WorkspacePage Tailwind 重写：Blockly 深色主题，积木分类彩色编码（Subject=蓝/Action=绿/Scene=橙/Style=紫），右侧卡片布局，渐变生成按钮，A/B 对比布局带 diff 高亮",
-      "status": "backlog",
+      "status": "done",
       "notes": "Blockly 用 Blockly.Theme API 设颜色，不用 Tailwind。其余 UI（按钮/卡片/布局）用 Tailwind。保留所有业务逻辑不变（useGeneration hook）。"
     },
     {

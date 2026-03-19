@@ -199,3 +199,22 @@
 - Updated zh.js with matching Chinese translations
 - Build OK, Lint OK
 - Next: F26
+
+## F26: workspace-redesign (2026-03-19)
+- Modified src/blocks/definitions.js — Blockly dark theme via Theme.defineTheme: slate-800 workspace bg, slate-900 toolbox, category-specific block colors (Subject=blue #3b82f6, Action=green #22c55e, Scene=orange #f97316, Style=purple #a855f7, Emotion=pink, Weather=cyan, Time=yellow), blocks use setStyle() for theme integration, toolbox uses categorystyle
+- Modified src/components/BlocklyEditor.jsx — imported childCodeTheme, passed to Blockly.inject, changed className from blockly-container to w-full h-full (height now controlled by parent)
+- Rewrote src/pages/WorkspacePage.jsx with Tailwind dark theme:
+  - Dark gradient background (slate-900 → slate-950), max-w-7xl centered
+  - Header: white text, slate-700 action buttons with hover transitions
+  - Blockly container: rounded-xl, border, height varies by age tier via conditional Tailwind (h-[450px]/h-[420px]/h-[380px])
+  - Generate button: gradient from-indigo-600 to-purple-600 with shadow glow
+  - Image cards: bg-slate-800/50 with rounded corners and slate borders
+  - CompareCard: amber-500 highlighting for changed blocks on dark surface
+  - Config status: semantic colors (emerald/amber/red) with translucent backgrounds
+  - Onboarding steps: indigo/emerald themed on dark background
+  - Age-tier size adjustments handled via JS conditional classes, not CSS
+- Cleaned src/index.css — removed ~200 lines of workspace-specific legacy CSS (workspace-header, blockly-container, generate-btn, compare-grid/card/blocks, error-banner, share-actions, onboarding-*, age-tier-* workspace overrides, welcome-page/actions)
+- Kept: child component CSS (guidance-hint, change-insight, prediction-hint, mastery-badge, control-reflection), shared placeholder-box, all secondary page CSS
+- ~~Considered breaking #root constraints for full-bleed workspace~~ → deferred to F27, workspace looks good within 1200px
+- Build OK, Lint OK
+- Next: F27
