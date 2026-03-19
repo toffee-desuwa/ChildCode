@@ -218,3 +218,21 @@
 - ~~Considered breaking #root constraints for full-bleed workspace~~ → deferred to F27, workspace looks good within 1200px
 - Build OK, Lint OK
 - Next: F27
+
+## F27: code-quality-audit-2 (2026-03-19)
+- Fixed global CSS leaking into dark pages: scoped :root color/bg, button, heading styles to `.legacy-page` class
+- Set body background to slate-900 (#0f172a) for consistent dark base
+- Migrated GuidanceHint to Tailwind: phase-specific translucent dark styles (blue/amber/emerald)
+- Migrated ChangeInsight to Tailwind: purple-themed dark card with from→to flow
+- Migrated ControlFeeling (PredictionHint, MasteryBadge, ControlReflection) to Tailwind dark theme
+- Removed ~150 lines of legacy child component CSS from index.css
+- Added shared fadeIn keyframe animation
+- Added `legacy-page` wrapper to ConfigPage, HistoryPage, TemplatesPage, StoryboardPage
+- Fixed HistoryPage referencing deleted `workspace-header` CSS class → uses `templates-header`
+- Converted all Chinese comments to English: BlocklyEditor, useGeneration, provider.js, storage.js
+- Converted Chinese error/validation strings to English in provider.js, useGeneration.js, storage.js
+- Provider labels now English: "OpenAI Compatible API", "Mock (testing only)"
+- i18n audit: en.js and zh.js have identical 206-key sets, zero gaps
+- ~~ConfigPage still has hardcoded Chinese UI text~~ → deferred to F28 (full secondary page restyle)
+- Build OK, Lint OK
+- Next: F28

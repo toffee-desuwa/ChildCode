@@ -192,8 +192,8 @@
       "id": "F27",
       "name": "code-quality-audit-2",
       "description": "代码质量审查：检查 F22-F26 引入的 Tailwind 迁移质量，确认无残留旧 CSS 冲突，Blockly 渲染正常，i18n 覆盖率，build + lint 通过",
-      "status": "backlog",
-      "notes": "重点：1) Tailwind 和 Blockly DOM 无冲突 2) 所有旧 CSS class 已迁移或清理 3) i18n 无漏翻 4) 深色模式全页面一致"
+      "status": "done",
+      "notes": "Fixed: 1) Scoped global CSS to .legacy-page, body dark bg 2) Migrated child components to Tailwind dark 3) All comments/errors English 4) i18n 206 keys matched 5) HistoryPage broken class fixed"
     },
     {
       "id": "F28",
