@@ -130,3 +130,12 @@
 - F20: 商业化基础 — deferred（scope freeze）
 
 所有 backlog feature 已处理完毕。项目从 F01-F19 全部 done/reuse-existing。
+
+## F20: code-quality-audit (2026-03-19)
+- 新增 src/hooks/useGeneration.js — 从 WorkspacePage 提取生成逻辑 hook（snapshot 管理、生成流程、对比、掌握度）
+- 修改 src/pages/WorkspacePage.jsx — 使用 useGeneration hook，修复 ref-during-render lint 错误（改用 state + queueMicrotask）
+- 修改 src/generation/provider.js — openaiProvider/compatibleProvider 合并为 fetchImageGeneration 共用函数，新增 30s AbortController 超时
+- 修改 src/config/storage.js — 新增 safeSetItem/safeRemoveItem 防御函数，所有写操作统一使用，getUsageCount 加 try/catch
+- 验证：npm run build OK, npm run lint OK
+
+项目 F01-F20 全部 done/reuse-existing，F21 deferred。

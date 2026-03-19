@@ -2,6 +2,32 @@ const STORAGE_KEY = 'childcode_config'
 const USAGE_COUNT_KEY = 'childcode_usage_count'
 
 /**
+ * 安全写入 localStorage（防御 quota 溢出和安全限制）
+ */
+function safeSetItem(key, value) {
+  try {
+    localStorage.setItem(key, value)
+    return true
+  } catch {
+    if (import.meta.env.DEV) {
+      console.warn(`localStorage write failed for key: ${key}`)
+    }
+    return false
+  }
+}
+
+/**
+ * 安全删除 localStorage key
+ */
+function safeRemoveItem(key) {
+  try {
+    localStorage.removeItem(key)
+  } catch {
+    // 删除失败静默忽略
+  }
+}
+
+/**
  * 从 localStorage 读取配置
  * 返回 { apiKey, usageLimit, ageTier? } 或 null
  */
@@ -25,7 +51,7 @@ export function saveConfig({ apiKey, usageLimit, ageTier, provider, apiBase }) {
   if (ageTier) data.ageTier = ageTier
   if (provider) data.provider = provider
   if (apiBase) data.apiBase = apiBase
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+  safeSetItem(STORAGE_KEY, JSON.stringify(data))
 }
 
 /**
@@ -65,9 +91,13 @@ export function getConfigStatus() {
  * 获取已使用次数
  */
 export function getUsageCount() {
-  const raw = localStorage.getItem(USAGE_COUNT_KEY)
-  const n = Number(raw)
-  return Number.isFinite(n) && n >= 0 ? n : 0
+  try {
+    const raw = localStorage.getItem(USAGE_COUNT_KEY)
+    const n = Number(raw)
+    return Number.isFinite(n) && n >= 0 ? n : 0
+  } catch {
+    return 0
+  }
 }
 
 /**
@@ -75,7 +105,7 @@ export function getUsageCount() {
  */
 export function incrementUsage() {
   const count = getUsageCount() + 1
-  localStorage.setItem(USAGE_COUNT_KEY, String(count))
+  safeSetItem(USAGE_COUNT_KEY, String(count))
   return count
 }
 
@@ -92,7 +122,7 @@ export function isQuotaExhausted() {
  * 重置已使用次数（家长操作）
  */
 export function resetUsageCount() {
-  localStorage.setItem(USAGE_COUNT_KEY, '0')
+  safeSetItem(USAGE_COUNT_KEY, '0')
 }
 
 // ── 表达历史 ──
@@ -124,14 +154,14 @@ export function addHistoryEntry(json, imageUrl) {
     timestamp: Date.now(),
   })
   if (history.length > MAX_HISTORY) history.length = MAX_HISTORY
-  localStorage.setItem(HISTORY_KEY, JSON.stringify(history))
+  safeSetItem(HISTORY_KEY, JSON.stringify(history))
 }
 
 /**
  * 清空创作历史（家长操作）
  */
 export function clearHistory() {
-  localStorage.removeItem(HISTORY_KEY)
+  safeRemoveItem(HISTORY_KEY)
 }
 
 // ── 可复用模板 ──
@@ -166,7 +196,7 @@ export function saveTemplate(name, blocks) {
     createdAt: Date.now(),
   })
   if (templates.length > MAX_TEMPLATES) templates.length = MAX_TEMPLATES
-  localStorage.setItem(TEMPLATES_KEY, JSON.stringify(templates))
+  safeSetItem(TEMPLATES_KEY, JSON.stringify(templates))
   return id
 }
 
@@ -175,7 +205,7 @@ export function saveTemplate(name, blocks) {
  */
 export function deleteTemplate(id) {
   const templates = loadTemplates().filter((t) => t.id !== id)
-  localStorage.setItem(TEMPLATES_KEY, JSON.stringify(templates))
+  safeSetItem(TEMPLATES_KEY, JSON.stringify(templates))
 }
 
 /**
@@ -216,7 +246,7 @@ export function addStoryboardFrame(json, imageUrl) {
     imageUrl,
     addedAt: Date.now(),
   })
-  localStorage.setItem(STORYBOARD_KEY, JSON.stringify(frames))
+  safeSetItem(STORYBOARD_KEY, JSON.stringify(frames))
   return true
 }
 
@@ -225,7 +255,7 @@ export function addStoryboardFrame(json, imageUrl) {
  */
 export function removeStoryboardFrame(id) {
   const frames = loadStoryboard().filter((f) => f.id !== id)
-  localStorage.setItem(STORYBOARD_KEY, JSON.stringify(frames))
+  safeSetItem(STORYBOARD_KEY, JSON.stringify(frames))
 }
 
 /**
@@ -236,14 +266,14 @@ export function reorderStoryboard(orderedIds) {
   const frames = loadStoryboard()
   const map = Object.fromEntries(frames.map((f) => [f.id, f]))
   const reordered = orderedIds.map((id) => map[id]).filter(Boolean)
-  localStorage.setItem(STORYBOARD_KEY, JSON.stringify(reordered))
+  safeSetItem(STORYBOARD_KEY, JSON.stringify(reordered))
 }
 
 /**
  * 清空故事板
  */
 export function clearStoryboard() {
-  localStorage.removeItem(STORYBOARD_KEY)
+  safeRemoveItem(STORYBOARD_KEY)
 }
 
 /**
@@ -282,6 +312,6 @@ export function recordComparison(changedCount) {
   const mastery = loadMastery()
   mastery.totalComparisons += 1
   if (changedCount === 1) mastery.singleChanges += 1
-  localStorage.setItem(MASTERY_KEY, JSON.stringify(mastery))
+  safeSetItem(MASTERY_KEY, JSON.stringify(mastery))
   return mastery
 }

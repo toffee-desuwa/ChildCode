@@ -8,6 +8,8 @@
  * 返回: { url: string } 或抛出错误
  */
 
+const FETCH_TIMEOUT_MS = 30000
+
 /**
  * Mock provider — returns a deterministic SVG data URL placeholder.
  */
@@ -37,56 +39,37 @@ function escapeXml(str) {
 }
 
 /**
- * OpenAI DALL-E provider
+ * 通用 OpenAI 兼容 fetch（openai 和 compatible 共用）
+ * @param {string} prompt
+ * @param {object} config
+ * @param {object} options - { baseUrl, model }
  */
-async function openaiProvider(prompt, config) {
-  const base = config.apiBase || 'https://api.openai.com'
-  const response = await fetch(`${base}/v1/images/generations`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${config.apiKey}`,
-    },
-    body: JSON.stringify({
-      model: 'dall-e-3',
-      prompt,
-      n: 1,
-      size: '1024x1024',
-    }),
-  })
+async function fetchImageGeneration(prompt, config, { baseUrl, model }) {
+  const body = { prompt, n: 1, size: '1024x1024' }
+  if (model) body.model = model
 
-  if (!response.ok) {
-    const errorBody = await response.json().catch(() => ({}))
-    const message = errorBody?.error?.message || `API 请求失败 (${response.status})`
-    throw new Error(message)
+  const controller = new AbortController()
+  const timer = setTimeout(() => controller.abort(), FETCH_TIMEOUT_MS)
+
+  let response
+  try {
+    response = await fetch(`${baseUrl}/v1/images/generations`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${config.apiKey}`,
+      },
+      body: JSON.stringify(body),
+      signal: controller.signal,
+    })
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      throw new Error('请求超时，请检查网络或 API 地址')
+    }
+    throw err
+  } finally {
+    clearTimeout(timer)
   }
-
-  const data = await response.json()
-  const url = data?.data?.[0]?.url
-  if (!url) throw new Error('API 未返回图片')
-  return { url }
-}
-
-/**
- * OpenAI 兼容 provider（支持国内代理和 OpenAI 兼容 API）
- * 需要设置 apiBase，如 https://api.siliconflow.cn
- */
-async function compatibleProvider(prompt, config) {
-  const base = config.apiBase
-  if (!base) throw new Error('兼容模式需要设置 API 地址')
-
-  const response = await fetch(`${base}/v1/images/generations`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${config.apiKey}`,
-    },
-    body: JSON.stringify({
-      prompt,
-      n: 1,
-      size: '1024x1024',
-    }),
-  })
 
   if (!response.ok) {
     const errorBody = await response.json().catch(() => ({}))
@@ -103,6 +86,23 @@ async function compatibleProvider(prompt, config) {
     return { url: `data:image/png;base64,${url}` }
   }
   return { url }
+}
+
+/**
+ * OpenAI DALL-E provider
+ */
+async function openaiProvider(prompt, config) {
+  const baseUrl = config.apiBase || 'https://api.openai.com'
+  return fetchImageGeneration(prompt, config, { baseUrl, model: 'dall-e-3' })
+}
+
+/**
+ * OpenAI 兼容 provider（支持国内代理和 OpenAI 兼容 API）
+ * 需要设置 apiBase，如 https://api.siliconflow.cn
+ */
+async function compatibleProvider(prompt, config) {
+  if (!config.apiBase) throw new Error('兼容模式需要设置 API 地址')
+  return fetchImageGeneration(prompt, config, { baseUrl: config.apiBase, model: null })
 }
 
 /**

@@ -1,17 +1,15 @@
-import { useState, useRef, useMemo, memo } from 'react'
+import { useState, useMemo, memo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import BlocklyEditor from '../components/BlocklyEditor'
 import { isComplete, hasDuplicates, getDuplicateMessage } from '../blocks/exportJson'
-import { getConfigStatus, loadConfig, isQuotaExhausted, incrementUsage, addHistoryEntry, saveTemplate, addStoryboardFrame, loadStoryboard, STORYBOARD_MAX_FRAMES, loadMastery, recordComparison } from '../config/storage'
-import { derivePrompt } from '../generation/derivePrompt'
-import { generateImage } from '../generation/provider'
-import { diffBlocks } from '../generation/diffBlocks'
+import { getConfigStatus, loadConfig, saveTemplate, addStoryboardFrame, loadStoryboard, STORYBOARD_MAX_FRAMES } from '../config/storage'
 import { getGuidance } from '../guidance/phaseGuide'
 import GuidanceHint from '../components/GuidanceHint'
 import ChangeInsight from '../components/ChangeInsight'
 import { CATEGORY_LABELS, BLOCK_CATEGORIES, AGE_TIERS, DEFAULT_AGE_TIER } from '../blocks/whitelist'
 import { PredictionHint, MasteryBadge, ControlReflection } from '../components/ControlFeeling'
 import { shareCreation, downloadImage } from '../sharing/shareCard'
+import { useGeneration } from '../hooks/useGeneration'
 
 const CONFIG_STATUS_TEXT = {
   not_configured: '未配置 — 请让爸爸妈妈先完成设置',
@@ -28,111 +26,34 @@ export default function WorkspacePage() {
   const [templateSaved, setTemplateSaved] = useState(false)
   const [storyboardMsg, setStoryboardMsg] = useState(null)
   const [shareMsg, setShareMsg] = useState(null)
-  const [snapshotA, setSnapshotA] = useState(null) // { json, imageUrl }
-  const [snapshotB, setSnapshotB] = useState(null) // { json, imageUrl }
-  const [generating, setGenerating] = useState(false)
-  const [error, setError] = useState(null)
-  const [generationFailed, setGenerationFailed] = useState(false)
-  const [zeroChangeWarn, setZeroChangeWarn] = useState(false)
-  const [quotaExhausted, setQuotaExhausted] = useState(() => isQuotaExhausted())
-  const [mastery, setMastery] = useState(() => loadMastery())
-
-  // Ref mirrors snapshotA to avoid closure staleness in async handleGenerate
-  const snapshotARef = useRef(null)
-  // 缓存 first-image 阶段的建议类别，防止每次渲染闪烁
-  const guidanceSuggestionRef = useRef(null)
 
   const config = loadConfig()
   const ageTier = config?.ageTier || DEFAULT_AGE_TIER
   const maxTier = AGE_TIERS[ageTier]?.maxTier ?? 1
   const configStatus = getConfigStatus()
-  const complete = currentJson && isComplete(currentJson)
   const duplicated = currentJson && hasDuplicates(currentJson)
   const duplicateMsg = currentJson && getDuplicateMessage(currentJson)
 
-  const hasA = snapshotA !== null
-  const hasB = snapshotB !== null
-  const canGenerate = complete && !duplicated && configStatus === 'configured' && !generating && !quotaExhausted
+  // 缓存 first-image 阶段的建议类别，防止每次渲染闪烁
+  const [cachedSuggestion, setCachedSuggestion] = useState(null)
 
-  // 实时检测当前积木与 A 的差异，用于预测提示
-  const liveDiff = useMemo(() => {
-    if (!snapshotA || !currentJson || snapshotB) return null
-    return diffBlocks(snapshotA.json, currentJson)
-  }, [snapshotA, snapshotB, currentJson])
+  const {
+    snapshotA, snapshotB, generating, error, generationFailed,
+    zeroChangeWarn, quotaExhausted, mastery, complete, hasA, hasB,
+    canGenerate, liveDiff, comparison, handleGenerate, handleNewRound, clearError,
+  } = useGeneration(currentJson, configStatus)
 
-  const guidance = getGuidance(currentJson, snapshotA, snapshotB, guidanceSuggestionRef.current)
-  if (guidance.suggestedCategory) {
-    guidanceSuggestionRef.current = guidance.suggestedCategory
-  }
+  // canGenerate 额外检查：duplicate 积木不能生成
+  const canGenerateFinal = canGenerate && !duplicated
 
-  const handleGenerate = async () => {
-    if (!canGenerate) return
-
-    const currentA = snapshotARef.current
-    setZeroChangeWarn(false)
-
-    // If A exists and 0 blocks changed, block generation
-    if (currentA !== null) {
-      const diff = diffBlocks(currentA.json, currentJson)
-      if (diff.count === 0) {
-        setZeroChangeWarn(true)
-        return
-      }
+  const guidance = useMemo(() => {
+    const g = getGuidance(currentJson, snapshotA, snapshotB, cachedSuggestion)
+    if (g.suggestedCategory && g.suggestedCategory !== cachedSuggestion) {
+      // 延迟到下一轮渲染更新缓存，避免 render 中 setState
+      queueMicrotask(() => setCachedSuggestion(g.suggestedCategory))
     }
-
-    setGenerating(true)
-    setError(null)
-    setGenerationFailed(false)
-
-    try {
-      const prompt = derivePrompt(currentJson)
-      if (!prompt) {
-        setError('积木组合不完整，无法生成')
-        return
-      }
-
-      const config = loadConfig()
-      const result = await generateImage(prompt, config)
-
-      const newSnapshot = {
-        json: JSON.parse(JSON.stringify(currentJson)),
-        imageUrl: result.url,
-      }
-
-      // Count usage and save to history after successful generation
-      incrementUsage()
-      setQuotaExhausted(isQuotaExhausted())
-      addHistoryEntry(currentJson, result.url)
-
-      // Use ref (always current) to decide slot
-      if (snapshotARef.current === null) {
-        snapshotARef.current = newSnapshot
-        setSnapshotA(newSnapshot)
-      } else {
-        // 记录掌握度
-        const diff = diffBlocks(snapshotARef.current.json, currentJson)
-        setMastery(recordComparison(diff.count))
-        setSnapshotB(newSnapshot)
-      }
-    } catch (err) {
-      if (import.meta.env.DEV) {
-        console.error('Generation error:', err)
-      }
-      setError('这次创作没有成功，请稍后再试一次。若一直失败，请让家长检查设置。')
-      setGenerationFailed(true)
-    } finally {
-      setGenerating(false)
-    }
-  }
-
-  // Memoize comparison: only recompute when snapshot references change.
-  // This prevents any unrelated re-render (e.g. from Blockly events
-  // updating currentJson) from recreating comparison/changedFields.
-  const comparison = useMemo(() => {
-    if (!snapshotA || !snapshotB) return null
-    return diffBlocks(snapshotA.json, snapshotB.json)
-  }, [snapshotA, snapshotB])
-
+    return g
+  }, [currentJson, snapshotA, snapshotB, cachedSuggestion])
 
   // 保存当前积木组合为模板
   const handleSaveTemplate = () => {
@@ -149,7 +70,6 @@ export default function WorkspacePage() {
 
   // 添加当前生成结果到故事板
   const handleAddToStoryboard = () => {
-    // 优先添加最新的（B），没有则用 A
     const target = snapshotB || snapshotA
     if (!target) return
     const ok = addStoryboardFrame(target.json, target.imageUrl)
@@ -176,14 +96,6 @@ export default function WorkspacePage() {
     const target = snapshotB || snapshotA
     if (!target) return
     downloadImage(target.imageUrl)
-  }
-
-  // "Start new round" — promote B to A, clear B
-  const handleNewRound = () => {
-    snapshotARef.current = snapshotB
-    setSnapshotA(snapshotB)
-    setSnapshotB(null)
-    setZeroChangeWarn(false)
   }
 
   return (
@@ -261,7 +173,7 @@ export default function WorkspacePage() {
 
           <button
             onClick={handleGenerate}
-            disabled={!canGenerate}
+            disabled={!canGenerateFinal}
             className="generate-btn"
           >
             {generating
@@ -321,9 +233,9 @@ export default function WorkspacePage() {
           <p>{error}</p>
           <div className="error-actions">
             {generationFailed && (
-              <button onClick={() => { setError(null); setGenerationFailed(false); handleGenerate() }}>重试</button>
+              <button onClick={() => { clearError(); handleGenerate() }}>重试</button>
             )}
-            <button onClick={() => { setError(null); setGenerationFailed(false) }} className="secondary">关闭</button>
+            <button onClick={clearError} className="secondary">关闭</button>
           </div>
         </section>
       )}
@@ -390,9 +302,8 @@ export default function WorkspacePage() {
 }
 
 /**
- * Compare card: shows image + 4 block values, highlights changed fields.
+ * Compare card: shows image + block values, highlights changed fields.
  * Memoized — only re-renders when snapshot or changedFields reference changes.
- * Highlight is purely derived from stored snapshot data.
  */
 const CompareCard = memo(function CompareCard({ label, snapshot, changedFields }) {
   return (

@@ -140,10 +140,17 @@
     },
     {
       "id": "F20",
+      "name": "code-quality-audit",
+      "description": "代码质量审查与修复：拆分 God Component、消除重复代码、加 localStorage 防御、加网络超时",
+      "status": "done",
+      "notes": "完成：1) useGeneration hook 提取 2) provider.js fetch 合并+超时 3) storage.js safeSetItem/safeRemoveItem 4) build+lint 通过"
+    },
+    {
+      "id": "F21",
       "name": "monetization-foundation",
       "description": "商业化基础：主题包/创作包付费、Pro 功能解锁",
       "status": "deferred",
-      "notes": "CLAUDE.md scope freeze 明确'不做商业化/付费/账户体系'，暂不实现"
+      "notes": "等用户介入决策后再做"
     }
   ]
 }
