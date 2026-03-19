@@ -66,7 +66,7 @@ export function useGeneration(currentJson, configStatus) {
       }
 
       const config = loadConfig()
-      const result = await generateImage(prompt, config)
+      const result = await generateImage(prompt, config, currentJson)
 
       const newSnapshot = {
         json: JSON.parse(JSON.stringify(currentJson)),
