@@ -232,7 +232,7 @@
       "id": "F33",
       "name": "og-meta-tags",
       "description": "Open Graph + Twitter Card 元标签：og:title/description/image, twitter:card, 加到 index.html",
-      "status": "backlog",
+      "status": "done",
       "notes": "og:image 用 1200x630 的 hero 截图（先放 placeholder，人工替换）。确保 Twitter/小红书 分享链接时预览卡正确。"
     },
     {

@@ -298,3 +298,13 @@
   - Added keys: templates.defaultName, carousel.demoSet (en + zh)
 - Build OK, Lint OK
 - Next: F33
+
+## F33: og-meta-tags (2026-03-19)
+- Added Open Graph meta tags to index.html: og:type, og:title, og:description, og:image, og:url
+- Added Twitter Card meta tags: twitter:card (summary_large_image), twitter:title, twitter:description, twitter:image
+- Updated <title> from "ChildCode" to "ChildCode — Scratch for the AI Era"
+- Added meta description for SEO
+- og:image points to /og-image.png — user needs to add real 1200x630 screenshot
+- og:url set to https://childcode.dev — update if domain changes
+- Build OK, Lint OK
+- Next: F34
