@@ -169,3 +169,22 @@
 - Design: flat key namespace, {param} interpolation, localStorage key `childcode_lang`, default `en`
 - Build OK, Lint OK
 - Next: F24 (blockly blocks i18n)
+
+## F24: blockly-blocks-i18n (2026-03-19)
+- Modified src/blocks/whitelist.js — all 40 block options now English labels (Cat, Dog, Running, Forest...), category labels English (Subject, Action, Scene, Style), AGE_TIERS English
+- Modified src/generation/derivePrompt.js — English prompt template ("Watercolor style, Cat Running in Forest"), always English for AI APIs
+- Modified src/generation/diffBlocks.js — added fromValue/toValue to details for i18n option lookup
+- Modified src/blocks/exportJson.js — getDuplicateMessage accepts optional t() function for localized output
+- Modified src/guidance/phaseGuide.js — getGuidance/getComparisonFeedback accept t() function, all guidance strings via i18n keys
+- Modified src/components/ChangeInsight.jsx — replaced CATEGORY_LABELS + hardcoded Chinese with useI18n t() calls
+- Modified src/components/ControlFeeling.jsx — replaced CATEGORY_LABELS + hardcoded Chinese with useI18n t() calls, mastery levels via i18n
+- Modified src/sharing/shareCard.js — buildShareText/shareCreation accept t() function for localized share text
+- Modified src/pages/WorkspacePage.jsx — removed CATEGORY_LABELS import, pass t to getGuidance/getDuplicateMessage/shareCreation, CompareCard uses useI18n
+- Modified src/pages/HistoryPage.jsx — full i18n migration, locale-aware date formatting
+- Modified src/pages/TemplatesPage.jsx — full i18n migration
+- Modified src/pages/StoryboardPage.jsx — full i18n migration
+- Modified src/i18n/en.js — added 100+ new keys (7 category, 40 option, guidance, insight, mastery, reflection, history/templates/storyboard page)
+- Modified src/i18n/zh.js — matching Chinese translations for all new keys
+- ~~Considered i18n for Blockly dropdown options~~ → kept English-only in Blockly (simplest, matches "English default" requirement)
+- Build OK, Lint OK
+- Next: F25 (hero page redesign)

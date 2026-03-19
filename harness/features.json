@@ -171,8 +171,8 @@
       "id": "F24",
       "name": "blockly-blocks-i18n",
       "description": "whitelist.js 积木标签改为英文默认，中文作为 alternate。definitions.js 和 exportJson.js 适配",
-      "status": "backlog",
-      "notes": "积木分类标签（Subject/Action/Scene/Style）和所有积木值（Cat/Dog/Run/Sleep...）都要英文。JSON 导出的 key 不变，只改显示标签。"
+      "status": "done",
+      "notes": "All 40 block options + 7 category labels English default. 100+ i18n keys added. All child components (ChangeInsight, ControlFeeling, phaseGuide) + secondary pages (History, Templates, Storyboard) migrated to i18n. derivePrompt always English. Non-React modules accept t() parameter."
     },
     {
       "id": "F25",
