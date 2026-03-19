@@ -128,8 +128,8 @@
       "id": "F18",
       "name": "onboarding-magic-moment",
       "description": "首次体验魔法时刻：30 秒内让孩子拖出第一张图，立刻感受到'我能控制 AI'",
-      "status": "backlog",
-      "notes": "留存的关键，第一印象决定一切"
+      "status": "done",
+      "notes": "首次用户 hero+一键试试（预填积木）+workspace 步骤条+成功反馈"
     },
     {
       "id": "F19",
