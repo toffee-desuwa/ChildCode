@@ -135,8 +135,8 @@
       "id": "F19",
       "name": "multi-provider-support",
       "description": "多 provider 支持：不绑死 DALL-E，支持国内可用的图片生成 API",
-      "status": "backlog",
-      "notes": "国内用户可能无法访问 OpenAI，需要备选"
+      "status": "done",
+      "notes": "3 provider：OpenAI/兼容API/Mock，config 页可选，兼容模式支持自定义 apiBase"
     },
     {
       "id": "F20",
