@@ -100,8 +100,8 @@
       "id": "F14",
       "name": "control-feeling-ux",
       "description": "控制感体验：让孩子感受到'我知道自己改了什么，我看到结果为什么变'",
-      "status": "backlog",
-      "notes": "终局最关键体验差异点，不是爽感是控制感"
+      "status": "done",
+      "notes": "预测提示+掌握度徽章(4级)+因果反馈，localStorage 持久化"
     },
     {
       "id": "F15",

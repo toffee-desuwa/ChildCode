@@ -76,3 +76,10 @@
 - 修改 src/App.jsx — 添加 /storyboard 路由
 - 修改 src/index.css — 故事板页面样式
 - 验证：npm run build OK, npm run lint OK
+
+## F14: control-feeling-ux (2026-03-19)
+- 新增 src/components/ControlFeeling.jsx — 三个控制感组件：PredictionHint（实时预测提示）、MasteryBadge（掌握度徽章4级）、ControlReflection（因果反馈）
+- 修改 src/config/storage.js — 新增 loadMastery/recordComparison，localStorage 持久化掌握度统计
+- 修改 src/pages/WorkspacePage.jsx — 集成预测提示（liveDiff）、掌握度记录、mastery badge + reflection 到对比区
+- 修改 src/index.css — 预测提示、掌握度徽章、控制反馈样式
+- 验证：npm run build OK, npm run lint OK
