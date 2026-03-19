@@ -113,3 +113,20 @@
 - 修改 src/pages/ConfigPage.jsx — provider 选择器 + 条件性 apiBase 输入
 - 修改 src/config/storage.js — saveConfig 持久化 provider/apiBase
 - 验证：npm run build OK, npm run lint OK
+
+## F20: monetization-foundation — DEFERRED
+- 原因：CLAUDE.md scope freeze 明确"不做商业化/付费/账户体系"
+- 决策：遵循优先级规则（CLAUDE.md > features.json），标记为 deferred
+
+## Session Summary (2026-03-19)
+本轮完成 F13-F19 共 7 个 feature：
+- F13: 多步创作故事板（8帧，strip+详情，排序/删除）
+- F14: 控制感 UX（预测提示+掌握度徽章4级+因果反馈）
+- F15: 年龄渐进 UI（3 tier CSS + 条件功能可见性）
+- F16: 家长面板（4卡统计+掌握度+探索广度+资产）
+- F17: 病毒分享（Web Share API + clipboard + 下载）
+- F18: 首次体验（一键试试+步骤条+成功反馈）
+- F19: 多 provider（OpenAI/兼容API/Mock，config 可选）
+- F20: 商业化基础 — deferred（scope freeze）
+
+所有 backlog feature 已处理完毕。项目从 F01-F19 全部 done/reuse-existing。

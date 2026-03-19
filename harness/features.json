@@ -142,8 +142,8 @@
       "id": "F20",
       "name": "monetization-foundation",
       "description": "商业化基础：主题包/创作包付费、Pro 功能解锁",
-      "status": "backlog",
-      "notes": "先把基础设施搭好，不急着上线收费"
+      "status": "deferred",
+      "notes": "CLAUDE.md scope freeze 明确'不做商业化/付费/账户体系'，暂不实现"
     }
   ]
 }
