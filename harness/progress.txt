@@ -315,3 +315,13 @@
 - No build/output overrides needed — Vercel auto-detects Vite
 - Build OK, Lint OK
 - Next: F35
+
+## F35: readme-english (2026-03-19)
+- Created README.md following spec Section 4.1 structure exactly
+- Sections: tagline, badges (stars/forks/license/demo), GIF placeholder, What/Why/Demo/QuickStart/Architecture/Contributing/License
+- ASCII architecture diagram: Blockly → JSON Truth Layer → Prompt Derivation → Image API
+- Growth ladder as clean table (3 levels × age/learning)
+- Placeholders for: logo, demo GIF, screenshots (manual replacement needed)
+- Link to README-CN.md (F36) at bottom
+- Build OK, Lint OK
+- Next: F36

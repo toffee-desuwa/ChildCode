@@ -246,7 +246,7 @@
       "id": "F35",
       "name": "readme-english",
       "description": "README.md 英文版：logo + tagline + badges + hero GIF placeholder + What/Why/Demo/QuickStart/Architecture/Contributing/License",
-      "status": "backlog",
+      "status": "done",
       "notes": "参考 spec Section 4 的结构。GIF 先放 placeholder（[Demo GIF coming soon]），人工录制后替换。Architecture 部分画 Blocks→JSON→Prompt→Image 流程图（ASCII 或 Mermaid）。"
     },
     {
