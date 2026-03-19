@@ -178,7 +178,7 @@
       "id": "F25",
       "name": "hero-page-redesign",
       "description": "WelcomePage 重写：深色渐变背景，'Scratch for the AI Era' 大标题，'Try it now' CTA 按钮，现代科技感布局",
-      "status": "backlog",
+      "status": "done",
       "notes": "替换现有 WelcomePage，不是新路由。用 Tailwind 类。参考 Vercel/Linear 首页风格。暂不做 carousel 动画（F30 做）。i18n 文案从 i18n 模块读取。"
     },
     {

@@ -188,3 +188,14 @@
 - ~~Considered i18n for Blockly dropdown options~~ → kept English-only in Blockly (simplest, matches "English default" requirement)
 - Build OK, Lint OK
 - Next: F25 (hero page redesign)
+
+## F25: hero-page-redesign (2026-03-19)
+- Rewrote WelcomePage.jsx with Tailwind dark theme, full viewport gradient (slate-900 → indigo-950)
+- "Scratch for the AI Era" gradient text headline (white → indigo-400), prominent CTA with shadow glow
+- Carousel placeholder div ready for F30 integration
+- Navigation links (not buttons) at bottom for minimal look
+- Removed old age-tier CSS class usage, old i18n keys (welcome.title, welcome.subtitle.*)
+- Added i18n keys: welcome.tagline, welcome.description, welcome.howItWorks, welcome.carouselPlaceholder
+- Updated zh.js with matching Chinese translations
+- Build OK, Lint OK
+- Next: F26
