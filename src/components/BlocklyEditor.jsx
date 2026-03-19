@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react'
 import * as Blockly from 'blockly'
-import { registerBlocks, buildToolbox } from '../blocks/definitions'
+import { registerBlocks, buildToolbox, childCodeTheme } from '../blocks/definitions'
 import { exportBlocksJson } from '../blocks/exportJson'
 import { getBlocksByTier, DEFAULT_AGE_TIER } from '../blocks/whitelist'
 import { loadConfig } from '../config/storage'
@@ -34,6 +34,7 @@ export default function BlocklyEditor({ onJsonChange, initialBlocks }) {
 
     const workspace = Blockly.inject(containerRef.current, {
       toolbox,
+      theme: childCodeTheme,
       scrollbars: true,
       trashcan: true,
       zoom: {
@@ -77,5 +78,5 @@ export default function BlocklyEditor({ onJsonChange, initialBlocks }) {
     }
   }, [])
 
-  return <div ref={containerRef} className="blockly-container" />
+  return <div ref={containerRef} className="w-full h-full" />
 }

@@ -12,6 +12,9 @@ import { shareCreation, downloadImage } from '../sharing/shareCard'
 import { useGeneration } from '../hooks/useGeneration'
 import { useI18n } from '../i18n'
 
+// Blockly container height varies by age tier
+const BLOCKLY_HEIGHTS = { 1: 'h-[450px]', 2: 'h-[420px]', 3: 'h-[380px]' }
+
 export default function WorkspacePage() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -30,7 +33,6 @@ export default function WorkspacePage() {
   const duplicated = currentJson && hasDuplicates(currentJson)
   const duplicateMsg = currentJson && getDuplicateMessage(currentJson, t)
 
-  // Cache suggested category for first-image phase to prevent flicker
   const [cachedSuggestion, setCachedSuggestion] = useState(null)
 
   const {
@@ -39,7 +41,6 @@ export default function WorkspacePage() {
     canGenerate, liveDiff, comparison, handleGenerate, handleNewRound, clearError,
   } = useGeneration(currentJson, configStatus)
 
-  // canGenerate extra check: duplicate blocks cannot generate
   const canGenerateFinal = canGenerate && !duplicated
 
   const guidance = useMemo(() => {
@@ -50,7 +51,6 @@ export default function WorkspacePage() {
     return g
   }, [currentJson, snapshotA, snapshotB, cachedSuggestion, t])
 
-  // Save current block combination as template
   const handleSaveTemplate = () => {
     if (!currentJson || !isComplete(currentJson)) return
     const usedBlocks = Object.entries(currentJson.blocks)
@@ -63,7 +63,6 @@ export default function WorkspacePage() {
     setTimeout(() => setTemplateSaved(false), 2000)
   }
 
-  // Add current generation result to storyboard
   const handleAddToStoryboard = () => {
     const target = snapshotB || snapshotA
     if (!target) return
@@ -77,7 +76,6 @@ export default function WorkspacePage() {
     setTimeout(() => setStoryboardMsg(null), 2500)
   }
 
-  // Share current creation
   const handleShare = async () => {
     const target = snapshotB || snapshotA
     if (!target) return
@@ -86,23 +84,27 @@ export default function WorkspacePage() {
     setTimeout(() => setShareMsg(null), 2500)
   }
 
-  // Download current creation image
   const handleDownload = () => {
     const target = snapshotB || snapshotA
     if (!target) return
     downloadImage(target.imageUrl)
   }
 
+  const blocklyHeight = BLOCKLY_HEIGHTS[maxTier] || BLOCKLY_HEIGHTS[1]
+  const btnSize = maxTier === 1 ? 'py-4 text-xl' : maxTier === 3 ? 'py-2.5 text-base' : 'py-3 text-lg'
+  const headerSize = maxTier === 1 ? 'text-2xl' : 'text-xl'
+
   return (
-    <div className={`page workspace-page age-tier-${maxTier}`}>
-      <header className="workspace-header">
-        <h2>{t('workspace.header')}</h2>
-        <div className="workspace-header-actions">
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950 text-slate-200 px-4 py-6">
+      {/* Header */}
+      <header className="flex items-center justify-between mb-6 max-w-7xl mx-auto flex-wrap gap-3">
+        <h2 className={`${headerSize} font-bold text-white`}>{t('workspace.header')}</h2>
+        <div className="flex gap-2 flex-wrap">
           {maxTier >= 2 && (
             <button
               onClick={handleSaveTemplate}
               disabled={!complete}
-              className="secondary"
+              className="px-3 py-1.5 text-sm bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             >
               {templateSaved ? t('workspace.templateSaved') : t('workspace.saveTemplate')}
             </button>
@@ -112,49 +114,66 @@ export default function WorkspacePage() {
               <button
                 onClick={handleAddToStoryboard}
                 disabled={!snapshotA}
-                className="secondary"
+                className="px-3 py-1.5 text-sm bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
               >
                 {storyboardMsg || t('workspace.addToStoryboard')}
               </button>
-              <button onClick={() => navigate('/storyboard')} className="secondary">
+              <button
+                onClick={() => navigate('/storyboard')}
+                className="px-3 py-1.5 text-sm bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg transition-colors cursor-pointer"
+              >
                 {t('workspace.storyboard')}
               </button>
             </>
           )}
           {maxTier >= 2 && (
-            <button onClick={() => navigate('/templates')} className="secondary">
+            <button
+              onClick={() => navigate('/templates')}
+              className="px-3 py-1.5 text-sm bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg transition-colors cursor-pointer"
+            >
               {t('workspace.myTemplates')}
             </button>
           )}
-          <button onClick={() => navigate('/history')} className="secondary">
+          <button
+            onClick={() => navigate('/history')}
+            className="px-3 py-1.5 text-sm bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg transition-colors cursor-pointer"
+          >
             {t('workspace.myHistory')}
           </button>
-          <button onClick={() => navigate('/')} className="secondary">
+          <button
+            onClick={() => navigate('/')}
+            className="px-3 py-1.5 text-sm bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg transition-colors cursor-pointer"
+          >
             {t('workspace.home')}
           </button>
         </div>
       </header>
 
+      {/* Onboarding steps bar */}
       {isOnboarding && !hasA && (
-        <div className="onboarding-steps-bar">
-          <span className={`onboarding-step ${complete ? 'done' : 'active'}`}>{t('workspace.onboarding.step1')}</span>
-          <span className="onboarding-step-arrow">{'\u2192'}</span>
-          <span className={`onboarding-step ${complete && !hasA ? 'active' : ''}`}>{t('workspace.onboarding.step2')}</span>
-          <span className="onboarding-step-arrow">{'\u2192'}</span>
-          <span className="onboarding-step">{t('workspace.onboarding.step3')}</span>
+        <div className="flex items-center justify-center gap-3 py-3 px-4 mb-4 max-w-7xl mx-auto bg-indigo-500/10 border border-indigo-500/30 rounded-xl text-sm animate-[fadeIn_0.3s_ease-out]">
+          <span className={complete ? 'text-emerald-400 font-semibold' : 'text-indigo-400 font-semibold'}>{t('workspace.onboarding.step1')}</span>
+          <span className="text-slate-600">{'\u2192'}</span>
+          <span className={complete && !hasA ? 'text-indigo-400 font-semibold' : 'text-slate-500'}>{t('workspace.onboarding.step2')}</span>
+          <span className="text-slate-600">{'\u2192'}</span>
+          <span className="text-slate-500">{t('workspace.onboarding.step3')}</span>
         </div>
       )}
 
       {isOnboarding && hasA && !hasB && (
-        <div className="onboarding-steps-bar onboarding-success">
+        <div className="flex items-center justify-center py-3 px-4 mb-4 max-w-7xl mx-auto bg-emerald-500/10 border border-emerald-500/30 rounded-xl text-emerald-400 font-semibold text-sm">
           {t('workspace.onboarding.success')}
         </div>
       )}
 
-      <div className="workspace-layout">
-        <section className="blocks-area">
-          <h3>{t('workspace.blocksTitle')}</h3>
-          <BlocklyEditor onJsonChange={setCurrentJson} initialBlocks={templateBlocks} />
+      {/* Main workspace grid */}
+      <div className={`grid grid-cols-1 lg:grid-cols-2 ${maxTier === 3 ? 'gap-4' : 'gap-6'} max-w-7xl mx-auto mb-8`}>
+        {/* Left: Blocks area */}
+        <section>
+          <h3 className="text-lg font-semibold text-slate-300 mb-3">{t('workspace.blocksTitle')}</h3>
+          <div className={`${blocklyHeight} rounded-xl border border-slate-700/50 overflow-hidden`}>
+            <BlocklyEditor onJsonChange={setCurrentJson} initialBlocks={templateBlocks} />
+          </div>
 
           <GuidanceHint message={guidance.message} phase={guidance.phase} />
 
@@ -163,13 +182,13 @@ export default function WorkspacePage() {
           )}
 
           {zeroChangeWarn && (
-            <p className="status-hint">{t('workspace.zeroChange')}</p>
+            <p className="text-amber-400 mt-2 text-sm">{t('workspace.zeroChange')}</p>
           )}
 
           <button
             onClick={handleGenerate}
             disabled={!canGenerateFinal}
-            className="generate-btn"
+            className={`w-full mt-4 ${btnSize} bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold rounded-xl transition-all shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:from-indigo-600 disabled:hover:to-purple-600 disabled:hover:shadow-indigo-500/20 cursor-pointer`}
           >
             {generating
               ? t('workspace.generating')
@@ -179,43 +198,53 @@ export default function WorkspacePage() {
           </button>
 
           {quotaExhausted && (
-            <p className="status-hint">{t('workspace.quotaExhausted')}</p>
+            <p className="text-amber-400 mt-2 text-sm">{t('workspace.quotaExhausted')}</p>
           )}
 
           {configStatus !== 'configured' && (
-            <p className="status-hint">{t('workspace.needConfig')}</p>
+            <p className="text-amber-400 mt-2 text-sm">{t('workspace.needConfig')}</p>
           )}
         </section>
 
-        <section className="preview-area">
-          <div className="image-slot">
-            <h3>{t('workspace.imageA')}</h3>
+        {/* Right: Preview area */}
+        <section className="space-y-4">
+          {/* Image A */}
+          <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
+            <h3 className="text-sm font-semibold text-slate-400 mb-3">{t('workspace.imageA')}</h3>
             {snapshotA ? (
-              <img src={snapshotA.imageUrl} alt={t('workspace.imageA')} className="generated-image" />
+              <img src={snapshotA.imageUrl} alt={t('workspace.imageA')} className="w-full rounded-lg border border-slate-600" />
             ) : (
-              <div className="placeholder-box image-placeholder">
-                <p>{generating ? t('workspace.imageA.generating') : t('workspace.imageA.placeholder')}</p>
+              <div className="min-h-[180px] flex items-center justify-center rounded-lg border-2 border-dashed border-slate-600 bg-slate-800/30">
+                <p className="text-slate-500 text-sm">{generating ? t('workspace.imageA.generating') : t('workspace.imageA.placeholder')}</p>
               </div>
             )}
           </div>
 
-          <div className="image-slot">
-            <h3>{t('workspace.imageB')}</h3>
+          {/* Image B */}
+          <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
+            <h3 className="text-sm font-semibold text-slate-400 mb-3">{t('workspace.imageB')}</h3>
             {snapshotB ? (
-              <img src={snapshotB.imageUrl} alt={t('workspace.imageB')} className="generated-image" />
+              <img src={snapshotB.imageUrl} alt={t('workspace.imageB')} className="w-full rounded-lg border border-slate-600" />
             ) : (
-              <div className="placeholder-box image-placeholder">
-                <p>{hasA && generating ? t('workspace.imageB.generating') : t('workspace.imageB.placeholder')}</p>
+              <div className="min-h-[180px] flex items-center justify-center rounded-lg border-2 border-dashed border-slate-600 bg-slate-800/30">
+                <p className="text-slate-500 text-sm">{hasA && generating ? t('workspace.imageB.generating') : t('workspace.imageB.placeholder')}</p>
               </div>
             )}
           </div>
 
+          {/* Share / Download */}
           {hasA && (
-            <div className="share-actions">
-              <button onClick={handleShare} className="secondary">
+            <div className="flex gap-2">
+              <button
+                onClick={handleShare}
+                className="px-4 py-2 text-sm bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg transition-colors cursor-pointer"
+              >
                 {shareMsg || t('workspace.share')}
               </button>
-              <button onClick={handleDownload} className="secondary">
+              <button
+                onClick={handleDownload}
+                className="px-4 py-2 text-sm bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg transition-colors cursor-pointer"
+              >
                 {t('workspace.download')}
               </button>
             </div>
@@ -223,33 +252,47 @@ export default function WorkspacePage() {
         </section>
       </div>
 
+      {/* Error banner */}
       {error && (
-        <section className="error-banner">
-          <p>{error}</p>
-          <div className="error-actions">
+        <section className="flex items-center justify-between gap-3 px-4 py-3 mb-6 max-w-7xl mx-auto bg-red-500/10 border border-red-500/30 rounded-xl text-red-400">
+          <p className="text-sm">{error}</p>
+          <div className="flex gap-2 flex-shrink-0">
             {generationFailed && (
-              <button onClick={() => { clearError(); handleGenerate() }}>{t('workspace.retry')}</button>
+              <button
+                onClick={() => { clearError(); handleGenerate() }}
+                className="px-3 py-1.5 text-sm bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-lg transition-colors cursor-pointer"
+              >
+                {t('workspace.retry')}
+              </button>
             )}
-            <button onClick={clearError} className="secondary">{t('workspace.close')}</button>
+            <button
+              onClick={clearError}
+              className="px-3 py-1.5 text-sm bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg transition-colors cursor-pointer"
+            >
+              {t('workspace.close')}
+            </button>
           </div>
         </section>
       )}
 
       {/* Comparison area — only when both snapshots exist */}
       {comparison && (
-        <section className="compare-area">
-          <h3>{t('workspace.compareTitle')}</h3>
+        <section className="max-w-7xl mx-auto mb-8">
+          <h3 className="text-lg font-semibold text-slate-300 mb-4">{t('workspace.compareTitle')}</h3>
 
           <MasteryBadge mastery={mastery} />
           <ChangeInsight details={comparison.details} />
           <ControlReflection details={comparison.details} mastery={mastery} />
 
-          <div className="compare-grid">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-4">
             <CompareCard label={t('workspace.imageA')} snapshot={snapshotA} changedFields={comparison.changedFields} />
             <CompareCard label={t('workspace.imageB')} snapshot={snapshotB} changedFields={comparison.changedFields} />
           </div>
 
-          <button onClick={handleNewRound} className="secondary new-round-btn">
+          <button
+            onClick={handleNewRound}
+            className="mt-4 px-6 py-2 text-sm bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg transition-colors cursor-pointer"
+          >
             {t('workspace.newRound')}
           </button>
         </section>
@@ -257,36 +300,49 @@ export default function WorkspacePage() {
 
       {/* Placeholder when no comparison yet */}
       {!comparison && (
-        <section className="compare-area">
-          <h3>{t('workspace.compareTitle')}</h3>
-          <div className="placeholder-box">
-            <p>{t('workspace.comparePlaceholder')}</p>
+        <section className="max-w-7xl mx-auto mb-8">
+          <h3 className="text-lg font-semibold text-slate-300 mb-4">{t('workspace.compareTitle')}</h3>
+          <div className="min-h-[80px] flex items-center justify-center rounded-xl border-2 border-dashed border-slate-700 bg-slate-800/30">
+            <p className="text-slate-500 text-sm">{t('workspace.comparePlaceholder')}</p>
           </div>
         </section>
       )}
 
-      {/* JSON truth layer — dev-only, hidden from children */}
+      {/* JSON truth layer — dev-only */}
       {import.meta.env.DEV && (
-        <section className="json-preview">
-          <h3>{t('workspace.jsonTitle')} <span className="dev-badge">{t('workspace.jsonDevBadge')}</span></h3>
+        <section className="max-w-7xl mx-auto mb-6">
+          <h3 className="text-sm font-semibold text-slate-400 mb-2">
+            {t('workspace.jsonTitle')}{' '}
+            <span className="text-xs bg-slate-700 text-slate-400 px-2 py-0.5 rounded ml-1">{t('workspace.jsonDevBadge')}</span>
+          </h3>
           {duplicated ? (
             <>
-              <pre className="json-output json-invalid">{t('workspace.jsonInvalid')}</pre>
-              <p className="status-error">{duplicateMsg}</p>
+              <pre className="bg-red-500/10 border border-red-500/30 rounded-lg p-4 text-sm font-mono text-red-400 overflow-x-auto">{t('workspace.jsonInvalid')}</pre>
+              <p className="text-red-400 mt-2 text-sm font-bold">{duplicateMsg}</p>
             </>
           ) : (
-            <pre className="json-output">
+            <pre className="bg-slate-800/50 border border-slate-700/50 rounded-lg p-4 text-sm font-mono text-slate-300 overflow-x-auto whitespace-pre">
               {currentJson ? JSON.stringify(currentJson, null, 2) : t('workspace.jsonEmpty')}
             </pre>
           )}
         </section>
       )}
 
-      <section className="status-area">
-        <div className={`config-status config-${configStatus}`}>
+      {/* Config status */}
+      <section className="max-w-7xl mx-auto">
+        <div className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm ${
+          configStatus === 'configured'
+            ? 'bg-emerald-500/10 border border-emerald-500/30 text-emerald-400'
+            : configStatus === 'invalid'
+              ? 'bg-red-500/10 border border-red-500/30 text-red-400'
+              : 'bg-amber-500/10 border border-amber-500/30 text-amber-400'
+        }`}>
           <span>{t('workspace.configLabel')}{t(`workspace.config.${configStatus}`)}</span>
           {configStatus !== 'configured' && (
-            <button onClick={() => navigate('/config')} className="secondary">
+            <button
+              onClick={() => navigate('/config')}
+              className="px-3 py-1 text-xs bg-slate-700 hover:bg-slate-600 text-slate-300 rounded-lg transition-colors cursor-pointer"
+            >
               {t('workspace.goToSettings')}
             </button>
           )}
@@ -298,16 +354,16 @@ export default function WorkspacePage() {
 
 /**
  * Compare card: shows image + block values, highlights changed fields.
- * Memoized — only re-renders when snapshot or changedFields reference changes.
+ * Dark theme with amber highlighting for changed blocks.
  */
 const CompareCard = memo(function CompareCard({ label, snapshot, changedFields }) {
   const { t } = useI18n()
 
   return (
-    <div className="compare-card">
-      <h4>{label}</h4>
-      <img src={snapshot.imageUrl} alt={label} className="compare-image" />
-      <ul className="compare-blocks">
+    <div className="bg-slate-800/50 rounded-xl border border-slate-700/50 p-4">
+      <h4 className="text-sm font-semibold text-slate-400 mb-2">{label}</h4>
+      <img src={snapshot.imageUrl} alt={label} className="w-full rounded-lg border border-slate-600 mb-3" />
+      <ul className="space-y-1.5">
         {Object.keys(BLOCK_CATEGORIES).map((type) => {
           const block = snapshot.json.blocks[type]
           if (!block) return null
@@ -315,10 +371,14 @@ const CompareCard = memo(function CompareCard({ label, snapshot, changedFields }
           return (
             <li
               key={type}
-              className={changed ? 'is-changed' : ''}
+              className={`flex justify-between px-3 py-1.5 rounded-lg text-sm ${
+                changed
+                  ? 'bg-amber-500/20 border border-amber-500/40 text-amber-200 font-bold'
+                  : 'bg-slate-700/50 text-slate-300'
+              }`}
             >
-              <span className="block-type">{t('blocks.category.' + type)}</span>
-              <span className="block-value">{block.value ? t('blocks.option.' + block.value) : block.label}</span>
+              <span className={changed ? 'text-amber-300/70' : 'text-slate-500'}>{t('blocks.category.' + type)}</span>
+              <span>{block.value ? t('blocks.option.' + block.value) : block.label}</span>
             </li>
           )
         })}
