@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { loadConfig, saveConfig, validateConfig, getUsageCount, resetUsageCount, loadHistory, loadMastery, loadStoryboard, loadTemplates, clearHistory } from '../config/storage'
 import { AGE_TIERS, DEFAULT_AGE_TIER } from '../blocks/whitelist'
 import { PROVIDERS } from '../generation/provider'
+import { useI18n } from '../i18n'
 
 function getInitialConfig() {
   const config = loadConfig()
@@ -17,6 +18,7 @@ function getInitialConfig() {
 
 export default function ConfigPage() {
   const navigate = useNavigate()
+  const { t } = useI18n()
   const initial = getInitialConfig()
   const [apiKey, setApiKey] = useState(initial.apiKey)
   const [usageLimit, setUsageLimit] = useState(initial.usageLimit)
@@ -37,98 +39,133 @@ export default function ConfigPage() {
     }
 
     saveConfig({ apiKey: apiKey.trim(), usageLimit: Number(usageLimit), ageTier, provider, apiBase: apiBase.trim() })
-    setSaveMsg('保存成功（年龄段变更需刷新创作页生效）')
+    setSaveMsg(t('config.saveSuccess'))
   }
 
   return (
-    <div className="legacy-page page config-page">
-      <h2>家长设置</h2>
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950 text-slate-200">
+      <div className="mx-auto max-w-2xl px-6 py-10">
+        <h2 className="text-2xl font-bold text-white mb-8">{t('config.title')}</h2>
 
-      <div className="config-form">
-        <label className="config-field">
-          <span>API Key</span>
-          <input
-            type="password"
-            value={apiKey}
-            onChange={(e) => setApiKey(e.target.value)}
-            placeholder="请输入 API Key"
-          />
-          {errors.apiKey && <p className="field-error">{errors.apiKey}</p>}
-        </label>
-
-        <label className="config-field">
-          <span>图片生成服务</span>
-          <select value={provider} onChange={(e) => setProvider(e.target.value)}>
-            {Object.entries(PROVIDERS).map(([key, { label }]) => (
-              <option key={key} value={key}>{label}</option>
-            ))}
-          </select>
-          <p className="field-hint">国内用户可选择"OpenAI 兼容 API"并填写可用的 API 地址</p>
-        </label>
-
-        {PROVIDERS[provider]?.needsApiBase && (
-          <label className="config-field">
-            <span>API 地址</span>
+        <div className="space-y-6">
+          {/* API Key */}
+          <label className="block">
+            <span className="block text-sm font-medium text-slate-300 mb-1">{t('config.apiKey')}</span>
             <input
-              type="text"
-              value={apiBase}
-              onChange={(e) => setApiBase(e.target.value)}
-              placeholder="例如：https://api.siliconflow.cn"
+              type="password"
+              value={apiKey}
+              onChange={(e) => setApiKey(e.target.value)}
+              placeholder={t('config.apiKeyPlaceholder')}
+              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-slate-200 placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
             />
-            <p className="field-hint">填写兼容 OpenAI 接口的 API 基础地址</p>
+            {errors.apiKey && <p className="mt-1 text-sm text-red-400">{errors.apiKey}</p>}
           </label>
-        )}
 
-        <label className="config-field">
-          <span>创作次数上限</span>
-          <input
-            type="number"
-            value={usageLimit}
-            onChange={(e) => setUsageLimit(e.target.value)}
-            placeholder="例如：20"
-            min="1"
-          />
-          {errors.usageLimit && <p className="field-error">{errors.usageLimit}</p>}
-        </label>
+          {/* Provider */}
+          <label className="block">
+            <span className="block text-sm font-medium text-slate-300 mb-1">{t('config.provider')}</span>
+            <select
+              value={provider}
+              onChange={(e) => setProvider(e.target.value)}
+              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-slate-200 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            >
+              {Object.entries(PROVIDERS).map(([key, { label }]) => (
+                <option key={key} value={key}>{label}</option>
+              ))}
+            </select>
+            <p className="mt-1 text-xs text-slate-500">{t('config.providerHint')}</p>
+          </label>
 
-        <label className="config-field">
-          <span>孩子年龄段</span>
-          <select value={ageTier} onChange={(e) => setAgeTier(e.target.value)}>
-            {Object.entries(AGE_TIERS).map(([key, { label }]) => (
-              <option key={key} value={key}>{label}</option>
-            ))}
-          </select>
-          <p className="field-hint">年龄段决定可用积木种类：基础 4 类 → 扩展 +情绪/天气 → 进阶 +时间</p>
-        </label>
+          {/* API Base (conditional) */}
+          {PROVIDERS[provider]?.needsApiBase && (
+            <label className="block">
+              <span className="block text-sm font-medium text-slate-300 mb-1">{t('config.apiBase')}</span>
+              <input
+                type="text"
+                value={apiBase}
+                onChange={(e) => setApiBase(e.target.value)}
+                placeholder={t('config.apiBasePlaceholder')}
+                className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-slate-200 placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              />
+              <p className="mt-1 text-xs text-slate-500">{t('config.apiBaseHint')}</p>
+            </label>
+          )}
 
-        <div className="config-actions">
-          <button onClick={handleSave}>保存设置</button>
-          <button onClick={() => navigate('/')} className="secondary">返回首页</button>
+          {/* Usage Limit */}
+          <label className="block">
+            <span className="block text-sm font-medium text-slate-300 mb-1">{t('config.usageLimit')}</span>
+            <input
+              type="number"
+              value={usageLimit}
+              onChange={(e) => setUsageLimit(e.target.value)}
+              placeholder={t('config.usageLimitPlaceholder')}
+              min="1"
+              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-slate-200 placeholder-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            />
+            {errors.usageLimit && <p className="mt-1 text-sm text-red-400">{errors.usageLimit}</p>}
+          </label>
+
+          {/* Age Tier */}
+          <label className="block">
+            <span className="block text-sm font-medium text-slate-300 mb-1">{t('config.ageTier')}</span>
+            <select
+              value={ageTier}
+              onChange={(e) => setAgeTier(e.target.value)}
+              className="w-full rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-slate-200 focus:border-indigo-500 focus:outline-none focus:ring-1 focus:ring-indigo-500"
+            >
+              {Object.entries(AGE_TIERS).map(([key, { label }]) => (
+                <option key={key} value={key}>{label}</option>
+              ))}
+            </select>
+            <p className="mt-1 text-xs text-slate-500">{t('config.ageTierHint')}</p>
+          </label>
+
+          {/* Action buttons */}
+          <div className="flex gap-3 pt-2">
+            <button
+              onClick={handleSave}
+              className="rounded-lg bg-indigo-600 px-6 py-2.5 font-medium text-white hover:bg-indigo-500 transition-colors"
+            >
+              {t('config.save')}
+            </button>
+            <button
+              onClick={() => navigate('/')}
+              className="rounded-lg bg-slate-700 px-6 py-2.5 font-medium text-slate-300 hover:bg-slate-600 transition-colors"
+            >
+              {t('config.back')}
+            </button>
+          </div>
+
+          {saveMsg && <p className="text-sm font-medium text-emerald-400">{saveMsg}</p>}
+
+          {/* Usage counter */}
+          <div className="flex items-center gap-4 border-t border-slate-800 pt-4 text-sm text-slate-400">
+            <span>
+              {usageLimit
+                ? t('config.usageCountWithLimit', { count: usageCount, limit: usageLimit })
+                : t('config.usageCount', { count: usageCount })}
+            </span>
+            <button
+              type="button"
+              onClick={() => { resetUsageCount(); setUsageCount(0) }}
+              className="rounded-md bg-slate-700 px-3 py-1.5 text-xs text-slate-300 hover:bg-slate-600 transition-colors"
+            >
+              {t('config.resetUsage')}
+            </button>
+          </div>
         </div>
 
-        {saveMsg && <p className="save-success">{saveMsg}</p>}
-
-        <div className="usage-info">
-          <p>已使用次数：{usageCount}{usageLimit ? ` / ${usageLimit}` : ''}</p>
-          <button
-            type="button"
-            onClick={() => { resetUsageCount(); setUsageCount(0) }}
-            className="secondary"
-          >
-            重置已使用次数
-          </button>
-        </div>
+        <ParentDashboard />
       </div>
-
-      <ParentDashboard />
     </div>
   )
 }
 
 /**
- * 家长面板：查看孩子的表达成长轨迹和使用统计
+ * Parent dashboard: view child's expression growth trajectory and usage stats
  */
 function ParentDashboard() {
+  const { t } = useI18n()
   const [history] = useState(() => loadHistory())
   const [mastery] = useState(() => loadMastery())
   const [storyboard] = useState(() => loadStoryboard())
@@ -136,21 +173,22 @@ function ParentDashboard() {
   const [cleared, setCleared] = useState(false)
   const [sevenDaysAgo] = useState(() => Date.now() - 7 * 24 * 60 * 60 * 1000)
 
-  // 掌握度等级
-  const masteryLevel =
-    mastery.singleChanges >= 15 ? '控制大师' :
-    mastery.singleChanges >= 8 ? '积木达人' :
-    mastery.singleChanges >= 3 ? '表达学徒' : '小探索者'
+  // Mastery level
+  const masteryIndex =
+    mastery.singleChanges >= 15 ? 3 :
+    mastery.singleChanges >= 8 ? 2 :
+    mastery.singleChanges >= 3 ? 1 : 0
+  const masteryLevel = t('dashboard.masteryLevels.' + masteryIndex)
 
-  // 精准度百分比
+  // Precision percentage
   const precision = mastery.totalComparisons > 0
     ? Math.round((mastery.singleChanges / mastery.totalComparisons) * 100)
     : 0
 
-  // 最近7天活跃度
+  // Recent 7-day activity
   const recentCount = history.filter(h => h.timestamp > sevenDaysAgo).length
 
-  // 使用过的积木种类统计
+  // Block variety stats
   const blockUsage = {}
   for (const entry of history) {
     for (const [type, data] of Object.entries(entry.json.blocks)) {
@@ -162,63 +200,67 @@ function ParentDashboard() {
   }
 
   return (
-    <section className="parent-dashboard">
-      <h3>孩子的成长面板</h3>
+    <section className="mt-10 border-t border-slate-800 pt-8">
+      <h3 className="text-lg font-bold text-white mb-5">{t('dashboard.title')}</h3>
 
-      <div className="dashboard-grid">
-        <div className="dashboard-card">
-          <div className="dashboard-value">{history.length}</div>
-          <div className="dashboard-label">总创作数</div>
+      {/* Stats grid */}
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 mb-6">
+        <div className="rounded-xl bg-slate-800/60 border border-slate-700/50 p-4 text-center">
+          <div className="text-2xl font-bold text-indigo-400">{history.length}</div>
+          <div className="mt-1 text-xs text-slate-400">{t('dashboard.totalCreations')}</div>
         </div>
-        <div className="dashboard-card">
-          <div className="dashboard-value">{recentCount}</div>
-          <div className="dashboard-label">近7天创作</div>
+        <div className="rounded-xl bg-slate-800/60 border border-slate-700/50 p-4 text-center">
+          <div className="text-2xl font-bold text-indigo-400">{recentCount}</div>
+          <div className="mt-1 text-xs text-slate-400">{t('dashboard.recentCreations')}</div>
         </div>
-        <div className="dashboard-card">
-          <div className="dashboard-value">{mastery.totalComparisons}</div>
-          <div className="dashboard-label">对比次数</div>
+        <div className="rounded-xl bg-slate-800/60 border border-slate-700/50 p-4 text-center">
+          <div className="text-2xl font-bold text-indigo-400">{mastery.totalComparisons}</div>
+          <div className="mt-1 text-xs text-slate-400">{t('dashboard.comparisons')}</div>
         </div>
-        <div className="dashboard-card">
-          <div className="dashboard-value">{precision}%</div>
-          <div className="dashboard-label">精准对比率</div>
+        <div className="rounded-xl bg-slate-800/60 border border-slate-700/50 p-4 text-center">
+          <div className="text-2xl font-bold text-indigo-400">{precision}%</div>
+          <div className="mt-1 text-xs text-slate-400">{t('dashboard.precision')}</div>
         </div>
       </div>
 
-      <div className="dashboard-section">
-        <h4>掌握度</h4>
-        <p>当前等级：<strong>{masteryLevel}</strong>（{mastery.singleChanges} 次单块精准对比）</p>
-        <p className="field-hint">精准对比 = 只改一个积木就生成对比，说明孩子在有意识地观察因果关系</p>
+      {/* Mastery */}
+      <div className="mb-4 rounded-lg bg-slate-800/40 p-4">
+        <h4 className="text-sm font-semibold text-slate-300 mb-2">{t('dashboard.mastery')}</h4>
+        <p className="text-sm text-slate-300">{t('dashboard.masteryLevel', { level: masteryLevel, count: mastery.singleChanges })}</p>
+        <p className="mt-1 text-xs text-slate-500">{t('dashboard.masteryHint')}</p>
       </div>
 
-      <div className="dashboard-section">
-        <h4>积木探索广度</h4>
+      {/* Block exploration */}
+      <div className="mb-4 rounded-lg bg-slate-800/40 p-4">
+        <h4 className="text-sm font-semibold text-slate-300 mb-2">{t('dashboard.blockExploration')}</h4>
         {Object.keys(blockUsage).length > 0 ? (
-          <ul className="dashboard-block-usage">
+          <div className="flex flex-wrap gap-2">
             {Object.entries(blockUsage).map(([type, values]) => (
-              <li key={type}>
-                <span className="block-type">{type}</span>
-                <span className="dashboard-usage-count">用过 {values.size} 种</span>
-              </li>
+              <span key={type} className="rounded-md bg-indigo-500/10 border border-indigo-500/20 px-3 py-1 text-xs text-indigo-300">
+                {t('blocks.category.' + type)} — {t('dashboard.blockUsed', { count: values.size })}
+              </span>
             ))}
-          </ul>
+          </div>
         ) : (
-          <p className="field-hint">还没有创作记录</p>
+          <p className="text-xs text-slate-500">{t('dashboard.noHistory')}</p>
         )}
       </div>
 
-      <div className="dashboard-section">
-        <h4>创作资产</h4>
-        <p>模板：{templates.length} 个 | 故事板帧：{storyboard.length} 帧</p>
+      {/* Assets */}
+      <div className="mb-4 rounded-lg bg-slate-800/40 p-4">
+        <h4 className="text-sm font-semibold text-slate-300 mb-2">{t('dashboard.assets')}</h4>
+        <p className="text-sm text-slate-400">{t('dashboard.assetsDetail', { templates: templates.length, frames: storyboard.length })}</p>
       </div>
 
-      <div className="dashboard-section">
-        <h4>数据管理</h4>
+      {/* Data management */}
+      <div className="rounded-lg bg-slate-800/40 p-4">
+        <h4 className="text-sm font-semibold text-slate-300 mb-2">{t('dashboard.dataManagement')}</h4>
         <button
           onClick={() => { clearHistory(); setCleared(true) }}
-          className="secondary"
           disabled={cleared}
+          className="rounded-md bg-slate-700 px-4 py-2 text-sm text-slate-300 hover:bg-slate-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {cleared ? '历史已清空' : '清空创作历史'}
+          {cleared ? t('dashboard.historyCleared') : t('dashboard.clearHistory')}
         </button>
       </div>
     </section>

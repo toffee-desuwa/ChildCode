@@ -25,41 +25,46 @@ export default function HistoryPage() {
   const [history] = useState(() => loadHistory())
 
   return (
-    <div className="legacy-page page history-page">
-      <header className="templates-header">
-        <h2>{t('history.title')}</h2>
-        <button onClick={() => navigate('/workspace')} className="secondary">
-          {t('history.back')}
-        </button>
-      </header>
+    <div className="min-h-screen bg-gradient-to-b from-slate-900 to-slate-950 text-slate-200">
+      <div className="mx-auto max-w-5xl px-6 py-10">
+        <header className="flex items-center justify-between mb-8">
+          <h2 className="text-2xl font-bold text-white">{t('history.title')}</h2>
+          <button
+            onClick={() => navigate('/workspace')}
+            className="rounded-lg bg-slate-700 px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-600 transition-colors"
+          >
+            {t('history.back')}
+          </button>
+        </header>
 
-      {history.length === 0 ? (
-        <div className="placeholder-box">
-          <p>{t('history.empty')}</p>
-        </div>
-      ) : (
-        <div className="history-grid">
-          {history.map((entry, i) => (
-            <div key={entry.timestamp + '-' + i} className="history-card">
-              <img src={entry.imageUrl} alt={t('history.imageAlt', { index: i + 1 })} className="history-image" />
-              <div className="history-meta">
-                <span className="history-time">{formatTime(entry.timestamp, lang)}</span>
-                <ul className="history-blocks">
-                  {['subject', 'action', 'scene', 'style'].map((type) => {
-                    const block = entry.json.blocks[type]
-                    return block ? (
-                      <li key={type}>
-                        <span className="history-block-type">{t('blocks.category.' + type)}</span>
-                        <span className="history-block-value">{block.value ? t('blocks.option.' + block.value) : block.label}</span>
-                      </li>
-                    ) : null
-                  })}
-                </ul>
+        {history.length === 0 ? (
+          <div className="rounded-xl border-2 border-dashed border-slate-700 p-12 text-center text-slate-500">
+            <p>{t('history.empty')}</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {history.map((entry, i) => (
+              <div key={entry.timestamp + '-' + i} className="rounded-xl bg-slate-800/60 border border-slate-700/50 overflow-hidden">
+                <img src={entry.imageUrl} alt={t('history.imageAlt', { index: i + 1 })} className="w-full aspect-square object-cover" />
+                <div className="p-3">
+                  <span className="text-xs text-slate-500">{formatTime(entry.timestamp, lang)}</span>
+                  <div className="mt-2 flex flex-wrap gap-1">
+                    {['subject', 'action', 'scene', 'style'].map((type) => {
+                      const block = entry.json.blocks[type]
+                      return block ? (
+                        <span key={type} className="rounded-md bg-slate-700/60 px-2 py-0.5 text-xs">
+                          <span className="text-slate-500">{t('blocks.category.' + type)} </span>
+                          <span className="font-medium text-slate-300">{block.value ? t('blocks.option.' + block.value) : block.label}</span>
+                        </span>
+                      ) : null
+                    })}
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
