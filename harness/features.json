@@ -239,7 +239,7 @@
       "id": "F34",
       "name": "vercel-deployment",
       "description": "Vercel 部署配置：vercel.json SPA rewrites，build 设置，确认 react-router 刷新不 404",
-      "status": "backlog",
+      "status": "done",
       "notes": "纯前端 Vite 项目，Vercel 零配置基本能跑，但需要 rewrites 规则处理 SPA 路由。不用 GitHub Pages（SPA 路由问题）。"
     },
     {

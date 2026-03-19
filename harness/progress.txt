@@ -308,3 +308,10 @@
 - og:url set to https://childcode.dev — update if domain changes
 - Build OK, Lint OK
 - Next: F34
+
+## F34: vercel-deployment (2026-03-19)
+- Created vercel.json with SPA catch-all rewrite: `/(.*) → /index.html`
+- Handles all BrowserRouter routes (/workspace, /config, /history, /templates, /storyboard)
+- No build/output overrides needed — Vercel auto-detects Vite
+- Build OK, Lint OK
+- Next: F35
