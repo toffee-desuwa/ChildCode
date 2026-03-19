@@ -260,7 +260,7 @@
       "id": "F37",
       "name": "code-quality-audit-4",
       "description": "最终代码质量审查：全项目 build + lint + 中文残留扫描 + 死代码清理 + 旧 CSS 彻底移除",
-      "status": "backlog",
+      "status": "done",
       "notes": "这是上线前最后一次审查。重点：1) grep 中文字符确认只在 i18n/zh.js 和 README-CN.md 中 2) index.css 中旧样式全部清理 3) 无 console.log 残留 4) package.json 无多余依赖"
     },
     {

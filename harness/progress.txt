@@ -334,3 +334,13 @@
 - Cross-links: EN→CN at bottom of README.md, CN→EN at bottom of README-CN.md
 - Build OK, Lint OK
 - Next: F37
+
+## F37: code-quality-audit-4 (2026-03-19)
+- Build: PASS (57 modules, clean)
+- Lint: PASS (0 errors, 0 warnings)
+- Chinese text scan: PASS — Chinese only in src/i18n/zh.js (expected) and HistoryPage date format (locale-aware, only rendered when lang==='zh')
+- console.log scan: PASS — only console.warn (storage failure) and console.error (generation error), both appropriate
+- Dead code: PASS — no unused imports in App.jsx, all dependencies in package.json actively used
+- Legacy CSS: PASS — index.css is minimal (Tailwind import + tokens + body reset + 1 keyframe)
+- No issues found, no changes needed
+- All backlog features complete (F34-F37 done this session)
