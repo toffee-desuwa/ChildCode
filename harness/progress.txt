@@ -274,3 +274,14 @@
 - ~~Initial version had useEffect setState for imgError reset~~ → moved to advancePhase callback to fix lint
 - Build OK, Lint OK
 - Next: F31
+
+## F31: mobile-responsive (2026-03-19)
+- WorkspacePage: hidden Blockly on <768px, replaced with "Best on desktop" banner + HeroCarousel
+- Also hid comparison/JSON/config sections on mobile (depend on Blockly)
+- HeroCarousel: responsive block tags (text-[10px] on mobile), 4:3 aspect ratio on small screens
+- WelcomePage: tighter mobile padding (px-4, py-8)
+- HistoryPage: single-column grid on smallest screens
+- Added i18n keys: workspace.mobile.title/subtitle/cta/preview (en + zh)
+- Config/Templates/Storyboard pages already responsive — no changes needed
+- Build OK, Lint OK
+- Next: F32

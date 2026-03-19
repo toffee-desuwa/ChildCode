@@ -218,7 +218,7 @@
       "id": "F31",
       "name": "mobile-responsive",
       "description": "移动端适配：hero carousel 全响应式，workspace 在 <768px 显示 'Best on desktop' 提示 + carousel 替代，其余页面堆叠卡片布局",
-      "status": "backlog",
+      "status": "done",
       "notes": "Blockly workspace 不在移动端渲染（拖拽不可用）。小红书引流的用户会在手机上打开，必须看到 carousel 效果。"
     },
     {
