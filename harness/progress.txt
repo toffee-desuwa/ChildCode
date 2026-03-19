@@ -325,3 +325,12 @@
 - Link to README-CN.md (F36) at bottom
 - Build OK, Lint OK
 - Next: F36
+
+## F36: readme-chinese (2026-03-19)
+- Created README-CN.md mirroring English README structure
+- All sections properly localized: tagline, growth ladder, architecture labels
+- Architecture diagram with Chinese labels (JSON 真相层, 提示词派生, etc.)
+- Badge demo link shows "在线体验"
+- Cross-links: EN→CN at bottom of README.md, CN→EN at bottom of README-CN.md
+- Build OK, Lint OK
+- Next: F37

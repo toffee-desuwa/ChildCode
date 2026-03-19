@@ -253,7 +253,7 @@
       "id": "F36",
       "name": "readme-chinese",
       "description": "README-CN.md 中文版：与英文版结构一致，文案本地化",
-      "status": "backlog",
+      "status": "done",
       "notes": "底部加 English version 链接。保持与 README.md 同步。"
     },
     {
