@@ -267,6 +267,13 @@ export function loadMastery() {
 }
 
 /**
+ * 是否首次使用（没有任何创作历史）
+ */
+export function isFirstTimeUser() {
+  return loadHistory().length === 0
+}
+
+/**
  * 记录一次对比（区分单块变化和多块变化）
  */
 export function recordComparison(changedCount) {

@@ -23,6 +23,7 @@ export default function WorkspacePage() {
   const navigate = useNavigate()
   const location = useLocation()
   const templateBlocks = location.state?.templateBlocks || null
+  const isOnboarding = location.state?.onboarding || false
   const [currentJson, setCurrentJson] = useState(null)
   const [templateSaved, setTemplateSaved] = useState(false)
   const [storyboardMsg, setStoryboardMsg] = useState(null)
@@ -226,6 +227,22 @@ export default function WorkspacePage() {
           </button>
         </div>
       </header>
+
+      {isOnboarding && !hasA && (
+        <div className="onboarding-steps-bar">
+          <span className={`onboarding-step ${complete ? 'done' : 'active'}`}>1. 积木已就位</span>
+          <span className="onboarding-step-arrow">→</span>
+          <span className={`onboarding-step ${complete && !hasA ? 'active' : ''}`}>2. 点"生成图片"</span>
+          <span className="onboarding-step-arrow">→</span>
+          <span className="onboarding-step">3. 看画面！</span>
+        </div>
+      )}
+
+      {isOnboarding && hasA && !hasB && (
+        <div className="onboarding-steps-bar onboarding-success">
+          你的第一幅画诞生了！试试改一个积木，看画面会怎么变？
+        </div>
+      )}
 
       <div className="workspace-layout">
         <section className="blocks-area">
