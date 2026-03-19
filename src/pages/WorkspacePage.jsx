@@ -11,6 +11,7 @@ import GuidanceHint from '../components/GuidanceHint'
 import ChangeInsight from '../components/ChangeInsight'
 import { CATEGORY_LABELS, BLOCK_CATEGORIES, AGE_TIERS, DEFAULT_AGE_TIER } from '../blocks/whitelist'
 import { PredictionHint, MasteryBadge, ControlReflection } from '../components/ControlFeeling'
+import { shareCreation, downloadImage } from '../sharing/shareCard'
 
 const CONFIG_STATUS_TEXT = {
   not_configured: '未配置 — 请让爸爸妈妈先完成设置',
@@ -25,6 +26,7 @@ export default function WorkspacePage() {
   const [currentJson, setCurrentJson] = useState(null)
   const [templateSaved, setTemplateSaved] = useState(false)
   const [storyboardMsg, setStoryboardMsg] = useState(null)
+  const [shareMsg, setShareMsg] = useState(null)
   const [snapshotA, setSnapshotA] = useState(null) // { json, imageUrl }
   const [snapshotB, setSnapshotB] = useState(null) // { json, imageUrl }
   const [generating, setGenerating] = useState(false)
@@ -159,6 +161,22 @@ export default function WorkspacePage() {
     setTimeout(() => setStoryboardMsg(null), 2500)
   }
 
+  // 分享当前创作
+  const handleShare = async () => {
+    const target = snapshotB || snapshotA
+    if (!target) return
+    const ok = await shareCreation(target.json, target.imageUrl)
+    setShareMsg(ok ? '已复制分享文案' : '分享失败')
+    setTimeout(() => setShareMsg(null), 2500)
+  }
+
+  // 下载当前创作图片
+  const handleDownload = () => {
+    const target = snapshotB || snapshotA
+    if (!target) return
+    downloadImage(target.imageUrl)
+  }
+
   // "Start new round" — promote B to A, clear B
   const handleNewRound = () => {
     snapshotARef.current = snapshotB
@@ -267,6 +285,17 @@ export default function WorkspacePage() {
               </div>
             )}
           </div>
+
+          {hasA && (
+            <div className="share-actions">
+              <button onClick={handleShare} className="secondary">
+                {shareMsg || '分享创作'}
+              </button>
+              <button onClick={handleDownload} className="secondary">
+                下载图片
+              </button>
+            </div>
+          )}
         </section>
       </div>
 

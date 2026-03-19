@@ -933,3 +933,11 @@ button.secondary {
   color: #4a90d9;
   font-weight: bold;
 }
+
+/* ── F17: 分享 ── */
+
+.share-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
