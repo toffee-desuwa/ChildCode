@@ -94,3 +94,9 @@
 - 修改 src/pages/ConfigPage.jsx — 新增 ParentDashboard 组件：4卡统计网格、掌握度等级、积木探索广度、资产概览、历史清空
 - 修改 src/index.css — 面板样式：dashboard-grid/card/section
 - 验证：npm run build OK, npm run lint OK
+
+## F17: viral-sharing (2026-03-19)
+- 新增 src/sharing/shareCard.js — 分享工具：buildShareText/shareCreation(Web Share API + clipboard)/downloadImage
+- 修改 src/pages/WorkspacePage.jsx — 新增分享/下载按钮，生成后可见
+- 修改 src/index.css — share-actions 样式
+- 验证：npm run build OK, npm run lint OK

@@ -121,8 +121,8 @@
       "id": "F17",
       "name": "viral-sharing",
       "description": "病毒传播机制：孩子的创作可以分享，看到的人想自己也试试",
-      "status": "backlog",
-      "notes": "Mirofish 式增长的关键，需要精心设计分享体验"
+      "status": "done",
+      "notes": "Web Share API + clipboard 降级 + 图片下载，分享文案含积木组合和 CTA"
     },
     {
       "id": "F18",
