@@ -9,7 +9,7 @@ import { diffBlocks } from '../generation/diffBlocks'
 import { getGuidance } from '../guidance/phaseGuide'
 import GuidanceHint from '../components/GuidanceHint'
 import ChangeInsight from '../components/ChangeInsight'
-import { CATEGORY_LABELS, BLOCK_CATEGORIES } from '../blocks/whitelist'
+import { CATEGORY_LABELS, BLOCK_CATEGORIES, AGE_TIERS, DEFAULT_AGE_TIER } from '../blocks/whitelist'
 import { PredictionHint, MasteryBadge, ControlReflection } from '../components/ControlFeeling'
 
 const CONFIG_STATUS_TEXT = {
@@ -39,6 +39,9 @@ export default function WorkspacePage() {
   // 缓存 first-image 阶段的建议类别，防止每次渲染闪烁
   const guidanceSuggestionRef = useRef(null)
 
+  const config = loadConfig()
+  const ageTier = config?.ageTier || DEFAULT_AGE_TIER
+  const maxTier = AGE_TIERS[ageTier]?.maxTier ?? 1
   const configStatus = getConfigStatus()
   const complete = currentJson && isComplete(currentJson)
   const duplicated = currentJson && hasDuplicates(currentJson)
@@ -165,30 +168,38 @@ export default function WorkspacePage() {
   }
 
   return (
-    <div className="page workspace-page">
+    <div className={`page workspace-page age-tier-${maxTier}`}>
       <header className="workspace-header">
         <h2>ChildCode 创作区</h2>
         <div className="workspace-header-actions">
-          <button
-            onClick={handleSaveTemplate}
-            disabled={!complete}
-            className="secondary"
-          >
-            {templateSaved ? '已保存' : '存为模板'}
-          </button>
-          <button
-            onClick={handleAddToStoryboard}
-            disabled={!snapshotA}
-            className="secondary"
-          >
-            {storyboardMsg || '加入故事板'}
-          </button>
-          <button onClick={() => navigate('/storyboard')} className="secondary">
-            故事板
-          </button>
-          <button onClick={() => navigate('/templates')} className="secondary">
-            我的模板
-          </button>
+          {maxTier >= 2 && (
+            <button
+              onClick={handleSaveTemplate}
+              disabled={!complete}
+              className="secondary"
+            >
+              {templateSaved ? '已保存' : '存为模板'}
+            </button>
+          )}
+          {maxTier >= 3 && (
+            <>
+              <button
+                onClick={handleAddToStoryboard}
+                disabled={!snapshotA}
+                className="secondary"
+              >
+                {storyboardMsg || '加入故事板'}
+              </button>
+              <button onClick={() => navigate('/storyboard')} className="secondary">
+                故事板
+              </button>
+            </>
+          )}
+          {maxTier >= 2 && (
+            <button onClick={() => navigate('/templates')} className="secondary">
+              我的模板
+            </button>
+          )}
           <button onClick={() => navigate('/history')} className="secondary">
             我的历史
           </button>

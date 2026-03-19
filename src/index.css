@@ -813,3 +813,52 @@ button.secondary {
   border: 1px solid #ffcc80;
   color: #e65100;
 }
+
+/* ── F15: 年龄渐进 UI ── */
+
+/* Tier 1 (8-10): 大按钮、大字、简化 */
+.age-tier-1 .generate-btn {
+  font-size: 22px;
+  padding: 16px;
+}
+
+.age-tier-1 .blockly-container {
+  height: 450px;
+}
+
+.age-tier-1 .workspace-header h2 {
+  font-size: 28px;
+}
+
+.age-tier-1 .guidance-hint {
+  font-size: 18px;
+}
+
+.age-tier-1 .prediction-hint {
+  font-size: 17px;
+}
+
+/* Tier 2 (10-12): 默认尺寸，略微紧凑 */
+.age-tier-2 .blockly-container {
+  height: 420px;
+}
+
+/* Tier 3 (12+): 紧凑布局，更多信息密度 */
+.age-tier-3 .workspace-layout {
+  gap: 12px;
+}
+
+.age-tier-3 .generate-btn {
+  font-size: 16px;
+  padding: 10px;
+}
+
+.age-tier-3 .blockly-container {
+  height: 380px;
+}
+
+.age-tier-3 .guidance-hint,
+.age-tier-3 .prediction-hint {
+  font-size: 14px;
+  padding: 8px 12px;
+}
