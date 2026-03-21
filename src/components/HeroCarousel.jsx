@@ -96,7 +96,6 @@ export default function HeroCarousel() {
   }, [phase, setIndex, advancePhase])
 
   const blocksReady = phase !== 'blocksIn'
-  const showImageA = phase === 'showA' || phase === 'blockSwap' || phase === 'showB'
   const showImageB = phase === 'showB'
   const highlightChanged = phase === 'blockSwap' || phase === 'showB'
   const useB = phase === 'showB'
@@ -181,9 +180,9 @@ export default function HeroCarousel() {
           <img
             src={set.imageA}
             alt={set.blocks.map(b => t(`blocks.option.${b.valueA}`)).join(', ')}
-            className={`absolute top-0 h-full object-cover transition-all duration-700 ${
-              showImageA ? 'opacity-100' : 'opacity-0'
-            } ${showImageB ? 'left-0 w-[49.5%]' : 'left-0 w-full'}`}
+            className={`absolute top-0 h-full object-cover transition-all duration-700 opacity-100 ${
+              showImageB ? 'left-0 w-[49.5%]' : 'left-0 w-full'
+            }`}
             onError={() => setImgError(e => ({ ...e, a: true }))}
           />
         ) : null}
@@ -220,13 +219,6 @@ export default function HeroCarousel() {
         {imgError.a && imgError.b && (
           <div className="absolute inset-0 flex items-center justify-center text-slate-500 text-sm">
             {t('carousel.fallback')}
-          </div>
-        )}
-
-        {/* Loading state — visible only in blocksIn phase */}
-        {!showImageA && !imgError.a && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-8 h-8 border-2 border-indigo-400/30 border-t-indigo-400 rounded-full animate-spin" />
           </div>
         )}
 

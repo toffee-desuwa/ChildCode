@@ -3,3 +3,29 @@ dist/
 build/
 .env
 .claude/settings.local.json
+
+# Ralph harness files
+.ralph/
+
+# Claude Code
+.claude/
+CLAUDE.md
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Environment variants
+.env.local
+.env.*.local
+.env.production
+
+# Test coverage
+coverage/

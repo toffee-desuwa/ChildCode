@@ -48,6 +48,7 @@ export default {
   'workspace.onboarding.success': '你的第一幅画诞生了！试试改一个积木，看画面会怎么变？',
 
   // Blocks area
+  'workspace.loadingBlocks': '积木加载中\u2026',
   'workspace.blocksTitle': '积木搭建区',
   'workspace.zeroChange': '你没有修改积木哦，改一个块试试？',
   'workspace.generate': '生成图片',

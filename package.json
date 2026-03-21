@@ -1,8 +1,12 @@
 {
   "name": "childcode",
-  "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Block-based AI interaction for kids. Scratch for the AI Era.",
   "type": "module",
+  "repository": "https://github.com/nicekid1/ChildCode",
+  "keywords": ["ai", "kids", "education", "blocks", "scratch", "image-generation"],
+  "author": "nicekid1",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

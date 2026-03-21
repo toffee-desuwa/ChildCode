@@ -48,6 +48,7 @@ export default {
   'workspace.onboarding.success': 'Your first artwork is here! Try changing one block to see how the image changes.',
 
   // Blocks area
+  'workspace.loadingBlocks': 'Loading blocks\u2026',
   'workspace.blocksTitle': 'Block Builder',
   'workspace.zeroChange': "You haven't changed any blocks. Try modifying one!",
   'workspace.generate': 'Generate Image',

@@ -1,6 +1,7 @@
-import { useState, useMemo, memo } from 'react'
+import { useState, useMemo, memo, lazy, Suspense } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import BlocklyEditor from '../components/BlocklyEditor'
+
+const BlocklyEditor = lazy(() => import('../components/BlocklyEditor'))
 import { isComplete, hasDuplicates, getDuplicateMessage } from '../blocks/exportJson'
 import { getConfigStatus, loadConfig, saveTemplate, addStoryboardFrame, loadStoryboard, STORYBOARD_MAX_FRAMES } from '../config/storage'
 import { getGuidance } from '../guidance/phaseGuide'
@@ -189,7 +190,9 @@ export default function WorkspacePage() {
         <section>
           <h3 className="text-lg font-semibold text-slate-300 mb-3">{t('workspace.blocksTitle')}</h3>
           <div className={`${blocklyHeight} rounded-xl border border-slate-700/50 overflow-hidden`}>
-            <BlocklyEditor onJsonChange={setCurrentJson} initialBlocks={templateBlocks} />
+            <Suspense fallback={<div className="w-full h-full flex items-center justify-center text-slate-500">{t('workspace.loadingBlocks')}</div>}>
+              <BlocklyEditor onJsonChange={setCurrentJson} initialBlocks={templateBlocks} />
+            </Suspense>
           </div>
 
           <GuidanceHint message={guidance.message} phase={guidance.phase} />
