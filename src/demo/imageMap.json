@@ -9,13 +9,13 @@
       "file": "demo-002.png",
       "label": "Cat sleeping in forest (watercolor)"
     },
-    "dragon-flying-pixel_art-sky": {
+    "dragon-flying-pixel_art-space": {
       "file": "demo-003.png",
-      "label": "Dragon flying in sky (pixel art)"
+      "label": "Dragon flying in space (pixel art)"
     },
-    "dragon-flying-ocean-pixel_art": {
+    "dragon-flying-pixel_art-underwater": {
       "file": "demo-004.png",
-      "label": "Dragon flying in ocean (pixel art)"
+      "label": "Dragon flying underwater (pixel art)"
     },
     "cartoon-city-dancing-robot": {
       "file": "demo-005.png",
@@ -24,6 +24,50 @@
     "city-dancing-oil_painting-robot": {
       "file": "demo-006.png",
       "label": "Robot dancing in city (oil painting)"
+    },
+    "cartoon-cat-forest-running": {
+      "file": "demo-008.png",
+      "label": "Cat running in forest (cartoon)"
+    },
+    "cat-forest-oil_painting-running": {
+      "file": "demo-009.png",
+      "label": "Cat running in forest (oil painting)"
+    },
+    "cat-crayon-forest-running": {
+      "file": "demo-010.png",
+      "label": "Cat running in forest (crayon)"
+    },
+    "cat-forest-paper_cut-running": {
+      "file": "demo-011.png",
+      "label": "Cat running in forest (paper cut)"
+    },
+    "cat-forest-pixel_art-running": {
+      "file": "demo-012.png",
+      "label": "Cat running in forest (pixel art)"
+    },
+    "dragon-flying-space-watercolor": {
+      "file": "demo-013.png",
+      "label": "Dragon flying in space (watercolor)"
+    },
+    "cartoon-dragon-flying-space": {
+      "file": "demo-014.png",
+      "label": "Dragon flying in space (cartoon)"
+    },
+    "dragon-flying-oil_painting-space": {
+      "file": "demo-015.png",
+      "label": "Dragon flying in space (oil painting)"
+    },
+    "crayon-dragon-flying-space": {
+      "file": "demo-016.png",
+      "label": "Dragon flying in space (crayon)"
+    },
+    "dragon-flying-paper_cut-space": {
+      "file": "demo-017.png",
+      "label": "Dragon flying in space (paper cut)"
+    },
+    "city-dancing-robot-watercolor": {
+      "file": "demo-018.png",
+      "label": "Robot dancing in city (watercolor)"
     }
   }
 }
