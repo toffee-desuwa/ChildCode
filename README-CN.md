@@ -8,9 +8,9 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/nicekid1/ChildCode/stargazers"><img src="https://img.shields.io/github/stars/nicekid1/ChildCode?style=flat-square" alt="Stars" /></a>
-  <a href="https://github.com/nicekid1/ChildCode/network/members"><img src="https://img.shields.io/github/forks/nicekid1/ChildCode?style=flat-square" alt="Forks" /></a>
-  <a href="https://github.com/nicekid1/ChildCode/blob/main/LICENSE"><img src="https://img.shields.io/github/license/nicekid1/ChildCode?style=flat-square" alt="License" /></a>
+  <a href="https://github.com/toffee-desuwa/ChildCode/stargazers"><img src="https://img.shields.io/github/stars/toffee-desuwa/ChildCode?style=flat-square" alt="Stars" /></a>
+  <a href="https://github.com/toffee-desuwa/ChildCode/network/members"><img src="https://img.shields.io/github/forks/toffee-desuwa/ChildCode?style=flat-square" alt="Forks" /></a>
+  <a href="https://github.com/toffee-desuwa/ChildCode/blob/main/LICENSE"><img src="https://img.shields.io/github/license/toffee-desuwa/ChildCode?style=flat-square" alt="License" /></a>
   <a href="https://childcode.dev"><img src="https://img.shields.io/badge/demo-在线体验-indigo?style=flat-square" alt="在线体验" /></a>
 </p>
 
@@ -44,7 +44,7 @@ ChildCode 让孩子通过拖拽可视化积木来创作 AI 生成的图片 — �
 ## 快速开始
 
 ```bash
-git clone https://github.com/nicekid1/ChildCode.git
+git clone https://github.com/toffee-desuwa/ChildCode.git
 cd ChildCode
 npm install
 npm run dev

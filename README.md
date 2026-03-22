@@ -8,9 +8,9 @@ Block-based AI interaction for kids. No prompts. No code. Just drag, create, and
 </p>
 
 <p align="center">
-  <a href="https://github.com/nicekid1/ChildCode/stargazers"><img src="https://img.shields.io/github/stars/nicekid1/ChildCode?style=flat-square" alt="Stars" /></a>
-  <a href="https://github.com/nicekid1/ChildCode/network/members"><img src="https://img.shields.io/github/forks/nicekid1/ChildCode?style=flat-square" alt="Forks" /></a>
-  <a href="https://github.com/nicekid1/ChildCode/blob/main/LICENSE"><img src="https://img.shields.io/github/license/nicekid1/ChildCode?style=flat-square" alt="License" /></a>
+  <a href="https://github.com/toffee-desuwa/ChildCode/stargazers"><img src="https://img.shields.io/github/stars/toffee-desuwa/ChildCode?style=flat-square" alt="Stars" /></a>
+  <a href="https://github.com/toffee-desuwa/ChildCode/network/members"><img src="https://img.shields.io/github/forks/toffee-desuwa/ChildCode?style=flat-square" alt="Forks" /></a>
+  <a href="https://github.com/toffee-desuwa/ChildCode/blob/main/LICENSE"><img src="https://img.shields.io/github/license/toffee-desuwa/ChildCode?style=flat-square" alt="License" /></a>
   <a href="https://childcode.dev"><img src="https://img.shields.io/badge/demo-live-indigo?style=flat-square" alt="Live Demo" /></a>
 </p>
 
@@ -44,7 +44,7 @@ Children progress through three levels of AI literacy:
 ## Quick Start
 
 ```bash
-git clone https://github.com/nicekid1/ChildCode.git
+git clone https://github.com/toffee-desuwa/ChildCode.git
 cd ChildCode
 npm install
 npm run dev
