@@ -6,6 +6,7 @@ build/
 
 # Ralph harness files
 .ralph/
+.ralphrc
 
 # Claude Code
 .claude/
