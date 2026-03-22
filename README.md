@@ -12,10 +12,16 @@ Block-based AI interaction for kids. No prompts. No code. Just drag, create, and
   <a href="https://github.com/toffee-desuwa/ChildCode/network/members"><img src="https://img.shields.io/github/forks/toffee-desuwa/ChildCode?style=flat-square" alt="Forks" /></a>
   <a href="https://github.com/toffee-desuwa/ChildCode/blob/main/LICENSE"><img src="https://img.shields.io/github/license/toffee-desuwa/ChildCode?style=flat-square" alt="License" /></a>
   <a href="https://childcode-one.vercel.app"><img src="https://img.shields.io/badge/demo-live-indigo?style=flat-square" alt="Live Demo" /></a>
+  <a href="https://huggingface.co/spaces/toffee-desuwa/ChildCode"><img src="https://img.shields.io/badge/%F0%9F%A4%97-HF%20Space-yellow?style=flat-square" alt="HF Space" /></a>
 </p>
 
 <p align="center">
-  <em>[Demo GIF coming soon — blocks drag in → generate → change block → image changes]</em>
+  <a href="https://childcode-one.vercel.app">
+    <img src="./public/demo-images/demo-005.png" width="256" alt="Robot Dancing - Cartoon" />
+    <img src="./public/demo-images/demo-006.png" width="256" alt="Robot Dancing - Oil Painting" />
+  </a>
+  <br/>
+  <em>Same blocks, different style — change one block, see what changes</em>
 </p>
 
 ---
@@ -36,10 +42,7 @@ Children progress through three levels of AI literacy:
 
 ## Demo
 
-**Live:** [childcode-one.vercel.app](https://childcode-one.vercel.app)
-
-<!-- Screenshots placeholder — replace with actual dark-theme screenshots -->
-<!-- <p align="center"><img src="./docs/screenshots/workspace.png" width="720" alt="Workspace" /></p> -->
+**Live:** [childcode-one.vercel.app](https://childcode-one.vercel.app) | [HF Space](https://huggingface.co/spaces/toffee-desuwa/ChildCode)
 
 ## Quick Start
 

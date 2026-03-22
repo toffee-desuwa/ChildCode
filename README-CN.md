@@ -12,10 +12,16 @@
   <a href="https://github.com/toffee-desuwa/ChildCode/network/members"><img src="https://img.shields.io/github/forks/toffee-desuwa/ChildCode?style=flat-square" alt="Forks" /></a>
   <a href="https://github.com/toffee-desuwa/ChildCode/blob/main/LICENSE"><img src="https://img.shields.io/github/license/toffee-desuwa/ChildCode?style=flat-square" alt="License" /></a>
   <a href="https://childcode-one.vercel.app"><img src="https://img.shields.io/badge/demo-在线体验-indigo?style=flat-square" alt="在线体验" /></a>
+  <a href="https://huggingface.co/spaces/toffee-desuwa/ChildCode"><img src="https://img.shields.io/badge/%F0%9F%A4%97-HF%20Space-yellow?style=flat-square" alt="HF Space" /></a>
 </p>
 
 <p align="center">
-  <em>[演示 GIF 即将推出 — 拖入积木 → 生成图片 → 修改积木 → 图片跟着变]</em>
+  <a href="https://childcode-one.vercel.app">
+    <img src="./public/demo-images/demo-005.png" width="256" alt="机器人跳舞 - 卡通风" />
+    <img src="./public/demo-images/demo-006.png" width="256" alt="机器人跳舞 - 油画风" />
+  </a>
+  <br/>
+  <em>同样的积木，换个风格 — 改一个积木，看效果怎么变</em>
 </p>
 
 ---
@@ -36,10 +42,7 @@ ChildCode 让孩子通过拖拽可视化积木来创作 AI 生成的图片 — �
 
 ## 在线体验
 
-**试试看：** [childcode-one.vercel.app](https://childcode-one.vercel.app)
-
-<!-- 截图占位 — 替换为实际深色主题截图 -->
-<!-- <p align="center"><img src="./docs/screenshots/workspace.png" width="720" alt="工作区" /></p> -->
+**试试看：** [childcode-one.vercel.app](https://childcode-one.vercel.app) | [HF Space](https://huggingface.co/spaces/toffee-desuwa/ChildCode)
 
 ## 快速开始
 
