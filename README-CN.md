@@ -17,11 +17,8 @@
 
 <p align="center">
   <a href="https://childcode-one.vercel.app">
-    <img src="./public/demo-images/demo-005.png" width="256" alt="机器人跳舞 - 卡通风" />
-    <img src="./public/demo-images/demo-006.png" width="256" alt="机器人跳舞 - 油画风" />
+    <img src="./public/hero-demo.gif" width="640" alt="ChildCode 演示 — 拖积木、生成图片、换一个积木、效果跟着变" />
   </a>
-  <br/>
-  <em>同样的积木，换个风格 — 改一个积木，看效果怎么变</em>
 </p>
 
 ---

@@ -17,11 +17,8 @@ Block-based AI interaction for kids. No prompts. No code. Just drag, create, and
 
 <p align="center">
   <a href="https://childcode-one.vercel.app">
-    <img src="./public/demo-images/demo-005.png" width="256" alt="Robot Dancing - Cartoon" />
-    <img src="./public/demo-images/demo-006.png" width="256" alt="Robot Dancing - Oil Painting" />
+    <img src="./public/hero-demo.gif" width="640" alt="ChildCode Demo — drag blocks, generate art, change one block, see what changes" />
   </a>
-  <br/>
-  <em>Same blocks, different style — change one block, see what changes</em>
 </p>
 
 ---
