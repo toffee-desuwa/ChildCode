@@ -31,3 +31,7 @@ desktop.ini
 # Test coverage
 coverage/
 STATE
+
+# Dev artifacts
+harness/
+docs/
