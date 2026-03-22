@@ -11,7 +11,7 @@ Block-based AI interaction for kids. No prompts. No code. Just drag, create, and
   <a href="https://github.com/toffee-desuwa/ChildCode/stargazers"><img src="https://img.shields.io/github/stars/toffee-desuwa/ChildCode?style=flat-square" alt="Stars" /></a>
   <a href="https://github.com/toffee-desuwa/ChildCode/network/members"><img src="https://img.shields.io/github/forks/toffee-desuwa/ChildCode?style=flat-square" alt="Forks" /></a>
   <a href="https://github.com/toffee-desuwa/ChildCode/blob/main/LICENSE"><img src="https://img.shields.io/github/license/toffee-desuwa/ChildCode?style=flat-square" alt="License" /></a>
-  <a href="https://childcode.dev"><img src="https://img.shields.io/badge/demo-live-indigo?style=flat-square" alt="Live Demo" /></a>
+  <a href="https://childcode-one.vercel.app"><img src="https://img.shields.io/badge/demo-live-indigo?style=flat-square" alt="Live Demo" /></a>
 </p>
 
 <p align="center">
@@ -36,7 +36,7 @@ Children progress through three levels of AI literacy:
 
 ## Demo
 
-**Live:** [childcode.dev](https://childcode.dev)
+**Live:** [childcode-one.vercel.app](https://childcode-one.vercel.app)
 
 <!-- Screenshots placeholder — replace with actual dark-theme screenshots -->
 <!-- <p align="center"><img src="./docs/screenshots/workspace.png" width="720" alt="Workspace" /></p> -->

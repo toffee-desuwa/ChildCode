@@ -11,7 +11,7 @@
   <a href="https://github.com/toffee-desuwa/ChildCode/stargazers"><img src="https://img.shields.io/github/stars/toffee-desuwa/ChildCode?style=flat-square" alt="Stars" /></a>
   <a href="https://github.com/toffee-desuwa/ChildCode/network/members"><img src="https://img.shields.io/github/forks/toffee-desuwa/ChildCode?style=flat-square" alt="Forks" /></a>
   <a href="https://github.com/toffee-desuwa/ChildCode/blob/main/LICENSE"><img src="https://img.shields.io/github/license/toffee-desuwa/ChildCode?style=flat-square" alt="License" /></a>
-  <a href="https://childcode.dev"><img src="https://img.shields.io/badge/demo-在线体验-indigo?style=flat-square" alt="在线体验" /></a>
+  <a href="https://childcode-one.vercel.app"><img src="https://img.shields.io/badge/demo-在线体验-indigo?style=flat-square" alt="在线体验" /></a>
 </p>
 
 <p align="center">
@@ -36,7 +36,7 @@ ChildCode 让孩子通过拖拽可视化积木来创作 AI 生成的图片 — �
 
 ## 在线体验
 
-**试试看：** [childcode.dev](https://childcode.dev)
+**试试看：** [childcode-one.vercel.app](https://childcode-one.vercel.app)
 
 <!-- 截图占位 — 替换为实际深色主题截图 -->
 <!-- <p align="center"><img src="./docs/screenshots/workspace.png" width="720" alt="工作区" /></p> -->
